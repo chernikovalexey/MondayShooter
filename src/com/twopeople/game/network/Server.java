@@ -52,6 +52,7 @@ public class Server extends NetworkEntity {
                     System.out.println("User " + r.nickname + " connected. So there are " + users.size()
                                                + " users on server now!");
 
+
                     server.sendToAllExceptUDP(c.getID(), new UserResponse(r.nickname, c.getID()));
                 } else {
                     answer = Error.nicknameError();
@@ -62,7 +63,7 @@ public class Server extends NetworkEntity {
             }
 
 
-            if (answer != null) { c.sendTCP(answer); }
+            if (answer != null) { server.sendToAllExceptUDP(c.getID(), answer); }
         }
     }
 
