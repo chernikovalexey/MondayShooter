@@ -23,7 +23,7 @@ public interface Listener {
 
     public void headingDirectionChanged(float x, float y, float vx, float vy, int id);
     
-    public void shut(float x, float y, float vx, float vy, int shooterId);
+    public void shoot(float x, float y, float vx, float vy, int shooterId);
 
     public void disconnected(int id);
 }

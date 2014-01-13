@@ -61,8 +61,8 @@ public class Client extends NetworkEntity {
                     case RunningRequest.START:
                         listener.runningStart(r.x, r.y, r.id);
                         break;
-                    case RunningRequest.SHUT:
-                        listener.shut(r.x, r.y, r.vx, r.vy, r.id);
+                    case RunningRequest.SHOOT:
+                        listener.shoot(r.x, r.y, r.vx, r.vy, r.id);
                         break;
                 }
             } else if(o instanceof DisconnectionRequest) {
@@ -91,7 +91,7 @@ public class Client extends NetworkEntity {
         client.sendUDP(new RunningRequest(e, RunningRequest.HEAD_DIRECTION));
     }
 
-    public void shut(Entity shooter) {
-        client.sendUDP(new RunningRequest(shooter, RunningRequest.SHUT));
+    public void shot(Entity shooter) {
+        client.sendUDP(new RunningRequest(shooter, RunningRequest.SHOOT));
     }
 }

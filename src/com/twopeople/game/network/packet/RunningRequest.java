@@ -12,7 +12,7 @@ public class RunningRequest extends Packet {
     public static final byte START = 1;
     public static final byte END = 2;
     public static final byte DIRECTION = 3;
-    public static final byte SHUT = 4;
+    public static final byte SHOOT = 4;
     public static final byte HEAD_DIRECTION = 5;
 
     public int id;
@@ -28,7 +28,7 @@ public class RunningRequest extends Packet {
         this.y = e.getY();
         this.type = type;
 
-        if (type == HEAD_DIRECTION || type == SHUT) {
+        if (type == HEAD_DIRECTION || type == SHOOT) {
             Vector2f heading = e.getHeadingVector();
             this.vx = heading.x;
             this.vy = heading.y;
