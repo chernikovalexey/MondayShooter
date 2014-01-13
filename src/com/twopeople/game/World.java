@@ -15,19 +15,32 @@ public class World {
     private GameState game;
     private Random random = new Random();
 
-    private HashMap<Integer, Player> players = new HashMap<Integer, Player>();
+    private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+    //private ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 
     public World(GameState game) {
         this.game = game;
+
+        addPlayer(1, 20f, 20f);
     }
 
     public void init() {
     }
 
-    public void update(GameContainer gameContainer, int i) {}
+    public void update(GameContainer gameContainer, int i) {
+        synchronized (entities) {
+            for (Entity entity : entities.values()) {
+                entity.update(gameContainer, i);
+            }
+        }
+    }
 
     public void render(GameContainer gameContainer, Graphics g) {
-
+        synchronized (entities) {
+            for (Entity entity : entities.values()) {
+                entity.render(gameContainer, g);
+            }
+        }
     }
 
     // =========
@@ -35,5 +48,7 @@ public class World {
 
     public void addPlayer(int userId, float x, float y) {
         Player player = new Player(this, x, y);
+        entities.put(player.getId(), player);
+
     }
 }
