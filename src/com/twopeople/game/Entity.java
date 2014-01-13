@@ -19,6 +19,8 @@ public class Entity {
     private float width, height;
     private float speed;
 
+    protected boolean remove = false;
+
     protected Vector2f movingDirection = new Vector2f(0f, 0f);
     private Vector2f headingDirection = new Vector2f(0f, 0f);
     private Vector2f velocity = new Vector2f(0f, 0f);
@@ -45,6 +47,7 @@ public class Entity {
 
     public void init() {
         id = ++serialId;
+//        System.out.println("Initialized an entity with id=" + id);
     }
 
     public void update(GameContainer container, int delta) {
@@ -79,7 +82,7 @@ public class Entity {
     }
 
     public void updateDirectionToPoint(float dx, float dy) {
-        Vector2f newDirection = (new Vector2f(getX() + dx, getY() + dy)).normalise();
+        Vector2f newDirection = (new Vector2f(dx - x, dy - y)).normalise();
         updateDirection(newDirection.x, newDirection.y);
     }
 
@@ -89,6 +92,10 @@ public class Entity {
 
     public boolean intersects(Shape shape) {
         return shape.intersects(getBB());
+    }
+
+    public boolean seeksForRemoval() {
+        return remove;
     }
 
     // ===================

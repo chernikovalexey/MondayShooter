@@ -24,8 +24,11 @@ public class Bullet extends Entity {
     }
 
     public void update(GameContainer container, int delta) {
-        System.out.println(movingDirection.x + ", " + movingDirection.y);
         super.update(container, delta);
+
+        if (getX() < 0 || getX() > container.getWidth() || getY() < 0 || getY() > container.getHeight()) {
+            remove = true;
+        }
     }
 
     public void render(GameContainer container, Graphics g) {

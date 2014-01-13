@@ -54,7 +54,7 @@ public class Player extends Entity {
         }
 
         long currentShootTime = System.currentTimeMillis();
-        if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 45) {
+        if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 125) {
             lastShootTime = currentShootTime;
             Vector2f heading = getHeadingVector();
             double angle = Math.atan2(heading.y, heading.x);
