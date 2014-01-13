@@ -5,6 +5,10 @@ package com.twopeople.game.network.packet;
  * At 18:26 on 13.01.14
  */
 
-public class AuthResponse {
-    int yourId;
+public class AuthResponse extends Packet {
+    public int yourId;
+
+    public AuthResponse() {}
+
+    public AuthResponse(int yourId) {this.yourId = yourId;}
 }
