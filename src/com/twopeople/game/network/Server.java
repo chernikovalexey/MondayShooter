@@ -1,6 +1,7 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryonet.Connection;
+import com.twopeople.game.Entity;
 import com.twopeople.game.network.packet.*;
 
 
@@ -60,8 +61,9 @@ public class Server extends NetworkEntity {
                 }
             } else if (o instanceof RunningRequest) {
                 answer = (RunningRequest) o;
+            } else if(o instanceof Entity) {//I don't what for.
+                answer = new EntityPacket((Entity)o);
             }
-
 
             if (answer != null) { server.sendToAllExceptUDP(c.getID(), answer); }
         }

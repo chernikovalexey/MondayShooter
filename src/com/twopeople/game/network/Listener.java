@@ -30,4 +30,6 @@ public interface Listener {
     public void shoot(float x, float y, float vx, float vy, int shooterId);
 
     public void disconnected(int id);
+
+    void addEntity(Entity entity);
 }

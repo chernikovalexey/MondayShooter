@@ -5,6 +5,7 @@ import com.twopeople.game.Entity;
 import com.twopeople.game.network.packet.AuthRequest;
 import com.twopeople.game.network.packet.AuthResponse;
 import com.twopeople.game.network.packet.DisconnectionRequest;
+import com.twopeople.game.network.packet.EntityPacket;
 import com.twopeople.game.network.packet.Packet;
 import com.twopeople.game.network.packet.RunningRequest;
 import com.twopeople.game.network.packet.UserResponse;
@@ -73,8 +74,14 @@ public class Client extends NetworkEntity {
                 listener.disconnected(((DisconnectionRequest) o).userId);
             } else if (o instanceof UserResponse) {
                 listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
+            } else if(o instanceof EntityPacket) {
+                listener.addEntity(((EntityPacket)o).entity);
             }
         }
+    }
+
+    public void sendEntity(Entity e) {
+        client.sendUDP(e);
     }
 
     Entity[] getEntities() {
