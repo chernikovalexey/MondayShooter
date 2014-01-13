@@ -20,7 +20,7 @@ public class Entity {
     private float speed;
 
     protected Vector2f movingDirection = new Vector2f(0f, 0f);
-    private Vector2f headingDirection = new Vector2f(0f,0f);
+    private Vector2f headingDirection = new Vector2f(0f, 0f);
     private Vector2f velocity = new Vector2f(0f, 0f);
 
     private Vector2f[] directions = new Vector2f[]{
@@ -170,7 +170,7 @@ public class Entity {
         headingDirection.y = dy;
     }
 
-    public Vector2f getHeadingDirection() {
-        return headingDirection;
+    public Vector2f getMovingDirection() {
+        return movingDirection;
     }
 }
