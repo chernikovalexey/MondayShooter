@@ -21,7 +21,7 @@ public class World {
     public World(GameState game) {
         this.game = game;
 
-        addPlayer(1, 20f, 20f);
+        addPlayer(1, 300f, 200f);
     }
 
     public void init() {

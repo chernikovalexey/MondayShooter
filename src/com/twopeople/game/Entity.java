@@ -17,8 +17,10 @@ public class Entity {
 
     private float x, y;
     private float width, height;
+    private float speed;
 
-    private Vector2f direction = new Vector2f(0f, 0f);
+    protected Vector2f movingDirection = new Vector2f(0f, 0f);
+    private Vector2f headingDirection = new Vector2f(0f,0f);
     private Vector2f velocity = new Vector2f(0f, 0f);
 
     private Vector2f[] directions = new Vector2f[]{
@@ -46,8 +48,16 @@ public class Entity {
     }
 
     public void update(GameContainer container, int delta) {
-        updateDirection(direction.x, direction.y);
-        direction.set(0, 0);
+        float speed = getSpeed();
+        float friction = 0.00001f;
+        float accelerationX = -velocity.x * friction + movingDirection.x * speed;
+        float accelerationZ = -velocity.y * friction + movingDirection.y * speed;
+
+        velocity.x = accelerationX * delta;
+        velocity.y = accelerationZ * delta;
+
+        x += velocity.x * delta * 0.001f * 20;
+        y += velocity.y * delta * 0.001f * 20;
     }
 
     public void render(GameContainer container, Graphics g) {
@@ -60,7 +70,7 @@ public class Entity {
         float theta;
         float minTheta = 360f;
         for (int i = 0, len = directions.length; i < len; ++i) {
-            theta = Vector3f.angle(new Vector3f(direction.x, 0, direction.y), new Vector3f(directions[i].x, 0, directions[i].y));
+            theta = Vector3f.angle(new Vector3f(headingDirection.x, 0, headingDirection.y), new Vector3f(directions[i].x, 0, directions[i].y));
             if (theta < minTheta) {
                 minTheta = theta;
                 //currentAnimationState = i;
@@ -69,26 +79,12 @@ public class Entity {
     }
 
     public void updateDirectionToPoint(float dx, float dy) {
-        Vector2f newDirection = (new Vector2f(dx - getX(), dy - getY())).normalise();
+        Vector2f newDirection = (new Vector2f(getX() + dx, getY() + dy)).normalise();
         updateDirection(newDirection.x, newDirection.y);
     }
 
     public void moveInertly(int delta) {
-        float speed = 10f;
-        float friction = 0.00001f;
-        float _speed = speed / 10f;
-        float accelerationX = -velocity.x * friction + direction.x * _speed;
-        float accelerationZ = -velocity.y * friction + direction.y * _speed;
 
-        velocity.x = accelerationX * delta;
-        velocity.y = accelerationZ * delta;
-
-        x += velocity.x;
-        y += velocity.y;
-    }
-
-    public void move(float dx, float dy) {
-        direction = (new Vector2f(dx - x, dy - y)).normalise();
     }
 
     public Shape getBB() {
@@ -142,6 +138,14 @@ public class Entity {
         this.height = height;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
     public int getOwner() {
         return owner;
     }
@@ -151,18 +155,22 @@ public class Entity {
     }
 
     public float getDirectionX() {
-        return direction.x;
+        return headingDirection.x;
     }
 
     public void setDirectionX(float dx) {
-        direction.x = dx;
+        headingDirection.x = dx;
     }
 
     public float getDirectionY() {
-        return direction.y;
+        return headingDirection.y;
     }
 
     public void setDirectionY(float dy) {
-        direction.y = dy;
+        headingDirection.y = dy;
+    }
+
+    public Vector2f getHeadingDirection() {
+        return headingDirection;
     }
 }

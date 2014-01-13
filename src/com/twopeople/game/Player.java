@@ -19,32 +19,37 @@ public class Player extends Entity {
 
     public Player(World world, float x, float y) {
         super(world, x, y, WIDTH, HEIGHT);
-    }
 
+        setSpeed(5f);
+    }
 
     @Override
     public void update(GameContainer container, int delta) {
         Input input = container.getInput();
 
-        moveInertly(delta);
+        super.update(container, delta);
+        movingDirection.set(0f, 0f);
 
-        System.out.println("Move?");
+        boolean isMoving = false;
 
         if (input.isKeyDown(Input.KEY_W)) {
-            move(0f, -10f);
+            movingDirection.y -= 1;
+            isMoving = true;
         }
-
         if (input.isKeyDown(Input.KEY_S)) {
-            move(0f, 10f);
+            movingDirection.y += 1;
+            isMoving = true;
         }
-
         if (input.isKeyDown(Input.KEY_A)) {
-            move(-10f, 0f);
+            movingDirection.x -= 1;
+            isMoving = true;
+        }
+        if (input.isKeyDown(Input.KEY_D)) {
+            movingDirection.x += 1;
+            isMoving = true;
         }
 
-        if (input.isKeyDown(Input.KEY_D)) {
-            move(10f, 0f);
-        }
+        updateDirectionToPoint(input.getMouseX(), input.getMouseY());
     }
 
     @Override
