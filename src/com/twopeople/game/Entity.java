@@ -25,7 +25,7 @@ public class Entity {
     private Vector2f headingDirection = new Vector2f(0f, 0f);
     private Vector2f velocity = new Vector2f(0f, 0f);
 
-    private Vector2f[] directions = new Vector2f[]{
+    private transient Vector2f[] directions = new Vector2f[]{
             new Vector2f(-90), new Vector2f(0),
             new Vector2f(90), new Vector2f(180),
             new Vector2f(-135), new Vector2f(-45),

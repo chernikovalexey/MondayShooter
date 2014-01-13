@@ -73,6 +73,13 @@ public class World {
     // =========
     // Utilities
 
+    public void addEntity(Entity entity, boolean fromReceiver) {
+        entities.put(entity.getId(), entity);
+        if (!fromReceiver) {
+            //send
+        }
+    }
+
     public void addPlayer(int userId, float x, float y) {
         Player player = new Player(this, x, y);
         entities.put(player.getId(), player);
@@ -82,5 +89,16 @@ public class World {
         Bullet bullet = new Bullet(this, x, y, direction);
         bullet.setOwner(owner);
         bullets.put(bullet.getId(), bullet);
+    }
+
+    // =======
+    // Getters
+
+    public HashMap<Integer, Entity> getEntities() {
+        return entities;
+    }
+
+    public HashMap<Integer, Entity> getBullets() {
+        return bullets;
     }
 }

@@ -1,10 +1,16 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.twopeople.game.Bullet;
 import com.twopeople.game.Entity;
+import com.twopeople.game.Player;
 import com.twopeople.game.network.packet.AuthRequest;
-import com.twopeople.game.network.packet.*;
-import com.twopeople.game.*;
+import com.twopeople.game.network.packet.AuthResponse;
+import com.twopeople.game.network.packet.DisconnectionRequest;
+import com.twopeople.game.network.packet.Packet;
+import com.twopeople.game.network.packet.RunningRequest;
+import com.twopeople.game.network.packet.UserResponse;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * Created by podko_000
@@ -24,9 +30,10 @@ public class NetworkEntity extends com.esotericsoftware.kryonet.Listener {
         kryo.register(Entity.class);
         kryo.register(Player.class);
         kryo.register(Bullet.class);
+        kryo.register(Bullet[].class);
         kryo.register(Entity[].class);
+        kryo.register(Vector2f.class);
         kryo.register(RunningRequest.class);
         kryo.register(DisconnectionRequest.class);
-
     }
 }

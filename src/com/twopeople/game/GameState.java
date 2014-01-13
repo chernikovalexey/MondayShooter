@@ -19,7 +19,12 @@ public class GameState extends BasicGameState {
     private Server server;
     private Client client;
 
+    private int userId;
     private boolean connected = false;
+
+    public boolean isServer() {
+        return server != null;
+    }
 
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
@@ -27,16 +32,16 @@ public class GameState extends BasicGameState {
 
         String action = Console.readString("s/c: ");
 
-        NetworkListener listener = new NetworkListener(world);
+        NetworkListener listener = new NetworkListener(this, world);
         Client client = new Client(listener);
 
         if (action.equals("s")) {
             server = new Server();
             server.setClient(client);
-            client.connect("localhost", "chernikovalexey");
+            client.connect("localhost", Console.readString("Nickname: "));
             connected = true;
         } else if (action.equals("c")) {
-            client.connect(Console.readString("IP: "), "Andrey");
+            client.connect(Console.readString("IP: "), Console.readString("Nickname: "));
             connected = true;
         }
     }
@@ -61,5 +66,13 @@ public class GameState extends BasicGameState {
     @Override
     public int getID() {
         return 1;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public int getUserId() {
+        return userId;
     }
 }
