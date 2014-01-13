@@ -64,8 +64,8 @@ public class Entity {
     }
 
     private void updateDirection(float dx, float dy) {
-        setDirectionX(dx);
-        setDirectionY(dy);
+        headingDirection.x = dx;
+        headingDirection.y = dy;
 
         float theta;
         float minTheta = 360f;
@@ -81,10 +81,6 @@ public class Entity {
     public void updateDirectionToPoint(float dx, float dy) {
         Vector2f newDirection = (new Vector2f(getX() + dx, getY() + dy)).normalise();
         updateDirection(newDirection.x, newDirection.y);
-    }
-
-    public void moveInertly(int delta) {
-
     }
 
     public Shape getBB() {
@@ -154,20 +150,8 @@ public class Entity {
         this.owner = owner;
     }
 
-    public float getDirectionX() {
-        return headingDirection.x;
-    }
-
-    public void setDirectionX(float dx) {
-        headingDirection.x = dx;
-    }
-
-    public float getDirectionY() {
-        return headingDirection.y;
-    }
-
-    public void setDirectionY(float dy) {
-        headingDirection.y = dy;
+    public Vector2f getHeadingVector() {
+        return headingDirection;
     }
 
     public Vector2f getMovingVector() {

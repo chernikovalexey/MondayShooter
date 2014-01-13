@@ -1,6 +1,7 @@
 package com.twopeople.game.network.packet;
 
 import com.twopeople.game.Entity;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * Created by podko_000
@@ -15,8 +16,8 @@ public class RunningRequest extends Packet {
     public static final byte HEAD_DIRECTION = 5;
 
     public int id;
-    public float x,y;
-    public float vx,vy;
+    public float x, y;
+    public float vx, vy;
     public byte type;
 
     public RunningRequest() {}
@@ -27,9 +28,10 @@ public class RunningRequest extends Packet {
         this.y = e.getY();
         this.type = type;
 
-        if(type==HEAD_DIRECTION || type==SHUT) {
-        this.vx = e.getDirectionX();
-        this.vy = e.getDirectionY();
+        if (type == HEAD_DIRECTION || type == SHUT) {
+            Vector2f heading = e.getHeadingVector();
+            this.vx = heading.x;
+            this.vy = heading.y;
         } else {
             this.vx = e.getMovingVector().getX();
             this.vy = e.getMovingVector().getY();

@@ -4,6 +4,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * Created by Alexey
@@ -13,6 +14,8 @@ import org.newdawn.slick.Input;
 public class Player extends Entity {
     public static final float WIDTH = 32;
     public static final float HEIGHT = 32;
+
+    private long lastShootTime = System.currentTimeMillis();
 
     public Player() {
     }
@@ -29,6 +32,7 @@ public class Player extends Entity {
 
         super.update(container, delta);
         movingDirection.set(0f, 0f);
+        updateDirectionToPoint(input.getMouseX(), input.getMouseY());
 
         boolean isMoving = false;
 
@@ -49,7 +53,13 @@ public class Player extends Entity {
             isMoving = true;
         }
 
-        updateDirectionToPoint(input.getMouseX(), input.getMouseY());
+        long currentShootTime = System.currentTimeMillis();
+        if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 45) {
+            lastShootTime = currentShootTime;
+            Vector2f heading = getHeadingVector();
+            double angle = Math.atan2(heading.y, heading.x);
+            world.addBullet(getX(), getY(), getId(), new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)));
+        }
     }
 
     @Override
