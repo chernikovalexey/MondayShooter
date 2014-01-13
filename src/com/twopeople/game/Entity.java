@@ -170,7 +170,7 @@ public class Entity {
         headingDirection.y = dy;
     }
 
-    public Vector2f getMovingDirection() {
+    public Vector2f getMovingVector() {
         return movingDirection;
     }
 }
