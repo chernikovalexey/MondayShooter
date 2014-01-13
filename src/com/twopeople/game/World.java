@@ -26,6 +26,7 @@ public class World {
     }
 
     public void init() {
+        System.out.println("INIT?");
         addPlayer(-1, random.nextInt(600), random.nextInt(400), false);
     }
 
@@ -75,7 +76,7 @@ public class World {
     public void addEntity(Entity entity, boolean fromReceiver) {
         entities.put(entity.getId(), entity);
         if (!fromReceiver) {
-            //send
+            getGame().getClient().sendEntity(entity);
         }
         System.out.println("Added entity(id=" + entity.getId() + ").");
     }

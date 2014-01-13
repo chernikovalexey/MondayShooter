@@ -23,7 +23,7 @@ public class NetworkListener implements Listener {
         game.setUserId(response.yourId);
 
         if (!game.isServer()) {
-            Entity.serialId = response.yourId;
+            Entity.serialId = response.yourId - 1;
 
             for (int i = 0, len = response.entities.length; i < len; ++i) {
                 Entity entity = response.entities[i];
@@ -39,6 +39,11 @@ public class NetworkListener implements Listener {
         }
 
         world.init();
+    }
+
+    @Override
+    public void addEntity(Entity entity) {
+        world.addEntity(entity, true);
     }
 
     @Override
