@@ -23,11 +23,10 @@ public class World {
 
     public World(GameState game) {
         this.game = game;
-
-        addPlayer(1, 300f, 200f);
     }
 
     public void init() {
+        addPlayer(1, 300f, 200f);
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -78,10 +77,12 @@ public class World {
         if (!fromReceiver) {
             //send
         }
+        System.out.println("Now entities=" + entities.size());
     }
 
     public void addPlayer(int userId, float x, float y) {
         Player player = new Player(this, x, y);
+        player.setId(userId);
         entities.put(player.getId(), player);
     }
 

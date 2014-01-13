@@ -21,6 +21,9 @@ public class Bullet extends Entity {
         super(world, x, y, WIDTH, HEIGHT);
         this.movingDirection = movingDirection;
         setSpeed(6f);
+
+        --Entity.serialId;
+        setId(0);
     }
 
     public void update(GameContainer container, int delta) {

@@ -2,6 +2,7 @@ package com.twopeople.game;
 
 import com.twopeople.game.network.Client;
 import com.twopeople.game.network.Server;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -57,6 +58,9 @@ public class GameState extends BasicGameState {
     public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics g) throws SlickException {
         if (connected) {
             world.render(gameContainer, g);
+
+            g.setColor(Color.white);
+            g.drawString(isServer() ? "Server" : "Client", 10, 50);
         }
     }
 

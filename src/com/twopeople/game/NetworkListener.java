@@ -2,6 +2,7 @@ package com.twopeople.game;
 
 import com.twopeople.game.network.Listener;
 import com.twopeople.game.network.packet.AuthResponse;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * Created by Alexey
@@ -19,20 +20,25 @@ public class NetworkListener implements Listener {
 
     @Override
     public void connectionSuccess(AuthResponse response) {
+        Entity.serialId = response.yourId;
         game.setUserId(response.yourId);
 
         if (!game.isServer()) {
             System.out.println("Receiving entities: " + response.entities.length);
             for (int i = 0, len = response.entities.length; i < len; ++i) {
                 Entity entity = response.entities[i];
+                System.out.println(entity.getId());
                 world.addEntity(entity, true);
             }
         }
+
+        world.init();
     }
 
     @Override
     public void playerConnected(int id, String nickname) {
-
+        Entity.serialId = id;
+        System.out.println("Player joined! " + id);
     }
 
     @Override
@@ -67,6 +73,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
+        world.addBullet(x, y, shooterId, new Vector2f(vx, vy));
     }
 
     @Override
