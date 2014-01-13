@@ -67,6 +67,8 @@ public class Client extends NetworkEntity {
                 }
             } else if(o instanceof DisconnectionRequest) {
                 listener.disconnected(((DisconnectionRequest)o).userId);
+            } else if(o instanceof UserResponse) {
+                listener.playerConnected(((UserResponse)o).userId, ((UserResponse)o).nickname);
             }
         }
     }
