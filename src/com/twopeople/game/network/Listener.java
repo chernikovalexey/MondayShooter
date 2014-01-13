@@ -11,9 +11,13 @@ import com.twopeople.game.network.packet.*;
 public interface Listener {
     public void connectionSuccess(AuthResponse response);
 
+    public void playerConnected(int id, String nickname);
+
     public void connectionFailed(Error e);
 
-    public Entity[] getState();
+    public Entity[] getEntities();
+
+    public Entity[] getBullets();
 
     public void runningStart(float x, float y, int id);
 
