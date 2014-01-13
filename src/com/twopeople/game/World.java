@@ -26,7 +26,7 @@ public class World {
     }
 
     public void init() {
-        addPlayer(1, 300f, 200f);
+        addPlayer(-1, random.nextInt(600), random.nextInt(400), false);
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -77,19 +77,25 @@ public class World {
         if (!fromReceiver) {
             //send
         }
-        System.out.println("Now entities=" + entities.size());
+        System.out.println("Added entity(id=" + entity.getId() + ").");
     }
 
-    public void addPlayer(int userId, float x, float y) {
+    public void addPlayer(int userId, float x, float y, boolean fromReceiver) {
         Player player = new Player(this, x, y);
-        player.setId(userId);
-        entities.put(player.getId(), player);
+        if (userId != -1) {
+            player.setId(userId);
+        }
+        addEntity(player, fromReceiver);
     }
 
-    public void addBullet(float x, float y, int owner, Vector2f direction) {
+    public void addBullet(float x, float y, int owner, Vector2f direction, boolean fromReceiver) {
         Bullet bullet = new Bullet(this, x, y, direction);
         bullet.setOwner(owner);
         bullets.put(bullet.getId(), bullet);
+
+        if (!fromReceiver) {
+            getGame().getClient().shoot(bullet);
+        }
     }
 
     // =======
@@ -101,5 +107,9 @@ public class World {
 
     public HashMap<Integer, Entity> getBullets() {
         return bullets;
+    }
+
+    public GameState getGame() {
+        return game;
     }
 }

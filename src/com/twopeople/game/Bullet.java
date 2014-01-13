@@ -22,6 +22,7 @@ public class Bullet extends Entity {
         this.movingDirection = movingDirection;
         setSpeed(6f);
 
+        // Does not affect the global serial ID
         --Entity.serialId;
         setId(0);
     }

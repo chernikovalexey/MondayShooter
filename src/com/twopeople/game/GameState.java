@@ -34,15 +34,15 @@ public class GameState extends BasicGameState {
         String action = Console.readString("s/c: ");
 
         NetworkListener listener = new NetworkListener(this, world);
-        Client client = new Client(listener);
+        client = new Client(listener);
 
         if (action.equals("s")) {
             server = new Server();
             server.setClient(client);
-            client.connect("localhost", Console.readString("Nickname: "));
+            client.connect("localhost", "server user");
             connected = true;
         } else if (action.equals("c")) {
-            client.connect(Console.readString("IP: "), Console.readString("Nickname: "));
+            client.connect(Console.readString("IP: "), "client user");
             connected = true;
         }
     }
@@ -78,5 +78,9 @@ public class GameState extends BasicGameState {
 
     public int getUserId() {
         return userId;
+    }
+
+    public Client getClient() {
+        return client;
     }
 }

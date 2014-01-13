@@ -32,33 +32,39 @@ public class Player extends Entity {
 
         super.update(container, delta);
         movingDirection.set(0f, 0f);
-        updateDirectionToPoint(input.getMouseX(), input.getMouseY());
 
-        boolean isMoving = false;
+        if (getId() == world.getGame().getUserId()) {
+            boolean isMoving = false;
+            updateDirectionToPoint(input.getMouseX(), input.getMouseY());
 
-        if (input.isKeyDown(Input.KEY_W)) {
-            movingDirection.y -= 1;
-            isMoving = true;
-        }
-        if (input.isKeyDown(Input.KEY_S)) {
-            movingDirection.y += 1;
-            isMoving = true;
-        }
-        if (input.isKeyDown(Input.KEY_A)) {
-            movingDirection.x -= 1;
-            isMoving = true;
-        }
-        if (input.isKeyDown(Input.KEY_D)) {
-            movingDirection.x += 1;
-            isMoving = true;
-        }
+            if (input.isKeyDown(Input.KEY_W)) {
+                movingDirection.y -= 1;
+                isMoving = true;
+            }
+            if (input.isKeyDown(Input.KEY_S)) {
+                movingDirection.y += 1;
+                isMoving = true;
+            }
+            if (input.isKeyDown(Input.KEY_A)) {
+                movingDirection.x -= 1;
+                isMoving = true;
+            }
+            if (input.isKeyDown(Input.KEY_D)) {
+                movingDirection.x += 1;
+                isMoving = true;
+            }
 
-        long currentShootTime = System.currentTimeMillis();
-        if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 125) {
-            lastShootTime = currentShootTime;
-            Vector2f heading = getHeadingVector();
-            double angle = Math.atan2(heading.y, heading.x);
-            world.addBullet(getX(), getY(), getId(), new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)));
+            if (isMoving) {
+                world.getGame().getClient().directionChange(this);
+            }
+
+            long currentShootTime = System.currentTimeMillis();
+            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 125) {
+                lastShootTime = currentShootTime;
+                Vector2f heading = getHeadingVector();
+                double angle = Math.atan2(heading.y, heading.x);
+                world.addBullet(getX(), getY(), getId(), new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
+            }
         }
     }
 
@@ -66,5 +72,7 @@ public class Player extends Entity {
     public void render(GameContainer container, Graphics g) {
         g.setColor(Color.green);
         g.fillRect(getX(), getY(), getWidth(), getHeight());
+        g.setColor(Color.white);
+        g.drawString("" + getHeadingVector().x, getX() + 5, getY() + 15);
     }
 }

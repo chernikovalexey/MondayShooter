@@ -33,6 +33,7 @@ public class NetworkEntity extends com.esotericsoftware.kryonet.Listener {
         kryo.register(Bullet[].class);
         kryo.register(Entity[].class);
         kryo.register(Vector2f.class);
+        kryo.register(Vector2f[].class);
         kryo.register(RunningRequest.class);
         kryo.register(DisconnectionRequest.class);
     }

@@ -20,15 +20,21 @@ public class NetworkListener implements Listener {
 
     @Override
     public void connectionSuccess(AuthResponse response) {
-        Entity.serialId = response.yourId;
         game.setUserId(response.yourId);
 
         if (!game.isServer()) {
-            System.out.println("Receiving entities: " + response.entities.length);
+            Entity.serialId = response.yourId;
+
             for (int i = 0, len = response.entities.length; i < len; ++i) {
                 Entity entity = response.entities[i];
-                System.out.println(entity.getId());
+                entity.setWorld(world);
                 world.addEntity(entity, true);
+            }
+
+            for (int i = 0, len = response.bullets.length; i < len; ++i) {
+                Bullet bullet = (Bullet) response.bullets[i];
+                bullet.setWorld(world);
+                world.addBullet(bullet.getX(), bullet.getY(), bullet.getOwner(), bullet.getMovingVector(), true);
             }
         }
 
@@ -38,7 +44,7 @@ public class NetworkListener implements Listener {
     @Override
     public void playerConnected(int id, String nickname) {
         Entity.serialId = id;
-        System.out.println("Player joined! " + id);
+        System.out.println("Player " + id + " joined!");
     }
 
     @Override
@@ -69,11 +75,14 @@ public class NetworkListener implements Listener {
 
     @Override
     public void headingDirectionChanged(float x, float y, float vx, float vy, int id) {
+        System.out.println("Heading direction changed for " + id);
+        Entity entity = world.getEntities().get(id);
+        entity.setHeadingVector(new Vector2f(vx, vy));
     }
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
-        world.addBullet(x, y, shooterId, new Vector2f(vx, vy));
+        world.addBullet(x, y, shooterId, new Vector2f(vx, vy), true);
     }
 
     @Override

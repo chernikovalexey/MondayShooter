@@ -1,10 +1,15 @@
 package com.twopeople.game.network;
 
-import java.io.IOException;
-
 import com.esotericsoftware.kryonet.Connection;
 import com.twopeople.game.Entity;
-import com.twopeople.game.network.packet.*;
+import com.twopeople.game.network.packet.AuthRequest;
+import com.twopeople.game.network.packet.AuthResponse;
+import com.twopeople.game.network.packet.DisconnectionRequest;
+import com.twopeople.game.network.packet.Packet;
+import com.twopeople.game.network.packet.RunningRequest;
+import com.twopeople.game.network.packet.UserResponse;
+
+import java.io.IOException;
 
 /**
  * Created by podko_000
@@ -27,9 +32,8 @@ public class Client extends NetworkEntity {
         try {
             client.connect(250, ip, TCP_PORT, UDP_PORT);
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
-
 
         client.sendUDP(new AuthRequest(nickname));
     }
@@ -65,10 +69,10 @@ public class Client extends NetworkEntity {
                         listener.shoot(r.x, r.y, r.vx, r.vy, r.id);
                         break;
                 }
-            } else if(o instanceof DisconnectionRequest) {
-                listener.disconnected(((DisconnectionRequest)o).userId);
-            } else if(o instanceof UserResponse) {
-                listener.playerConnected(((UserResponse)o).userId, ((UserResponse)o).nickname);
+            } else if (o instanceof DisconnectionRequest) {
+                listener.disconnected(((DisconnectionRequest) o).userId);
+            } else if (o instanceof UserResponse) {
+                listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
             }
         }
     }
@@ -97,7 +101,7 @@ public class Client extends NetworkEntity {
         client.sendUDP(new RunningRequest(e, RunningRequest.HEAD_DIRECTION));
     }
 
-    public void shot(Entity shooter) {
+    public void shoot(Entity shooter) {
         client.sendUDP(new RunningRequest(shooter, RunningRequest.SHOOT));
     }
 }
