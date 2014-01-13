@@ -47,10 +47,12 @@ public class Server extends NetworkEntity {
             if (o instanceof AuthRequest) {
                 AuthRequest r = (AuthRequest) o;
                 if (getByClientByName(r.nickname) == null) {
-                    answer = new AuthResponse(c.getID(), client.getState());
+                    answer = new AuthResponse(c.getID(), client.getEntities(), client.getBullets());
                     users.add(new ClientInfo(c, r.nickname));
                     System.out.println("User " + r.nickname + " connected. So there are " + users.size()
                                                + " users on server now!");
+
+                    server.sendToAllExceptUDP(c.getID(), new UserResponse(r.nickname, c.getID()));
                 } else {
                     answer = Error.nicknameError();
                     System.out.print(answer);

@@ -9,12 +9,14 @@ import com.twopeople.game.Entity;
 
 public class AuthResponse extends Packet {
     public int yourId;
-    public Entity[] state;
+    public Entity[] bullets;
+    public Entity[] entities;
 
     public AuthResponse() {}
 
-    public AuthResponse(int yourId, Entity[] state) {
+    public AuthResponse(int yourId, Entity[] entities, Entity[] bullets) {
         this.yourId = yourId;
-        this.state = state;
+        this.entities = entities;
+        this.bullets = bullets;
     }
 }

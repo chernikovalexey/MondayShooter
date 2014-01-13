@@ -71,8 +71,12 @@ public class Client extends NetworkEntity {
         }
     }
 
-    Entity[] getState() {
-        return listener.getState();
+    Entity[] getEntities() {
+        return listener.getEntities();
+    }
+
+    Entity[] getBullets() {
+        return listener.getBullets();
     }
 
     public void runningStart(Entity e) {
