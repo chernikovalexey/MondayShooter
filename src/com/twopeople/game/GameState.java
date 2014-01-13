@@ -1,5 +1,7 @@
 package com.twopeople.game;
 
+import com.twopeople.game.network.Client;
+import com.twopeople.game.network.Server;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -14,19 +16,43 @@ import org.newdawn.slick.state.StateBasedGame;
 public class GameState extends BasicGameState {
     private World world;
 
+    private Server server;
+    private Client client;
+
+    private boolean connected = false;
+
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
         world = new World(this);
+
+        String action = Console.readString("s/c: ");
+
+        NetworkListener listener = new NetworkListener(world);
+        Client client = new Client(listener);
+
+        if (action.equals("s")) {
+            server = new Server();
+            server.setClient(client);
+            client.connect("localhost", "chernikovalexey");
+            connected = true;
+        } else if (action.equals("c")) {
+            client.connect(Console.readString("IP: "), "Andrey");
+            connected = true;
+        }
     }
 
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
-        world.update(gameContainer, i);
+        if (connected) {
+            world.update(gameContainer, i);
+        }
     }
 
     @Override
     public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics g) throws SlickException {
-        world.render(gameContainer, g);
+        if (connected) {
+            world.render(gameContainer, g);
+        }
     }
 
     // =======

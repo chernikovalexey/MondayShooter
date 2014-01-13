@@ -59,7 +59,7 @@ public class Test implements Listener {
     }
 
     @Override
-    public void shut(float x, float y, float vx, float vy, int shooterId) {
+    public void shoot(float x, float y, float vx, float vy, int shooterId) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
