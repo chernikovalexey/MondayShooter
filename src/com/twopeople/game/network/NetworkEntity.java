@@ -1,7 +1,7 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
-import com.twopeople.game.network.packet.AuthRequest;
+import com.twopeople.game.network.packet.*;
 
 /**
  * Created by podko_000
