@@ -8,7 +8,7 @@ import com.twopeople.game.network.packet.Packet;
  */
 
 public class Error extends Packet {
-    private static final int NICKNAME_ERROR = 1;
+    public static final int NICKNAME_ERROR = 1;
     public int code;
     public String message;
 

@@ -47,19 +47,26 @@ public class Server extends NetworkEntity {
             if (o instanceof AuthRequest) {
                 AuthRequest r = (AuthRequest) o;
                 if (getByClientByName(r.nickname) == null) {
-                    answer = new AuthResponse(c.getID());
+                    answer = new AuthResponse(c.getID(), client.getState());
                     users.add(new ClientInfo(c, r.nickname));
-                    System.out.println("User "+r.nickname+" connected. So there are "+users.size()
-                                               +" users on server now!");
+                    System.out.println("User " + r.nickname + " connected. So there are " + users.size()
+                                               + " users on server now!");
                 } else {
                     answer = Error.nicknameError();
                     System.out.print(answer);
                 }
+            } else if (o instanceof RunningRequest) {
+                answer = (RunningRequest) o;
             }
 
 
             if (answer != null) { c.sendTCP(answer); }
         }
+    }
+
+    @Override
+    public void disconnected(Connection c) {
+        server.sendToAllExceptUDP(c.getID(), new DisconnectionRequest(c.getID()));
     }
 
     private ClientInfo getByClientByName(String name) {

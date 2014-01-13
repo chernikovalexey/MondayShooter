@@ -1,5 +1,7 @@
 package com.twopeople.game.network.packet;
 
+import com.twopeople.game.Entity;
+
 /**
  * Created by podko_000
  * At 18:26 on 13.01.14
@@ -7,8 +9,12 @@ package com.twopeople.game.network.packet;
 
 public class AuthResponse extends Packet {
     public int yourId;
+    public Entity[] state;
 
     public AuthResponse() {}
 
-    public AuthResponse(int yourId) {this.yourId = yourId;}
+    public AuthResponse(int yourId, Entity[] state) {
+        this.yourId = yourId;
+        this.state = state;
+    }
 }

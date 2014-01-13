@@ -1,6 +1,7 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.twopeople.game.Entity;
 import com.twopeople.game.network.packet.AuthRequest;
 import com.twopeople.game.network.packet.*;
 
@@ -18,5 +19,10 @@ public class NetworkEntity extends com.esotericsoftware.kryonet.Listener {
         kryo.register(AuthRequest.class);
         kryo.register(AuthResponse.class);
         kryo.register(Error.class);
+        kryo.register(Entity.class);
+        kryo.register(Entity[].class);
+        kryo.register(RunningRequest.class);
+        kryo.register(DisconnectionRequest.class);
+
     }
 }
