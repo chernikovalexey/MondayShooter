@@ -20,11 +20,10 @@ public class NetworkListener implements Listener {
 
     @Override
     public void connectionSuccess(AuthResponse response) {
-        game.setUserId(response.yourId);
+        game.setUserId(response.yourId + 1);
+        Entity.serialId = response.yourId;
 
         if (!game.isServer()) {
-            Entity.serialId = response.yourId - 1;
-
             for (int i = 0, len = response.entities.length; i < len; ++i) {
                 Entity entity = response.entities[i];
                 entity.setWorld(world);

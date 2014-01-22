@@ -26,7 +26,6 @@ public class World {
     }
 
     public void init() {
-        System.out.println("INIT?");
         addPlayer(-1, random.nextInt(600), random.nextInt(400), false);
     }
 
