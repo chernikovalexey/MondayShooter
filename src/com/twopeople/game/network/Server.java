@@ -75,12 +75,20 @@ public class Server extends NetworkEntity {
 
     @Override
     public void disconnected(Connection c) {
+        users.remove(getClientById(c.getID()));
         server.sendToAllExceptUDP(c.getID(), new DisconnectionRequest(c.getID()));
     }
 
     private ClientInfo getByClientByName(String name) {
         for (ClientInfo c : users) {
             if (c.getNickname().equals(name)) { return c; }
+        }
+        return null;
+    }
+
+    private ClientInfo getClientById(int id) {
+        for (ClientInfo c : users) {
+            if (c.getConnection().getID()==id) { return c; }
         }
         return null;
     }
