@@ -60,12 +60,6 @@ public class Client extends NetworkEntity {
                     case RunningRequest.HEAD_DIRECTION:
                         listener.headingDirectionChanged(r.x, r.y, r.vx, r.vy, r.id);
                         break;
-                    case RunningRequest.END:
-                        listener.runningEnd(r.x, r.y, r.id);
-                        break;
-                    case RunningRequest.START:
-                        listener.runningStart(r.x, r.y, r.id);
-                        break;
                     case RunningRequest.SHOOT:
                         listener.shoot(r.x, r.y, r.vx, r.vy, r.id);
                         break;
@@ -74,8 +68,8 @@ public class Client extends NetworkEntity {
                 listener.disconnected(((DisconnectionRequest) o).userId);
             } else if (o instanceof UserResponse) {
                 listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
-            } else if(o instanceof EntityPacket) {
-                listener.addEntity(((EntityPacket)o).entity);
+            } else if (o instanceof EntityPacket) {
+                listener.addEntity(((EntityPacket) o).entity);
             }
         }
     }

@@ -9,10 +9,10 @@ public class UserResponse extends Packet {
     public String nickname;
     public int userId;
 
+    public UserResponse() {}
+
     public UserResponse(String name, int userId) {
         this.nickname = name;
         this.userId = userId;
     }
-
-    public UserResponse() {}
 }

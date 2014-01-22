@@ -9,9 +9,10 @@ import com.twopeople.game.Entity;
 
 public class EntityPacket extends Packet {
     public Entity entity;
+
     public EntityPacket() {}
+
     public EntityPacket(Entity e) {
         entity = e;
     }
-
 }

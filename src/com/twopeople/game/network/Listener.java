@@ -19,17 +19,13 @@ public interface Listener {
 
     public Entity[] getBullets();
 
-    public void runningStart(float x, float y, int id);
-
-    public void runningEnd(float x, float y, int id);
-
     public void movingDirectionChanged(float x, float y, float vx, float vy, int id);
 
     public void headingDirectionChanged(float x, float y, float vx, float vy, int id);
-    
+
     public void shoot(float x, float y, float vx, float vy, int shooterId);
 
     public void disconnected(int id);
 
-    void addEntity(Entity entity);
+    public void addEntity(Entity entity);
 }

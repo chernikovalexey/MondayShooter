@@ -19,12 +19,12 @@ public class Error extends Packet {
 
     public Error() {}
 
-    public static Error nicknameError()
-    {
+    public static Error nicknameError() {
         return new Error(NICKNAME_ERROR, "Nickname is not free. Choose another/");
     }
 
-    @Override public String toString() {
-        return "Error@#"+code+"|{"+message+"}";
+    @Override
+    public String toString() {
+        return "Error@#" + code + "|{" + message + "}";
     }
 }

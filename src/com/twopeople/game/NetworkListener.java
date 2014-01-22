@@ -74,18 +74,8 @@ public class NetworkListener implements Listener {
     }
 
     @Override
-    public void runningStart(float x, float y, int id) {
-    }
-
-    @Override
-    public void runningEnd(float x, float y, int id) {
-    }
-
-    @Override
     public void movingDirectionChanged(float x, float y, float vx, float vy, int id) {
         updateEntityState(id, x, y).setMovingVector(new Vector2f(vx, vy));
-
-        System.out.println("user " + id + " changed its direction: " + x + ", " + y);
     }
 
     @Override
