@@ -5,7 +5,7 @@ package com.twopeople.game.network.packet;
  * At 22:22 on 13.01.14
  */
 
-public class DisconnectionRequest {
+public class DisconnectionRequest extends Packet {
     public int userId;
 
     public DisconnectionRequest() {}

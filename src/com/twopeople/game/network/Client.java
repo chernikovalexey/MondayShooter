@@ -81,7 +81,7 @@ public class Client extends NetworkEntity {
     }
 
     public void sendEntity(Entity e) {
-        client.sendUDP(e);
+        client.sendUDP(new EntityPacket(e));
     }
 
     Entity[] getEntities() {

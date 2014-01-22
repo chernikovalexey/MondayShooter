@@ -43,6 +43,7 @@ public class Server extends NetworkEntity {
 
     @Override
     public void received(Connection c, Object o) {
+        System.out.println(o.getClass());
         if (o instanceof Packet) {
             Packet answer = null;
             if (o instanceof AuthRequest) {
@@ -62,11 +63,10 @@ public class Server extends NetworkEntity {
                 }
             } else if (o instanceof RunningRequest) {
                 answer = (RunningRequest) o;
+            }  else if (o instanceof EntityPacket) {//I don't what for.
+                answer = (Packet) o;
             }
-
             if (answer != null) { server.sendToAllExceptUDP(c.getID(), answer); }
-        } else if (o instanceof Entity) {//I don't what for.
-            server.sendToAllExceptUDP(c.getID() , new EntityPacket((Entity) o));
         }
     }
 
