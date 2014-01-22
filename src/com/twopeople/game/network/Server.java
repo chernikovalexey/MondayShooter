@@ -66,8 +66,7 @@ public class Server extends NetworkEntity {
 
             if (answer != null) { server.sendToAllExceptUDP(c.getID(), answer); }
         } else if (o instanceof Entity) {//I don't what for.
-            server.sendToAllExceptUDP(c.getID(), new EntityPacket((Entity) o));
-
+            server.sendToAllExceptUDP(c.getID() , new EntityPacket((Entity) o));
         }
     }
 
