@@ -5,6 +5,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -19,7 +20,7 @@ public class World {
     private Random random = new Random();
 
     private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
-    private HashMap<Integer, Entity> bullets = new HashMap<Integer, Entity>();
+    private ArrayList<Entity> bullets = new ArrayList<Entity>();
 
     public World(GameState game) {
         this.game = game;
@@ -35,7 +36,7 @@ public class World {
         }
 
         synchronized (bullets) {
-            updateFromIterator(gameContainer, delta, bullets.values().iterator());
+            updateFromIterator(gameContainer, delta, bullets.iterator());
         }
     }
 
@@ -55,7 +56,7 @@ public class World {
         }
 
         synchronized (bullets) {
-            renderFromIterator(gameContainer, g, bullets.values().iterator());
+            renderFromIterator(gameContainer, g, bullets.iterator());
         }
 
         g.setColor(Color.white);
@@ -91,7 +92,7 @@ public class World {
     public void addBullet(float x, float y, int owner, Vector2f direction, boolean fromReceiver) {
         Bullet bullet = new Bullet(this, x, y, direction);
         bullet.setOwner(owner);
-        bullets.put(bullet.getId(), bullet);
+        bullets.add(bullet);
 
         if (!fromReceiver) {
             getGame().getClient().shoot(bullet);
@@ -105,7 +106,7 @@ public class World {
         return entities;
     }
 
-    public HashMap<Integer, Entity> getBullets() {
+    public ArrayList<Entity> getBullets() {
         return bullets;
     }
 

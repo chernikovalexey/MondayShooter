@@ -42,6 +42,8 @@ public class NetworkListener implements Listener {
 
     @Override
     public void addEntity(Entity entity) {
+        System.out.println("Add entity");
+        entity.setWorld(world);
         world.addEntity(entity, true);
     }
 
@@ -62,7 +64,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public Entity[] getBullets() {
-        return world.getBullets().values().toArray(new Bullet[]{});
+        return world.getBullets().toArray(new Bullet[]{});
     }
 
     @Override
@@ -75,17 +77,19 @@ public class NetworkListener implements Listener {
 
     @Override
     public void movingDirectionChanged(float x, float y, float vx, float vy, int id) {
+        System.out.println("user " + id + " changed its direction: " + x + ", " + y);
     }
 
     @Override
     public void headingDirectionChanged(float x, float y, float vx, float vy, int id) {
-        System.out.println("Heading direction changed for " + id);
+//        System.out.println("Heading direction changed for " + id);
         Entity entity = world.getEntities().get(id);
         entity.setHeadingVector(new Vector2f(vx, vy));
     }
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
+        System.out.println("Add bullet:");
         world.addBullet(x, y, shooterId, new Vector2f(vx, vy), true);
     }
 

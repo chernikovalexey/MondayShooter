@@ -1,9 +1,13 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.twopeople.game.Entity;
-import com.twopeople.game.network.packet.*;
-
+import com.twopeople.game.network.packet.AuthRequest;
+import com.twopeople.game.network.packet.AuthResponse;
+import com.twopeople.game.network.packet.DisconnectionRequest;
+import com.twopeople.game.network.packet.EntityPacket;
+import com.twopeople.game.network.packet.Packet;
+import com.twopeople.game.network.packet.RunningRequest;
+import com.twopeople.game.network.packet.UserResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +47,6 @@ public class Server extends NetworkEntity {
 
     @Override
     public void received(Connection c, Object o) {
-        System.out.println(o.getClass());
         if (o instanceof Packet) {
             Packet answer = null;
             if (o instanceof AuthRequest) {
@@ -63,7 +66,7 @@ public class Server extends NetworkEntity {
                 }
             } else if (o instanceof RunningRequest) {
                 answer = (RunningRequest) o;
-            }  else if (o instanceof EntityPacket) {//I don't what for.
+            } else if (o instanceof EntityPacket) {//I don't what for.
                 answer = (Packet) o;
             }
             if (answer != null) { server.sendToAllExceptUDP(c.getID(), answer); }

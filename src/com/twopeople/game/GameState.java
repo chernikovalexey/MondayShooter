@@ -42,7 +42,7 @@ public class GameState extends BasicGameState {
             client.connect("localhost", "server user");
             connected = true;
         } else if (action.equals("c")) {
-            client.connect(Console.readString("IP: "), "client user");
+            client.connect("localhost", "client user");
             connected = true;
         }
     }
