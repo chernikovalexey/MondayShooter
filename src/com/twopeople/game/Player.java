@@ -63,7 +63,7 @@ public class Player extends Entity {
                 lastShootTime = currentShootTime;
                 Vector2f heading = getHeadingVector();
                 double angle = Math.atan2(heading.y, heading.x);
-                world.addBullet(getX(), getY(), getId(), new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
+                world.addBullet(getX(), getY(), this, new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
             }
         }
     }

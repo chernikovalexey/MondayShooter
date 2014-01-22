@@ -89,18 +89,34 @@ public class World {
         addEntity(player, fromReceiver);
     }
 
-    public void addBullet(float x, float y, int owner, Vector2f direction, boolean fromReceiver) {
+    public void addBullet(float x, float y, Entity shooter, Vector2f direction, boolean fromReceiver) {
         Bullet bullet = new Bullet(this, x, y, direction);
-        bullet.setOwner(owner);
+        bullet.setOwner(shooter.getId());
         bullets.add(bullet);
 
         if (!fromReceiver) {
-            getGame().getClient().shoot(bullet);
+            getGame().getClient().shoot(shooter);
         }
     }
 
     // =======
     // Getters
+
+    public Entity getEntityById(int id) {
+        return entities.get(id);
+    }
+
+    public void removeEntityById(int id) {
+        entities.remove(id);
+
+        Iterator<Entity> it = bullets.iterator();
+        while (it.hasNext()) {
+            Entity bullet = it.next();
+            if (bullet.getOwner() == id) {
+                it.remove();
+            }
+        }
+    }
 
     public HashMap<Integer, Entity> getEntities() {
         return entities;

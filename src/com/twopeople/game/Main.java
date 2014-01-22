@@ -25,6 +25,7 @@ public class Main {
         try {
             AppGameContainer game = new AppGameContainer(new GameController());
             game.setDisplayMode(WIDTH, HEIGHT, false);
+            game.setAlwaysRender(true);
             game.start();
         } catch (SlickException e) {
             e.printStackTrace();

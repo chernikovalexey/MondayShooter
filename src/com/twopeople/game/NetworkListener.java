@@ -33,7 +33,7 @@ public class NetworkListener implements Listener {
             for (int i = 0, len = response.bullets.length; i < len; ++i) {
                 Bullet bullet = (Bullet) response.bullets[i];
                 bullet.setWorld(world);
-                world.addBullet(bullet.getX(), bullet.getY(), bullet.getOwner(), bullet.getMovingVector(), true);
+                world.addBullet(bullet.getX(), bullet.getY(), world.getEntityById(bullet.getOwner()), bullet.getMovingVector(), true);
             }
         }
 
@@ -42,7 +42,6 @@ public class NetworkListener implements Listener {
 
     @Override
     public void addEntity(Entity entity) {
-        System.out.println("Add entity");
         entity.setWorld(world);
         world.addEntity(entity, true);
     }
@@ -50,7 +49,7 @@ public class NetworkListener implements Listener {
     @Override
     public void playerConnected(int id, String nickname) {
         Entity.serialId = id;
-        System.out.println("Player " + id + " joined!");
+//        System.out.println("Player " + id + " joined!");
     }
 
     @Override
@@ -67,6 +66,13 @@ public class NetworkListener implements Listener {
         return world.getBullets().toArray(new Bullet[]{});
     }
 
+    private Entity updateEntityState(int id, float x, float y) {
+        Entity entity = world.getEntityById(id);
+        entity.setX(x);
+        entity.setY(y);
+        return entity;
+    }
+
     @Override
     public void runningStart(float x, float y, int id) {
     }
@@ -77,23 +83,23 @@ public class NetworkListener implements Listener {
 
     @Override
     public void movingDirectionChanged(float x, float y, float vx, float vy, int id) {
+        updateEntityState(id, x, y).setMovingVector(new Vector2f(vx, vy));
+
         System.out.println("user " + id + " changed its direction: " + x + ", " + y);
     }
 
     @Override
     public void headingDirectionChanged(float x, float y, float vx, float vy, int id) {
-//        System.out.println("Heading direction changed for " + id);
-        Entity entity = world.getEntities().get(id);
-        entity.setHeadingVector(new Vector2f(vx, vy));
+        updateEntityState(id, x, y).setHeadingVector(new Vector2f(vx, vy));
     }
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
-        System.out.println("Add bullet:");
-        world.addBullet(x, y, shooterId, new Vector2f(vx, vy), true);
+        world.addBullet(x, y, world.getEntityById(shooterId), new Vector2f(vx, vy), true);
     }
 
     @Override
     public void disconnected(int id) {
+        world.removeEntityById(id);
     }
 }
