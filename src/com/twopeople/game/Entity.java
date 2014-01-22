@@ -59,8 +59,8 @@ public class Entity {
         velocity.x = accelerationX * delta;
         velocity.y = accelerationZ * delta;
 
-        x += velocity.x * delta * 0.001f * 20;
-        y += velocity.y * delta * 0.001f * 20;
+        x += velocity.x * delta * 0.0001f * 20;
+        y += velocity.y * delta * 0.0001f * 20;
     }
 
     public void render(GameContainer container, Graphics g) {

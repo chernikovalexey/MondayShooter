@@ -20,7 +20,7 @@ public class Bullet extends Entity {
     public Bullet(World world, float x, float y, Vector2f movingDirection) {
         super(world, x, y, WIDTH, HEIGHT);
         this.movingDirection = movingDirection;
-        setSpeed(6f);
+        setSpeed(5f);
 
         // Does not affect the global serial ID
         --Entity.serialId;
