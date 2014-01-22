@@ -46,8 +46,7 @@ public class Entity {
     }
 
     public void init() {
-        id = ++serialId;
-        //        System.out.println("Initialized an entity with id=" + id);
+        id = serialId++;
     }
 
     public void update(GameContainer container, int delta) {

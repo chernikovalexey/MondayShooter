@@ -41,6 +41,7 @@ public class World {
     }
 
     public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it) {
+//        System.out.println(entities.keySet().toString());
         while (it.hasNext()) {
             Entity entity = it.next();
             entity.update(container, delta);
@@ -82,7 +83,7 @@ public class World {
             getGame().getClient().sendEntity(entity);
         }
 
-        //        System.out.println("Added entity(id=" + entity.getId() + ").");
+        System.out.println("Added entity(id=" + entity.getId() + ").");
     }
 
     public void addPlayer(int userId, float x, float y, boolean fromReceiver) {
