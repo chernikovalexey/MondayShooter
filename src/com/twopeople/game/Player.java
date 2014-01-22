@@ -33,7 +33,7 @@ public class Player extends Entity {
         super.update(container, delta);
         movingDirection.set(0f, 0f);
 
-        if (getId() == world.getGame().getUserId()) {
+        if (isControllable()) {
             boolean isMoving = false;
             updateDirectionToPoint(input.getMouseX(), input.getMouseY());
 
@@ -73,6 +73,10 @@ public class Player extends Entity {
         g.setColor(Color.green);
         g.fillRect(getX(), getY(), getWidth(), getHeight());
         g.setColor(Color.white);
-        g.drawString("" + getHeadingVector().x, getX() + 5, getY() + 15);
+        g.drawString(isControllable() ? "c" : "", getX() + 5, getY() + 15);
+    }
+
+    public boolean isControllable() {
+        return getId() == world.getGame().getUserId();
     }
 }
