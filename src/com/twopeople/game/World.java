@@ -74,11 +74,15 @@ public class World {
     // Utilities
 
     public void addEntity(Entity entity, boolean fromReceiver) {
-        entities.put(entity.getId(), entity);
+        synchronized (entities) {
+            entities.put(entity.getId(), entity);
+        }
+
         if (!fromReceiver) {
             getGame().getClient().sendEntity(entity);
         }
-        System.out.println("Added entity(id=" + entity.getId() + ").");
+
+        //        System.out.println("Added entity(id=" + entity.getId() + ").");
     }
 
     public void addPlayer(int userId, float x, float y, boolean fromReceiver) {
@@ -92,7 +96,10 @@ public class World {
     public void addBullet(float x, float y, Entity shooter, Vector2f direction, boolean fromReceiver) {
         Bullet bullet = new Bullet(this, x, y, direction);
         bullet.setOwner(shooter.getId());
-        bullets.add(bullet);
+
+        synchronized (bullets) {
+            bullets.add(bullet);
+        }
 
         if (!fromReceiver) {
             getGame().getClient().shoot(shooter);
@@ -109,11 +116,13 @@ public class World {
     public void removeEntityById(int id) {
         entities.remove(id);
 
-        Iterator<Entity> it = bullets.iterator();
-        while (it.hasNext()) {
-            Entity bullet = it.next();
-            if (bullet.getOwner() == id) {
-                it.remove();
+        synchronized (bullets) {
+            Iterator<Entity> it = bullets.iterator();
+            while (it.hasNext()) {
+                Entity bullet = it.next();
+                if (bullet.getOwner() == id) {
+                    it.remove();
+                }
             }
         }
     }
