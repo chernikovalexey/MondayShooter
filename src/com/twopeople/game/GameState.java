@@ -15,6 +15,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 
 public class GameState extends BasicGameState {
+    private Camera camera;
     private World world;
 
     private Server server;
@@ -29,6 +30,7 @@ public class GameState extends BasicGameState {
 
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
+        camera = new Camera(gameContainer);
         world = new World(this);
 
         String action = Console.readString("s/c: ");
@@ -48,9 +50,10 @@ public class GameState extends BasicGameState {
     }
 
     @Override
-    public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int i) throws SlickException {
+    public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int delta) throws SlickException {
         if (connected) {
-            world.update(gameContainer, i);
+            camera.update(delta);
+            world.update(gameContainer, delta);
         }
     }
 
@@ -61,6 +64,7 @@ public class GameState extends BasicGameState {
 
             g.setColor(Color.white);
             g.drawString(isServer() ? "Server" : "Client", 10, 50);
+            g.drawString(camera.x + ", " + camera.y, 10, 70);
         }
     }
 
@@ -78,6 +82,10 @@ public class GameState extends BasicGameState {
 
     public int getUserId() {
         return userId;
+    }
+
+    public Camera getCamera() {
+        return camera;
     }
 
     public Client getClient() {

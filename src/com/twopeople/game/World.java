@@ -16,6 +16,11 @@ import java.util.Random;
  */
 
 public class World {
+    public static final int TILE_WIDTH = 32;
+    public static final int TILE_HEIGHT = 15;
+    public static final int TILES_X = 128;
+    public static final int TILES_Y = 128;
+
     private GameState game;
     private Random random = new Random();
 
@@ -27,7 +32,8 @@ public class World {
     }
 
     public void init() {
-        addPlayer(-1, random.nextInt(600), random.nextInt(400), false);
+        Player player = addPlayer(-1, random.nextInt(TILES_X / 2) * TILE_WIDTH/3, random.nextInt(TILES_Y - TILES_Y / 7) * TILE_HEIGHT/3, false);
+        game.getCamera().alignCenterOn(player);
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -41,7 +47,6 @@ public class World {
     }
 
     public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it) {
-//        System.out.println(entities.keySet().toString());
         while (it.hasNext()) {
             Entity entity = it.next();
             entity.update(container, delta);
@@ -52,6 +57,24 @@ public class World {
     }
 
     public void render(GameContainer gameContainer, Graphics g) {
+        Camera camera = game.getCamera();
+
+        g.scale(3f, 3f);
+
+        for (int x = 0; x < TILES_X; ++x) {
+            for (int y = 0; y < TILES_Y; ++y) {
+                int xt = x + (y >> 1) + y & 1;
+                int yt = (y >> 1) - x;
+
+                float tileX = x * TILE_WIDTH;
+                float tileY = y * TILE_HEIGHT;
+
+                if (game.getCamera().isVisible(tileX, tileY, TILE_WIDTH, TILE_HEIGHT)) {
+                    g.drawImage(Images.tiles.getSprite(((yt ^ xt) & 1) == 0 ? 0 : 1, 0), camera.getX(tileX + (y & 1) * TILE_WIDTH / 2), camera.getY(tileY - y * 7));
+                }
+            }
+        }
+
         synchronized (entities) {
             renderFromIterator(gameContainer, g, entities.values().iterator());
         }
@@ -60,6 +83,8 @@ public class World {
             renderFromIterator(gameContainer, g, bullets.iterator());
         }
 
+        g.scale(0.35f, 0.35f);
+
         g.setColor(Color.white);
         g.drawString("bullets=" + bullets.size(), 10, 30);
     }
@@ -67,14 +92,14 @@ public class World {
     public void renderFromIterator(GameContainer container, Graphics g, Iterator<Entity> it) {
         while (it.hasNext()) {
             Entity entity = it.next();
-            entity.render(container, g);
+            entity.render(container, game.getCamera(), g);
         }
     }
 
     // =========
     // Utilities
 
-    public void addEntity(Entity entity, boolean fromReceiver) {
+    public Entity addEntity(Entity entity, boolean fromReceiver) {
         synchronized (entities) {
             entities.put(entity.getId(), entity);
         }
@@ -83,15 +108,16 @@ public class World {
             getGame().getClient().sendEntity(entity);
         }
 
-        System.out.println("Added entity(id=" + entity.getId() + ").");
+        return entity;
     }
 
-    public void addPlayer(int userId, float x, float y, boolean fromReceiver) {
+    public Player addPlayer(int userId, float x, float y, boolean fromReceiver) {
         Player player = new Player(this, x, y);
         if (userId != -1) {
             player.setId(userId);
         }
         addEntity(player, fromReceiver);
+        return player;
     }
 
     public void addBullet(float x, float y, Entity shooter, Vector2f direction, boolean fromReceiver) {

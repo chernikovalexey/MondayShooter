@@ -1,8 +1,11 @@
 package com.twopeople.game;
 
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -31,6 +34,9 @@ public class Entity {
             new Vector2f(-135), new Vector2f(-45),
             new Vector2f(135), new Vector2f(45)
     };
+
+    protected int currentAnimationState;
+    protected Animation[] animations = new Animation[8];
 
     public Entity() {
         init();
@@ -62,7 +68,7 @@ public class Entity {
         y += velocity.y * delta * 0.0001f * 20;
     }
 
-    public void render(GameContainer container, Graphics g) {
+    public void render(GameContainer container, Camera camera, Graphics g) {
     }
 
     private void updateDirection(float dx, float dy) {
@@ -75,13 +81,12 @@ public class Entity {
             world.getGame().getClient().headDirectionChange(this);
         }
 
-        float theta;
         float minTheta = 360f;
         for (int i = 0, len = directions.length; i < len; ++i) {
-            theta = Vector3f.angle(new Vector3f(headingDirection.x, 0, headingDirection.y), new Vector3f(directions[i].x, 0, directions[i].y));
+            float theta = Vector3f.angle(new Vector3f(headingDirection.x, 0, headingDirection.y), new Vector3f(directions[i].x, 0, directions[i].y));
             if (theta < minTheta) {
                 minTheta = theta;
-                //currentAnimationState = i;
+                currentAnimationState = i;
             }
         }
     }
@@ -89,6 +94,37 @@ public class Entity {
     public void updateDirectionToPoint(float dx, float dy) {
         Vector2f newDirection = (new Vector2f(dx - x, dy - y)).normalise();
         updateDirection(newDirection.x, newDirection.y);
+    }
+
+    public void loadAnimations(SpriteSheet sprite) {
+        Image[] up = new Image[3];
+        Image[] down = new Image[3];
+        Image[] left = new Image[3];
+        Image[] right = new Image[3];
+        Image[] upLeft = new Image[3];
+        Image[] upRight = new Image[3];
+        Image[] downLeft = new Image[3];
+        Image[] downRight = new Image[3];
+
+        for (int i = 0; i < 3; ++i) {
+            up[i] = sprite.getSprite(i, 0);
+            down[i] = sprite.getSprite(i, 4);
+            left[i] = sprite.getSprite(i, 2);
+            right[i] = left[i].getFlippedCopy(true, false);
+            upLeft[i] = sprite.getSprite(i, 1);
+            upRight[i] = upLeft[i].getFlippedCopy(true, false);
+            downLeft[i] = sprite.getSprite(i, 3);
+            downRight[i] = downLeft[i].getFlippedCopy(true, false);
+        }
+
+        animations[0] = new Animation(up, 200, true);
+        animations[1] = new Animation(right, 200, true);
+        animations[2] = new Animation(down, 200, true);
+        animations[3] = new Animation(left, 200, true);
+        animations[4] = new Animation(upLeft, 200, true);
+        animations[5] = new Animation(upRight, 200, true);
+        animations[6] = new Animation(downLeft, 200, true);
+        animations[7] = new Animation(downRight, 200, true);
     }
 
     public Shape getBB() {
@@ -168,6 +204,7 @@ public class Entity {
 
     public void setHeadingVector(Vector2f heading) {
         this.headingDirection = heading;
+        updateDirection(heading.x, heading.y);
     }
 
     public Vector2f getMovingVector() {

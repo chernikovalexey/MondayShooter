@@ -1,6 +1,5 @@
 package com.twopeople.game;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -23,7 +22,8 @@ public class Player extends Entity {
     public Player(World world, float x, float y) {
         super(world, x, y, WIDTH, HEIGHT);
 
-        setSpeed(5f);
+        setSpeed(2.1f);
+        loadAnimations(Images.player);
     }
 
     @Override
@@ -56,6 +56,7 @@ public class Player extends Entity {
 
             if (isMoving) {
                 world.getGame().getClient().directionChange(this);
+                world.getGame().getCamera().alignCenterOn(this);
             }
 
             long currentShootTime = System.currentTimeMillis();
@@ -69,11 +70,12 @@ public class Player extends Entity {
     }
 
     @Override
-    public void render(GameContainer container, Graphics g) {
-        g.setColor(Color.green);
-        g.fillRect(getX(), getY(), getWidth(), getHeight());
-        g.setColor(Color.white);
-        g.drawString(isControllable() ? "c" : "", getX() + 5, getY() + 15);
+    public void render(GameContainer container, Camera camera, Graphics g) {
+        g.drawImage(animations[currentAnimationState].getCurrentFrame(),camera.getX(getX()), camera.getY(getY()));
+        //        g.setColor(Color.green);
+        //        g.fillRect(camera.getX(getX()), camera.getY(getY()), getWidth(), getHeight());
+        //        g.setColor(Color.white);
+        //        g.drawString(isControllable() ? "c" : "", camera.getX(getX() + 5), camera.getY(getY() + 15));
     }
 
     public boolean isControllable() {

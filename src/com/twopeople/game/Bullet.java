@@ -35,8 +35,8 @@ public class Bullet extends Entity {
         }
     }
 
-    public void render(GameContainer container, Graphics g) {
+    public void render(GameContainer container, Camera camera, Graphics g) {
         g.setColor(Color.pink);
-        g.fillOval(getX(), getY(), getWidth(), getHeight());
+        g.fillOval(camera.getX(getX()), camera.getY(getY()), getWidth(), getHeight());
     }
 }

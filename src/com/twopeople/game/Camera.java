@@ -1,0 +1,49 @@
+package com.twopeople.game;
+
+import org.newdawn.slick.GameContainer;
+
+/**
+ * Created by Alexey
+ * At 7:51 PM on 1/24/14
+ */
+
+public class Camera {
+    private GameContainer container;
+
+    private float targetX, targetY;
+    public float x, y;
+
+    public Camera(GameContainer container) {
+        this.container = container;
+    }
+
+    public void update(int delta) {
+        x += (targetX - x);
+        y += (targetY - y);
+    }
+
+    public void setTargetX(float targetX) {
+        this.targetX = targetX;
+    }
+
+    public void setTargetY(float targetY) {
+        this.targetY = targetY;
+    }
+
+    public boolean isVisible(float ox, float oy, float width, float height) {
+        return ox + width * 6 >= x && oy + height * 6 >= y && ox - width * 6 <= x + container.getWidth() && oy - height *6 <= y + container.getHeight();
+    }
+
+    public void alignCenterOn(Entity entity) {
+        setTargetX(entity.getX() - container.getWidth() / 6 + entity.getWidth());
+        setTargetY(entity.getY() - container.getHeight() / 6 + entity.getHeight());
+    }
+
+    public float getX(float ex) {
+        return ex - this.x;
+    }
+
+    public float getY(float ey) {
+        return ey - this.y;
+    }
+}
