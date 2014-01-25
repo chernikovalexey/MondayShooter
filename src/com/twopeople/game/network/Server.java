@@ -59,7 +59,7 @@ public class Server extends NetworkEntity {
 
                     c.sendUDP(answer);
                     server.sendToAllExceptUDP(c.getID(), new UserResponse(r.nickname, c.getID()));
-                    c.sendUDP(2);
+                    return;
                 } else {
                     answer = Error.nicknameError();
                     System.out.print(answer);
