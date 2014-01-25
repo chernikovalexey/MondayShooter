@@ -7,6 +7,12 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.particles.ConfigurableEmitter;
+import org.newdawn.slick.particles.ParticleIO;
+import org.newdawn.slick.particles.ParticleSystem;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Alexey
@@ -18,6 +24,8 @@ public class Player extends Entity {
     public static final float HEIGHT = 16;
 
     private long lastShootTime = System.currentTimeMillis();
+
+    private ParticleSystem ps;
 
     public Player() {
         loadAnimations(Images.player);
@@ -59,6 +67,23 @@ public class Player extends Entity {
                 isMoving = true;
             }
 
+            if (input.isKeyDown(Input.KEY_P)) {
+                ps = new ParticleSystem("res/particle.png", 200);
+                File file = new File("res/particle.xml");
+                ConfigurableEmitter emitter = null;
+                try {
+                    emitter = ParticleIO.loadEmitter(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                emitter.setPosition(world.getGame().getCamera().getX(getX()), world.getGame().getCamera().getY(getY()));
+                ps.addEmitter(emitter);
+            }
+
+            if (ps != null) {
+                ps.update(delta);
+            }
+
             if (isMoving) {
                 world.getGame().getClient().directionChange(this);
                 world.getGame().getCamera().alignCenterOn(this);
@@ -90,6 +115,10 @@ public class Player extends Entity {
         }
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(getX()), camera.getY(getY()));
+
+        if (ps != null) {
+            ps.render();
+        }
     }
 
     public Shape getBB() {
