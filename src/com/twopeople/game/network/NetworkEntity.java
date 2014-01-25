@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.twopeople.game.Bullet;
 import com.twopeople.game.Entity;
 import com.twopeople.game.Player;
+import com.twopeople.game.Wall;
 import com.twopeople.game.network.packet.AuthRequest;
 import com.twopeople.game.network.packet.AuthResponse;
 import com.twopeople.game.network.packet.DisconnectionRequest;
@@ -31,6 +32,7 @@ public class NetworkEntity extends com.esotericsoftware.kryonet.Listener {
         kryo.register(Entity.class);
         kryo.register(Player.class);
         kryo.register(Bullet.class);
+        kryo.register(Wall.class);
         kryo.register(Bullet[].class);
         kryo.register(Entity[].class);
         kryo.register(Vector2f.class);

@@ -59,7 +59,7 @@ public class Server extends NetworkEntity {
 
                     c.sendUDP(answer);
                     server.sendToAllExceptUDP(c.getID(), new UserResponse(r.nickname, c.getID()));
-                    return;
+                    c.sendUDP(2);
                 } else {
                     answer = Error.nicknameError();
                     System.out.print(answer);
@@ -69,26 +69,23 @@ public class Server extends NetworkEntity {
             } else if (o instanceof EntityPacket) {//I don't what for.
                 answer = (Packet) o;
             }
+
+
+
             if (answer != null) { server.sendToAllExceptUDP(c.getID(), answer); }
         }
     }
 
     @Override
     public void disconnected(Connection c) {
-        users.remove(getClientById(c.getID()));
+        System.out.println("Disconnected");
         server.sendToAllExceptUDP(c.getID(), new DisconnectionRequest(c.getID()));
+        c.close();
     }
 
     private ClientInfo getByClientByName(String name) {
         for (ClientInfo c : users) {
             if (c.getNickname().equals(name)) { return c; }
-        }
-        return null;
-    }
-
-    private ClientInfo getClientById(int id) {
-        for (ClientInfo c : users) {
-            if (c.getConnection().getID()==id) { return c; }
         }
         return null;
     }

@@ -17,9 +17,10 @@ import java.io.IOException;
  * At 17:41 on 13.01.14
  */
 
-public class Client extends NetworkEntity {
+public class Client extends NetworkEntity implements Runnable {
     private com.esotericsoftware.kryonet.Client client;
     private Listener listener;
+    private String ip, nickname;
 
     public Client(Listener listener) {
         this.listener = listener;
@@ -29,21 +30,19 @@ public class Client extends NetworkEntity {
     }
 
     public void connect(String ip, String nickname) {
-        client.start();
-        try {
-            client.connect(250, ip, TCP_PORT, UDP_PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        client.sendUDP(new AuthRequest(nickname));
+        this.ip = ip;
+        this.nickname = nickname;
+        new Thread(this).start();
     }
 
     @Override
     public void received(Connection c, Object o) {
         if (o instanceof Packet) {
             if (o instanceof AuthResponse) {
+
+
                 listener.connectionSuccess((AuthResponse) o);
+
             } else if (o instanceof Error) {
                 Error e = (Error) o;
                 switch (e.code) {
@@ -68,8 +67,8 @@ public class Client extends NetworkEntity {
                 listener.disconnected(((DisconnectionRequest) o).userId);
             } else if (o instanceof UserResponse) {
                 listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
-            } else if (o instanceof EntityPacket) {
-                listener.addEntity(((EntityPacket) o).entity);
+            } else if(o instanceof EntityPacket) {
+                listener.addEntity(((EntityPacket)o).entity);
             }
         }
     }
@@ -104,5 +103,16 @@ public class Client extends NetworkEntity {
 
     public void shoot(Entity shooter) {
         client.sendUDP(new RunningRequest(shooter, RunningRequest.SHOOT));
+    }
+
+    @Override
+    public void run() {
+        client.start();
+        try {
+            client.connect(5000, ip, TCP_PORT, UDP_PORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        client.sendUDP(new AuthRequest(nickname));
     }
 }
