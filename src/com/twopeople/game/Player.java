@@ -24,7 +24,7 @@ public class Player extends Entity {
     }
 
     public Player(float x, float y) {
-        super(x, y, WIDTH, HEIGHT,true);
+        super(x, y, WIDTH, HEIGHT, true);
 
         setLayer(1);
         setSpeed(2.1f);

@@ -118,8 +118,8 @@ public class Entity {
     }
 
     public void updateDirectionToPoint(float dx, float dy) {
-        //System.out.println("to point: " + dx+ ", " +dy);
-        Vector2f newDirection = (new Vector2f(dx - x, dy - y)).normalise();
+        Camera camera = world.getGame().getCamera();
+        Vector2f newDirection = (new Vector2f(dx - camera.getX(x), dy - camera.getY(y))).normalise();
         updateDirection(newDirection.x, newDirection.y);
     }
 
