@@ -20,6 +20,7 @@ public class Player extends Entity {
     private long lastShootTime = System.currentTimeMillis();
 
     public Player() {
+        loadAnimations(Images.player);
     }
 
     public Player(float x, float y) {
