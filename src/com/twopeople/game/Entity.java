@@ -74,10 +74,10 @@ public class Entity {
         for (Entity e : entities) {
             if (this.collidesWith(e) && !e.equals(this)) {
                 bumpedInto(e);
-                System.out.println("Colliding position x: " + x);
+                //System.out.println("Colliding position x: " + x);
                 while (e.collidesWith(this)) {
                     x -= (velocity.x * delta * 0.0001f * 20) / 10;
-                    System.out.println("Reducing x: " + x + " (" + ((velocity.x * delta * 0.0001f * 20) / 10) + ")");
+                    //System.out.println("Reducing x: " + x + " (" + ((velocity.x * delta * 0.0001f * 20) / 10) + ")");
                 }
             }
         }
