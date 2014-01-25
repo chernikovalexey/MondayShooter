@@ -42,14 +42,12 @@ public class NetworkListener implements Listener {
 
     @Override
     public void addEntity(Entity entity) {
-        entity.setWorld(world);
         world.addEntity(entity, true);
     }
 
     @Override
     public void playerConnected(int id, String nickname) {
         Entity.serialId = id;
-//        System.out.println("Player " + id + " joined!");
     }
 
     @Override

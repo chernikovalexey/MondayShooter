@@ -18,19 +18,16 @@ public class Bullet extends Entity {
     }
 
     public Bullet(World world, float x, float y, Vector2f movingDirection) {
-        super(world, x, y, WIDTH, HEIGHT);
+        super(x, y, WIDTH, HEIGHT, false);
         this.movingDirection = movingDirection;
         setSpeed(5f);
-
-        // Does not affect the global serial ID
-        --Entity.serialId;
-        setId(0);
+        setWorld(world);
     }
 
     public void update(GameContainer container, int delta) {
         super.update(container, delta);
 
-        if (getX() < 0 || getX() > container.getWidth() || getY() < 0 || getY() > container.getHeight()) {
+        if (world.ranOut(this)) {
             remove = true;
         }
     }
@@ -38,5 +35,18 @@ public class Bullet extends Entity {
     public void render(GameContainer container, Camera camera, Graphics g) {
         g.setColor(Color.pink);
         g.fillOval(camera.getX(getX()), camera.getY(getY()), getWidth(), getHeight());
+    }
+
+    public boolean collidesWith(Entity entity) {
+        if (entity instanceof Player && entity.getId() == getOwner()) {
+            return false;
+        }
+        return super.collidesWith(entity);
+    }
+
+    public void bumpedInto(Entity entity) {
+        remove = true;
+
+        System.out.println("Bullet hit " + entity);
     }
 }

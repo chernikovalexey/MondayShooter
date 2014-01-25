@@ -10,6 +10,8 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
+import java.util.Collection;
+
 public class Entity {
     public static int serialId;
 
@@ -17,6 +19,7 @@ public class Entity {
 
     private int id;
     private int owner;
+    private int layer;
 
     private float x, y;
     private float width, height;
@@ -36,23 +39,23 @@ public class Entity {
     };
 
     protected int currentAnimationState;
-    protected Animation[] animations = new Animation[8];
+    protected transient Animation[] animations = new Animation[8];
 
     public Entity() {
-        init();
     }
 
-    public Entity(World world, float x, float y, float width, float height) {
-        this.world = world;
+    public Entity(float x, float y, float width, float height, boolean hasId) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        init();
+        init(hasId);
     }
 
-    public void init() {
-        id = serialId++;
+    public void init(boolean hasId) {
+        if (hasId) {
+            id = serialId++;
+        }
     }
 
     public void update(GameContainer container, int delta) {
@@ -64,8 +67,31 @@ public class Entity {
         velocity.x = accelerationX * delta;
         velocity.y = accelerationZ * delta;
 
+        Collection<Entity> entities = world.getEntities().values();
+
         x += velocity.x * delta * 0.0001f * 20;
+
+        for (Entity e : entities) {
+            if (this.collidesWith(e) && !e.equals(this)) {
+                bumpedInto(e);
+                System.out.println("Colliding position x: " + x);
+                while (e.collidesWith(this)) {
+                    x -= (velocity.x * delta * 0.0001f * 20) / 10;
+                    System.out.println("Reducing x: " + x + " (" + ((velocity.x * delta * 0.0001f * 20) / 10) + ")");
+                }
+            }
+        }
+
         y += velocity.y * delta * 0.0001f * 20;
+
+        for (Entity e : entities) {
+            if (this.collidesWith(e) && !e.equals(this)) {
+                bumpedInto(e);
+                while (e.collidesWith(this)) {
+                    y -= (velocity.y * delta * 0.0001f * 20) / 10;
+                }
+            }
+        }
     }
 
     public void render(GameContainer container, Camera camera, Graphics g) {
@@ -92,6 +118,7 @@ public class Entity {
     }
 
     public void updateDirectionToPoint(float dx, float dy) {
+        //System.out.println("to point: " + dx+ ", " +dy);
         Vector2f newDirection = (new Vector2f(dx - x, dy - y)).normalise();
         updateDirection(newDirection.x, newDirection.y);
     }
@@ -131,9 +158,22 @@ public class Entity {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
-    public boolean intersects(Shape shape) {
-        return shape.intersects(getBB());
+    public Shape[] getSkeleton() {
+        return new Shape[]{getBB()};
     }
+
+    public boolean collidesWith(Entity entity) {
+        for (Shape shape1 : getSkeleton()) {
+            for (Shape shape2 : entity.getSkeleton()) {
+                if (shape1.intersects(shape2)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public void bumpedInto(Entity entity) {}
 
     public boolean seeksForRemoval() {
         return remove;
@@ -215,7 +255,19 @@ public class Entity {
         this.movingDirection = moving;
     }
 
+    public boolean hasWorld() {
+        return world != null;
+    }
+
     public void setWorld(World world) {
         this.world = world;
+    }
+
+    public int getLayer() {
+        return layer;
+    }
+
+    public void setLayer(int layer) {
+        this.layer = layer;
     }
 }

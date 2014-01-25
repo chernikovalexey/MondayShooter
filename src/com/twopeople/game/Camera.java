@@ -31,12 +31,12 @@ public class Camera {
     }
 
     public boolean isVisible(float ox, float oy, float width, float height) {
-        return ox + width * 6 >= x && oy + height * 6 >= y && ox - width * 6 <= x + container.getWidth() && oy - height *6 <= y + container.getHeight();
+        return ox + width * 2 >= x && oy + height * 2 >= y && ox - width * 2 <= x + container.getWidth() && oy - height * 2 <= y + container.getHeight();
     }
 
     public void alignCenterOn(Entity entity) {
-        setTargetX(entity.getX() - container.getWidth() / 6 + entity.getWidth());
-        setTargetY(entity.getY() - container.getHeight() / 6 + entity.getHeight());
+        setTargetX(entity.getX() - container.getWidth() / 2 + entity.getWidth());
+        setTargetY(entity.getY() - container.getHeight() / 2 + entity.getHeight());
     }
 
     public float getX(float ex) {
