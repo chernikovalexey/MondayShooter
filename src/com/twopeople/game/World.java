@@ -1,9 +1,11 @@
 package com.twopeople.game;
 
+import com.twopeople.game.particle.ParticleManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.particles.ParticleSystem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +29,7 @@ public class World {
     private Random random = new Random();
 
     private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+    private ParticleManager particles = new ParticleManager(this);
     private ArrayList<Entity> bullets = new ArrayList<Entity>();
 
     private Comparator<Entity> entitySorter = new Comparator<Entity>() {
@@ -79,6 +82,10 @@ public class World {
             updateFromIterator(gameContainer, delta, entities.values().iterator());
         }
 
+        for (ParticleSystem system : particles.list.values()) {
+            system.update(delta);
+        }
+
         synchronized (bullets) {
             updateFromIterator(gameContainer, delta, bullets.iterator());
         }
@@ -124,11 +131,16 @@ public class World {
             renderFromIterator(gameContainer, g, sorted.iterator());
         }
 
+        for (ParticleSystem system : particles.list.values()) {
+            system.render();
+        }
+
         synchronized (bullets) {
             renderFromIterator(gameContainer, g, bullets.iterator());
         }
 
         g.setColor(Color.white);
+        g.drawString("blood particles=" + particles.get(ParticleManager.BLOOD_DEBRIS).getParticleCount(), 10, 30);
         g.drawString("entities=" + entities.size(), 10, 50);
         g.drawString("bullets=" + bullets.size(), 10, 70);
     }
@@ -224,5 +236,9 @@ public class World {
 
     public GameState getGame() {
         return game;
+    }
+
+    public ParticleSystem getParticleSystem(int id) {
+        return particles.get(id);
     }
 }

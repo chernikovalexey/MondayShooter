@@ -8,7 +8,7 @@
     <yOffset enabled="true" max="20.0" min="-20.0"/>
     <initialDistance enabled="true" max="0.0" min="0.0"/>
     <speed enabled="true" max="100.0" min="50.0"/>
-    <length enabled="true" max="1500.0" min="1000.0"/>
+    <length enabled="false" max="1500.0" min="1000.0"/>
     <spread value="180.0"/>
     <angularOffset value="0.0"/>
     <growthFactor value="3.0"/>

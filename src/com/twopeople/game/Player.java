@@ -1,5 +1,7 @@
 package com.twopeople.game;
 
+import com.twopeople.game.particle.BloodDebrisEmitter;
+import com.twopeople.game.particle.ParticleManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -9,7 +11,6 @@ import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.ConfigurableEmitter;
 import org.newdawn.slick.particles.ParticleIO;
-import org.newdawn.slick.particles.ParticleSystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,8 +25,6 @@ public class Player extends Entity {
     public static final float HEIGHT = 16;
 
     private long lastShootTime = System.currentTimeMillis();
-
-    private ParticleSystem ps;
 
     public Player() {
         loadAnimations(Images.player);
@@ -67,8 +66,7 @@ public class Player extends Entity {
                 isMoving = true;
             }
 
-            if (input.isKeyDown(Input.KEY_P)) {
-                ps = new ParticleSystem("res/particle.png", 200);
+            if (input.isKeyPressed(Input.KEY_P)) {
                 File file = new File("res/particle.xml");
                 ConfigurableEmitter emitter = null;
                 try {
@@ -77,11 +75,8 @@ public class Player extends Entity {
                     e.printStackTrace();
                 }
                 emitter.setPosition(world.getGame().getCamera().getX(getX()), world.getGame().getCamera().getY(getY()));
-                ps.addEmitter(emitter);
-            }
 
-            if (ps != null) {
-                ps.update(delta);
+                world.getParticleSystem(ParticleManager.BLOOD_DEBRIS).addEmitter(new BloodDebrisEmitter(getX(), getY()));
             }
 
             if (isMoving) {
@@ -115,10 +110,6 @@ public class Player extends Entity {
         }
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(getX()), camera.getY(getY()));
-
-        if (ps != null) {
-            ps.render();
-        }
     }
 
     public Shape getBB() {
