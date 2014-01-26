@@ -9,11 +9,6 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
-import org.newdawn.slick.particles.ConfigurableEmitter;
-import org.newdawn.slick.particles.ParticleIO;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Alexey
@@ -67,15 +62,6 @@ public class Player extends Entity {
             }
 
             if (input.isKeyPressed(Input.KEY_P)) {
-                File file = new File("res/particle.xml");
-                ConfigurableEmitter emitter = null;
-                try {
-                    emitter = ParticleIO.loadEmitter(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                emitter.setPosition(world.getGame().getCamera().getX(getX()), world.getGame().getCamera().getY(getY()));
-
                 world.getParticleSystem(ParticleManager.BLOOD_DEBRIS).addEmitter(new BloodDebrisEmitter(getX(), getY()));
             }
 
