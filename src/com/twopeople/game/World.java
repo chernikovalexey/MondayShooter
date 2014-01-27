@@ -121,14 +121,13 @@ public class World {
         g.setColor(Color.red);
         g.drawRect(camera.getX(0), camera.getY(0), TILES_X * TILE_WIDTH, TILES_Y * TILE_HEIGHT);
 
+        ArrayList<Entity> sorted = new ArrayList<Entity>();
+
         synchronized (entities) {
-            ArrayList<Entity> sorted = new ArrayList<Entity>();
             Iterator<Entity> it = entities.values().iterator();
             while (it.hasNext()) {
                 sorted.add(it.next());
             }
-            Collections.sort(sorted, entitySorter);
-            renderFromIterator(gameContainer, g, sorted.iterator());
         }
 
         for (ParticleSystem system : particles.list.values()) {
@@ -136,8 +135,14 @@ public class World {
         }
 
         synchronized (bullets) {
-            renderFromIterator(gameContainer, g, bullets.iterator());
+            Iterator<Entity> it = bullets.iterator();
+            while (it.hasNext()) {
+                sorted.add(it.next());
+            }
         }
+
+        Collections.sort(sorted, entitySorter);
+        renderFromIterator(gameContainer, g, sorted.iterator());
 
         g.setColor(Color.white);
         g.drawString("blood particles=" + particles.get(ParticleManager.BLOOD_DEBRIS).getParticleCount(), 10, 30);

@@ -16,7 +16,7 @@ public class Images {
     static {
         try {
             tiles = new SpriteSheet("res/tiles.png", 64, 64);
-            player = new SpriteSheet("res/player.png", 16, 16);
+            player = new SpriteSheet("res/player_combine01.png", 64,64);
         } catch (SlickException e) {
             e.printStackTrace();
         }

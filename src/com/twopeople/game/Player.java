@@ -16,8 +16,8 @@ import org.newdawn.slick.geom.Vector2f;
  */
 
 public class Player extends Entity {
-    public static final float WIDTH = 16;
-    public static final float HEIGHT = 16;
+    public static final float WIDTH = 64;
+    public static final float HEIGHT = 64;
 
     private long lastShootTime = System.currentTimeMillis();
 
@@ -91,7 +91,7 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            g.fill(shape);
+//            g.fill(shape);
             g.setColor(Color.green);
         }
 

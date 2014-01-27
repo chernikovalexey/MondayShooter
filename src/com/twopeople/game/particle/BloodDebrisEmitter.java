@@ -13,14 +13,8 @@ import org.newdawn.slick.particles.ParticleSystem;
 public class BloodDebrisEmitter implements ParticleEmitter {
     private float x, y;
 
-    //The particle emission rate
-    private int interval = 50;
-
-    // Time til the next particle
     private int timer;
-
-    // The size of the initial particles
-    private float size = 20;
+    private int particlesAmount = 0;
 
     public BloodDebrisEmitter(float x, float y) {
         this.x = x;
@@ -29,34 +23,66 @@ public class BloodDebrisEmitter implements ParticleEmitter {
 
     @Override
     public void update(ParticleSystem particleSystem, int delta) {
-        timer -= delta;
         if (timer <= 0) {
-            timer = interval;
-            Particle p = particleSystem.getNewParticle(this, 1000);
-            p.setColor(1, 1, 1, 0.5f);
-            p.setPosition(x, y);
-            p.setSize(size);
-            float vx = (float) (-0.02f + (Math.random() * 0.04f));
-            float vy = (float) (-(Math.random() * 0.15f));
-            p.setVelocity(vx, vy, 1.1f);
+            timer = 1;
+
+            for (int i = 0; i < 24 + MSParticle.random.nextInt(12); ++i) {
+                MSParticle p = (MSParticle) particleSystem.getNewParticle(this, 2500);
+
+                float z = 0;
+                p.setPosition(x, y, z);
+
+                float vx = (float) (Math.random() * 0.255f);
+                float vy = (float) (Math.random() * 0.155f);
+                float vz = (float) (-(Math.random() * 0.35f)) * 0.752f;
+
+                System.out.println(vx + ", " + vy + ", " + vz);
+
+                p.setVelocity(vx, vy, vz, 1.5f);
+
+                p.setStartPoint(x, y);
+            }
         }
+    }
+
+    public static float getDist(float x1, float y1, float x2, float y2) {
+        return (float) (Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)));
     }
 
     @Override
     public void updateParticle(Particle particle, int delta) {
-        System.out.println(particle);
-        if (particle.getLife() > 600) {
-            particle.adjustSize(0.07f * delta);
-        } else {
-            particle.adjustSize(-0.04f * delta * (size / 40.0f));
+        MSParticle p = (MSParticle) particle;
+
+        if (p.finished) {
+            return;
         }
-        float c = 0.002f * delta;
-        particle.adjustColor(0, -c / 2, -c * 2, -c / 4);
+
+        float dragging = 0.012f;
+        float gravity = 0.035f;
+
+        if (p.getZ() < 1f) {
+            p.velz = 0f;
+            if (p.bounced) {
+                if (p.getVelocityX() <= 0) {
+                    p.finished = true;
+                    p.setSpeed(0f);
+                }
+                p.increaseVelocityX(0.764f);
+                p.increaseVelocityY((float) Math.random() * 2f * 0.764f);
+            } else {
+                p.bounced = true;
+                p.increaseVelocityY(0.965f);
+            }
+        } else {
+            gravity -= 0.05f;
+            p.adjustVelocity(0, 0, gravity);
+            // p.increaseVelocityZ(0.12f);
+        }
     }
 
     @Override
     public boolean completed() {
-        return false;
+        return timer == 0 || particlesAmount > 0;
     }
 
     @Override

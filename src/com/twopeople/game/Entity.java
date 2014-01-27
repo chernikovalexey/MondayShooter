@@ -124,24 +124,25 @@ public class Entity {
     }
 
     public void loadAnimations(SpriteSheet sprite) {
-        Image[] up = new Image[3];
-        Image[] down = new Image[3];
-        Image[] left = new Image[3];
-        Image[] right = new Image[3];
-        Image[] upLeft = new Image[3];
-        Image[] upRight = new Image[3];
-        Image[] downLeft = new Image[3];
-        Image[] downRight = new Image[3];
+        int states = 3;
+        Image[] up = new Image[states];
+        Image[] down = new Image[states];
+        Image[] left = new Image[states];
+        Image[] right = new Image[states];
+        Image[] upLeft = new Image[states];
+        Image[] upRight = new Image[states];
+        Image[] downLeft = new Image[states];
+        Image[] downRight = new Image[states];
 
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i <states; ++i) {
             up[i] = sprite.getSprite(i, 0);
             down[i] = sprite.getSprite(i, 4);
             left[i] = sprite.getSprite(i, 2);
-            right[i] = left[i].getFlippedCopy(true, false);
+            right[i] = sprite.getSprite(i, 6);
             upLeft[i] = sprite.getSprite(i, 1);
-            upRight[i] = upLeft[i].getFlippedCopy(true, false);
+            upRight[i] = sprite.getSprite(i, 7);
             downLeft[i] = sprite.getSprite(i, 3);
-            downRight[i] = downLeft[i].getFlippedCopy(true, false);
+            downRight[i] = sprite.getSprite(i, 5);
         }
 
         animations[0] = new Animation(up, 200, true);
