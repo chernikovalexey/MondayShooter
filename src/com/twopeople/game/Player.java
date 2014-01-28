@@ -1,7 +1,7 @@
 package com.twopeople.game;
 
-import com.twopeople.game.particle.BloodDebrisEmitter;
 import com.twopeople.game.particle.ParticleManager;
+import com.twopeople.game.particle.debris.BloodDebrisEmitter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -16,8 +16,8 @@ import org.newdawn.slick.geom.Vector2f;
  */
 
 public class Player extends Entity {
-    public static final float WIDTH = 64;
-    public static final float HEIGHT = 64;
+    public static final float WIDTH = 70;
+    public static final float HEIGHT = 70;
 
     private long lastShootTime = System.currentTimeMillis();
 
@@ -91,7 +91,7 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-//            g.fill(shape);
+            g.fill(shape);
             g.setColor(Color.green);
         }
 
@@ -99,7 +99,7 @@ public class Player extends Entity {
     }
 
     public Shape getBB() {
-        return new Circle(getX() + WIDTH / 2, getY() + HEIGHT / 2 + 4, (WIDTH + HEIGHT) / 4 - 4 / 2);
+        return new Circle(getX() + WIDTH / 2, getY() + HEIGHT / 2 + 25, 12);
     }
 
     public boolean isControllable() {

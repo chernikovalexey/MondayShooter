@@ -75,6 +75,8 @@ public class World {
         Wall wall5 = new Wall(140, 340);
         addEntity(wall5, false);
 
+        Wall wall6 = new Wall(440, 140);
+        addEntity(wall6, false);
     }
 
     public void update(GameContainer gameContainer, int delta) {

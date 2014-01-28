@@ -5,24 +5,16 @@ import com.twopeople.game.World;
 import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleSystem;
 
-import java.util.Random;
-
 /**
  * Created by Alexey
  * At 9:14 PM on 1/26/14
  */
 
 public class MSParticle extends Particle {
-    public static final Random random = new Random();
-
     private World world;
 
-    // Allow it soaring
-    public float z;
-    public float velz;
-    private float startX, startY;
-    public boolean bounced = false;
-    public boolean finished = false;
+    protected float z;
+    protected float velz;
 
     public MSParticle(World world, ParticleSystem engine) {
         super(engine);
@@ -32,7 +24,10 @@ public class MSParticle extends Particle {
     @Override
     public void update(int delta) {
         super.update(delta);
-        z += delta * velz;
+
+        if (life > 0) {
+            z += delta * velz;
+        }
     }
 
     @Override
@@ -53,8 +48,6 @@ public class MSParticle extends Particle {
     // =======
     // Getters and setters
 
-    // Do these all need a getter for the world?
-
     public void setVelocity(float dx, float dy, float dz, float speed) {
         super.setVelocity(dx, dy, speed);
         velz = dz * speed;
@@ -67,26 +60,18 @@ public class MSParticle extends Particle {
 
     @Override
     public void setSpeed(float speed) {
-        super.setSpeed(speed);
+        float currentSpeed = (float) Math.sqrt((velx * velx) + (vely * vely) + (velz * velz));
+        velx *= speed;
+        vely *= speed;
         velz *= speed;
-    }
-
-    public void setStartPoint(float startX, float startY) {
-        this.startX = startX;
-        this.startY = startY;
+        velx /= currentSpeed;
+        vely /= currentSpeed;
+        velz /= currentSpeed;
     }
 
     public void setPosition(float x, float y, float z) {
         super.setPosition(x, y);
         this.z = z;
-    }
-
-    public float getStartX() {
-        return startX;
-    }
-
-    public float getStartY() {
-        return startY;
     }
 
     public float getVelocityX() {
@@ -95,6 +80,14 @@ public class MSParticle extends Particle {
 
     public float getVelocityY() {
         return vely;
+    }
+
+    public float getVelocityZ() {
+        return velz;
+    }
+
+    public void setVelocityZ(float velz) {
+        this.velz = velz;
     }
 
     public void increaseVelocityX(float dx) {

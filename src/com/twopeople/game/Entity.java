@@ -17,11 +17,11 @@ public class Entity {
 
     protected transient World world;
 
-    private int id;
+    protected int id;
     private int owner;
     private int layer;
 
-    private float x, y;
+    protected float x, y;
     private float width, height;
     private float speed;
 
@@ -59,6 +59,8 @@ public class Entity {
     }
 
     public void update(GameContainer container, int delta) {
+        long time = System.currentTimeMillis();
+
         float speed = getSpeed();
         float friction = 0.00001f;
         float accelerationX = -velocity.x * friction + movingDirection.x * speed;
@@ -69,29 +71,41 @@ public class Entity {
 
         Collection<Entity> entities = world.getEntities().values();
 
-        x += velocity.x * delta * 0.0001f * 20;
+        float dx = velocity.x * delta * 0.0001f * 20;
+        float dy = velocity.y * delta * 0.0001f * 20;
+
+        x += dx;
 
         for (Entity e : entities) {
             if (this.collidesWith(e) && !e.equals(this)) {
                 bumpedInto(e);
                 //System.out.println("Colliding position x: " + x);
                 while (e.collidesWith(this)) {
-                    x -= (velocity.x * delta * 0.0001f * 20) / 10;
+                    x -= dx / 10;
                     //System.out.println("Reducing x: " + x + " (" + ((velocity.x * delta * 0.0001f * 20) / 10) + ")");
                 }
             }
         }
 
-        y += velocity.y * delta * 0.0001f * 20;
+        y += dy;
 
         for (Entity e : entities) {
             if (this.collidesWith(e) && !e.equals(this)) {
                 bumpedInto(e);
+
+                if (movingDirection.x == 0) {
+                    Vector2f hitSide = e.getHitSideVector(this);
+                    float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(x, 0, y));
+                    x += (float) Math.cos(0 + angle);
+                }
+
                 while (e.collidesWith(this)) {
-                    y -= (velocity.y * delta * 0.0001f * 20) / 10;
+                    y -= dy / 10;
                 }
             }
         }
+
+//        System.out.println("Time elapsed on updating and moving: " + (System.currentTimeMillis() - time));
     }
 
     public void render(GameContainer container, Camera camera, Graphics g) {
@@ -124,7 +138,7 @@ public class Entity {
     }
 
     public void loadAnimations(SpriteSheet sprite) {
-        int states = 3;
+        int states = 1;
         Image[] up = new Image[states];
         Image[] down = new Image[states];
         Image[] left = new Image[states];
@@ -134,7 +148,7 @@ public class Entity {
         Image[] downLeft = new Image[states];
         Image[] downRight = new Image[states];
 
-        for (int i = 0; i <states; ++i) {
+        for (int i = 0; i < states; ++i) {
             up[i] = sprite.getSprite(i, 0);
             down[i] = sprite.getSprite(i, 4);
             left[i] = sprite.getSprite(i, 2);
@@ -153,6 +167,14 @@ public class Entity {
         animations[5] = new Animation(upRight, 200, true);
         animations[6] = new Animation(downLeft, 200, true);
         animations[7] = new Animation(downRight, 200, true);
+    }
+
+    public Vector2f getHitSideVector(Entity entity) {
+        return new Vector2f(0, 0);
+    }
+
+    public Vector2f getBBCentre() {
+        return new Vector2f(getBB().getCenterX(), getBB().getCenterY());
     }
 
     public Shape getBB() {

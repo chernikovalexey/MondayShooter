@@ -4,6 +4,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Vector2f;
 
 /**
  * Created by Alexey
@@ -36,6 +37,46 @@ public class Wall extends Entity {
             g.fill(shape);
             g.setColor(Color.green);
         }*/
+    }
+
+    @Override
+    public Vector2f getBBCentre() {
+        Shape[] skeleton = getSkeleton();
+        return new Vector2f(skeleton[0].getCenterX(), skeleton[0].getCenterY() + (skeleton[1].getCenterY() - skeleton[0].getCenterY()) / 2);
+    }
+
+    @Override
+    public Vector2f getHitSideVector(Entity entity) {
+        Shape[] skeleton = getSkeleton();
+        Vector2f vector = new Vector2f();
+        float ex = entity.getBBCentre().getX();
+        float ey = entity.getBBCentre().getY();
+        float cx = getBBCentre().getX();
+        float cy = getBBCentre().getY();
+
+        if (cx > ex && cy > ey) {
+            // 1
+            System.out.println("1");
+            vector.x = skeleton[0].getPoint(1)[0] - skeleton[0].getPoint(0)[0];
+            vector.y = skeleton[0].getPoint(0)[1] - skeleton[0].getPoint(1)[1];
+        } else if (cx > ex && cy < ey) {
+            // 4
+            System.out.println("4");
+            vector.x = skeleton[1].getPoint(0)[0] - skeleton[1].getPoint(2)[0];
+            vector.y = skeleton[1].getPoint(0)[1] - skeleton[1].getPoint(2)[1];
+        } else if (cx < ex && cy > ey) {
+            // 2
+            System.out.println("2");
+            vector.x = skeleton[0].getPoint(2)[0] - skeleton[0].getPoint(1)[0];
+            vector.y = skeleton[0].getPoint(2)[1] - skeleton[0].getPoint(2)[1];
+        } else if (cx < ex && cy < ey) {
+            // 3
+            System.out.println("3");
+            vector.x = skeleton[1].getPoint(2)[0] - skeleton[1].getPoint(1)[0];
+            vector.y = skeleton[1].getPoint(2)[1] - skeleton[1].getPoint(1)[1];
+        }
+
+        return vector;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.twopeople.game.particle;
 
 import com.twopeople.game.World;
+import com.twopeople.game.particle.debris.DebrisParticle;
 import org.newdawn.slick.particles.ParticleSystem;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public class ParticleManager {
     public static final int BLOOD_DEBRIS = 1;
 
     public ParticleManager(World world) {
-        list.put(BLOOD_DEBRIS, new MSParticleSystem(world, "res/particle.png", 200));
+        list.put(BLOOD_DEBRIS, new MSParticleSystem(world, "res/particle.png", 200, DebrisParticle.class));
     }
 
     public ParticleSystem get(int id) {
