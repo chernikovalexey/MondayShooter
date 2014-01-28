@@ -4,8 +4,10 @@ import com.twopeople.game.particle.ParticleManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.ParticleSystem;
+import org.newdawn.slick.tiled.TiledMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,9 +30,12 @@ public class World {
     private GameState game;
     private Random random = new Random();
 
+    //    private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
     private ParticleManager particles = new ParticleManager(this);
     private ArrayList<Entity> bullets = new ArrayList<Entity>();
+
+    TiledMap map;
 
     private Comparator<Entity> entitySorter = new Comparator<Entity>() {
         @Override
@@ -52,6 +57,14 @@ public class World {
 
     public World(GameState game) {
         this.game = game;
+
+        //
+
+        try {
+            map = new TiledMap("res/untitled.tmx");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
     }
 
     public void init() {
@@ -119,6 +132,8 @@ public class World {
                 }
             }
         }
+
+        map.render((int)camera.getX(0), (int)camera.getY(0));
 
         g.setColor(Color.red);
         g.drawRect(camera.getX(0), camera.getY(0), TILES_X * TILE_WIDTH, TILES_Y * TILE_HEIGHT);

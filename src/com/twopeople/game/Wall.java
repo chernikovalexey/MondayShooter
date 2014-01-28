@@ -58,7 +58,7 @@ public class Wall extends Entity {
             // 1
             System.out.println("1");
             vector.x = skeleton[0].getPoint(1)[0] - skeleton[0].getPoint(0)[0];
-            vector.y = skeleton[0].getPoint(0)[1] - skeleton[0].getPoint(1)[1];
+            vector.y = skeleton[0].getPoint(1)[1] - skeleton[0].getPoint(0)[1];
         } else if (cx > ex && cy < ey) {
             // 4
             System.out.println("4");
