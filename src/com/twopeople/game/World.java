@@ -62,6 +62,15 @@ public class World {
 
         try {
             map = new TiledMap("res/untitled.tmx");
+
+            int objectGroupCount = map.getObjectGroupCount();
+            for (int gi = 0; gi < objectGroupCount; gi++) {
+                int objectCount = map.getObjectCount(gi);
+                for (int oi = 0; oi < objectCount; oi++) {
+                    System.out.println(map.getObjectName(gi, oi));
+                     System.out.println( map.getObjectProperty(gi, oi, "width", "0" ) );
+                }
+            }
         } catch (SlickException e) {
             e.printStackTrace();
         }
@@ -90,6 +99,15 @@ public class World {
 
         Wall wall6 = new Wall(440, 140);
         addEntity(wall6, false);
+
+        Wall wall7 = new Wall(240, 340);
+        addEntity(wall7, false);
+
+        Wall wall8 = new Wall(440, 340);
+        addEntity(wall8, false);
+
+        Wall wall9 = new Wall(640, 340);
+        addEntity(wall9, false);
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -133,7 +151,7 @@ public class World {
             }
         }
 
-        map.render((int)camera.getX(0), (int)camera.getY(0));
+        //        map.render((int)camera.getX(0), (int)camera.getY(0));
 
         g.setColor(Color.red);
         g.drawRect(camera.getX(0), camera.getY(0), TILES_X * TILE_WIDTH, TILES_Y * TILE_HEIGHT);

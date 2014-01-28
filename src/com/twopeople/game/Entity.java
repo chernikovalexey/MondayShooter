@@ -89,14 +89,20 @@ public class Entity {
 
         y += dy;
 
+        Camera camera = world.getGame().getCamera();
+
         for (Entity e : entities) {
             if (this.collidesWith(e) && !e.equals(this)) {
                 bumpedInto(e);
 
                 if (movingDirection.x == 0) {
                     Vector2f hitSide = e.getHitSideVector(this);
-                    float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(x, 0, y));
+                    float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
                     x += (float) Math.cos(0 + angle);
+
+                    System.out.println(hitSide.x + ", " + hitSide.y);
+                    System.out.println(Math.toDegrees(angle));
+                    System.out.println(" ===================== ");
                 }
 
                 while (e.collidesWith(this)) {
@@ -105,7 +111,7 @@ public class Entity {
             }
         }
 
-//        System.out.println("Time elapsed on updating and moving: " + (System.currentTimeMillis() - time));
+        //        System.out.println("Time elapsed on updating and moving: " + (System.currentTimeMillis() - time));
     }
 
     public void render(GameContainer container, Camera camera, Graphics g) {
