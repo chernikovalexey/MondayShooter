@@ -2,13 +2,8 @@ package com.twopeople.game.network;
 
 import com.esotericsoftware.kryonet.Connection;
 import com.twopeople.game.Entity;
-import com.twopeople.game.network.packet.AuthRequest;
-import com.twopeople.game.network.packet.AuthResponse;
-import com.twopeople.game.network.packet.DisconnectionRequest;
-import com.twopeople.game.network.packet.EntityPacket;
-import com.twopeople.game.network.packet.Packet;
-import com.twopeople.game.network.packet.RunningRequest;
-import com.twopeople.game.network.packet.UserResponse;
+import com.twopeople.game.Spawner;
+import com.twopeople.game.network.packet.*;
 
 import java.io.IOException;
 
@@ -69,8 +64,18 @@ public class Client extends NetworkEntity implements Runnable {
                 listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
             } else if(o instanceof EntityPacket) {
                 listener.addEntity(((EntityPacket)o).entity);
+            } else if(o instanceof SpawnResponse) {
+                SpawnResponse sr = (SpawnResponse)o;
+                listener.onRespawn(sr.spawnerId, sr.userId);
+            } else if(o instanceof KilledRequest) {
+                KilledRequest kr = (KilledRequest) o;
+                listener.onUserKilled(kr.killedId, kr.killerId);
             }
         }
+    }
+
+    public void killed(int killerId) {
+        client.sendUDP(new KilledRequest(killerId));
     }
 
     public void sendEntity(Entity e) {
@@ -103,6 +108,10 @@ public class Client extends NetworkEntity implements Runnable {
 
     public void shoot(Entity shooter) {
         client.sendUDP(new RunningRequest(shooter, RunningRequest.SHOOT));
+    }
+
+    public Spawner getEmptySpawner() {
+        return listener.getEmptySpawner();
     }
 
     @Override

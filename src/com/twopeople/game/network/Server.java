@@ -1,13 +1,7 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.twopeople.game.network.packet.AuthRequest;
-import com.twopeople.game.network.packet.AuthResponse;
-import com.twopeople.game.network.packet.DisconnectionRequest;
-import com.twopeople.game.network.packet.EntityPacket;
-import com.twopeople.game.network.packet.Packet;
-import com.twopeople.game.network.packet.RunningRequest;
-import com.twopeople.game.network.packet.UserResponse;
+import com.twopeople.game.network.packet.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +62,11 @@ public class Server extends NetworkEntity {
                 answer = (RunningRequest) o;
             } else if (o instanceof EntityPacket) {//I don't what for.
                 answer = (Packet) o;
+            } else if(o instanceof KilledRequest) {
+                KilledRequest kr = (KilledRequest)o;
+                kr.killedId = c.getID();
+                server.sendToAllExceptUDP(c.getID(), kr);
+                server.sendToAllUDP(new SpawnResponse(client.getEmptySpawner().id, c.getID()));
             }
 
 

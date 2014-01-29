@@ -1,6 +1,7 @@
 package com.twopeople.game.network;
 
 import com.twopeople.game.Entity;
+import com.twopeople.game.Spawner;
 import com.twopeople.game.network.packet.*;
 
 /**
@@ -28,4 +29,11 @@ public interface Listener {
     public void disconnected(int id);
 
     public void addEntity(Entity entity);
+
+    public void onRespawn(int spawnerId, int userId);
+
+    public void onUserKilled(int killed, int killer);
+
+    public Spawner getEmptySpawner();
+
 }
