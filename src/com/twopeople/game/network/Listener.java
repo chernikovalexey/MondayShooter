@@ -31,6 +31,6 @@ public interface Listener {
 
     public void onUserKilled(int killed, int killer, int spawnerId);
 
-    public Bullet[] getBullets();
+    public Entity[] getBullets();
 
 }
