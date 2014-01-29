@@ -1,5 +1,6 @@
 package com.twopeople.game.network;
 
+import com.twopeople.game.Bullet;
 import com.twopeople.game.Entity;
 import com.twopeople.game.Spawner;
 import com.twopeople.game.network.packet.*;
@@ -29,5 +30,7 @@ public interface Listener {
     public void addEntity(Entity entity);
 
     public void onUserKilled(int killed, int killer, int spawnerId);
+
+    public Bullet[] getBullets();
 
 }

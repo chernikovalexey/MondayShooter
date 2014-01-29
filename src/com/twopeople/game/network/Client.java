@@ -79,6 +79,10 @@ public class Client extends NetworkEntity implements Runnable {
         client.sendUDP(new EntityPacket(e));
     }
 
+    Entity[] getBullets() {
+        return listener.getBullets();
+    }
+
     public void runningStart(Entity e) {
         client.sendUDP(new RunningRequest(e, RunningRequest.START));
     }
