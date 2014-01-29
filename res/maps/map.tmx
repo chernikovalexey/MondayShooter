@@ -73,27 +73,37 @@
  </tileset>
  <layer name="tiles" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3XMQrAIBBFwXXPkPufNSQgmLQp/ISZxnbhIa5VAMCfjN0D8DBKkxSj9Egze/TuQbjNFnrk6NfJXl3uSJrZwtue4eph18pi/82iRx49sqz/EftWDk1ydOmR5Cg9kmiRR48sWgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwDcnO+AVWUCcAAA=
+   H4sIAAAAAAAAC+3XQQrDIBBA0Ul2wfvft6QgNBLJqs7Qvrcx7sSPaCIAgF+yZS+Aiy00qWILParpPfbshfDWW+hRxz6M5NrDGammt3C313D28Naqxfu3Fj3yHcNcjzxHXHuc35//I95bax2T8aTJWuO5mLXQY42+/22Yd3qsde5/i/seWuRo8dyENVo892CdscfsHuH77lrokWvWRI8cWtSjRy3j3UE+PWrRAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAf/MCj827hkCcAAA=
   </data>
  </layer>
- <layer name="walls_main" width="100" height="100">
+ <layer name="walls3" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3VOwrDMBBFUW0hRk0w2f8280ECIUyaFG8C54AYuxNcBrUGAL/pr3OmL8FHH1OPGvryrUkteuQd278mWXrUM5vcxtQky47UM5vcx9Qky47Uo0ktew/y1ibncsi42hE9so7mLYFv9v14RG7BFS3y1v3QI2/20KKOdxM9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+yxNcL5REQJwAAA==
+   H4sIAAAAAAAAC+3XMQqAMAxA0RyiY+9/TjfRggUR0kjfW0K3wCdDIwDgm756AU5a1KIHAADAntrqBbgZe1zfPfzfM81akG/WQ5tcbZjU8NRDJ3bnBurQohY9/kEnAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOCtAwidG85AnAAA
   </data>
  </layer>
- <layer name="walls_visible#" width="100" height="100">
+ <layer name="walls1" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3OsQ0AMAjAMI5g5P87u3ThApCwpeyJAAAAAAAAuKd+QJfTAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwwAPIFebzQJwAAA==
+   H4sIAAAAAAAAC+3XsQ3AIAwAQWZg/2FTE6F0gS/uSlfILxeMAQAAcNa8/QAWevRo0qJHjyYtevRo0qJHjyawet/E3Mw4x+57djfCOfbf89VEn/v06NGkRYM77L1Fjx5NWvxBejRo0aNHEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACA/z3wqua5QJwAAA==
   </data>
  </layer>
- <layer name="walls_inv#" width="100" height="100">
+ <layer name="walls2" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3OQQ0AAAgEIEv4tH9NY5ybkIAqAAAAAACAfyYdgKM6HQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAxZdg9z0QJwAAA==
+   H4sIAAAAAAAAC+3RMQqEUAxAQe/wS+9/z21XdAVZMK+YgZA25G0bAPxvnz6AAz16NGnRo0eTFj16NGnRo0eTFj16NJmxpg/g5KrJ+hredfdzPWZo0uDXHevHZpYePZq06NGjSYsOAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMBTH85ei5dAnAAA
+  </data>
+ </layer>
+ <layer name="walls4" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3YsQqAIBRAUWdpbez/fzMaWsKspfcedM6mLsIFFVsDAAAAAAD4ny17A1DAOhhf54gxakGetz3cJXVoEas/rOsRp7d5Dy1iHS2Wdt9Ejzhni1kPYt018e7NMTqvtMh1vdP1yHW28E9SixZ1aFGLHgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA39oBZVAEhUCcAAA=
+  </data>
+ </layer>
+ <layer name="walls_full" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3OQQ0AAAgEICv4tH9RY5xzkIAqAAAA4KJOB+C4SQcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAtxbSPH4oQJwAAA==
   </data>
  </layer>
  <layer name="spawners" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3WwQkAAAgDMcH9d3aLCppMcL+2CgAAfujtAAAACPJ/AeAOuw4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQN3zQaARAnAAA
+   H4sIAAAAAAAAC+3WwQ0AMAgCQBP337lTqKneTUD4QAQAANyQ0wEAAKCR/wsAe9j1XvoGAKjlbwEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwiwdo1mXuQJwAAA==
   </data>
  </layer>
 </map>
