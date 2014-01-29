@@ -30,10 +30,13 @@ public class GameState extends BasicGameState {
 
     @Override
     public void init(GameContainer gameContainer, StateBasedGame stateBasedGame) throws SlickException {
+        Images.init();
+        EntityLoader.init();
+
         camera = new Camera(gameContainer);
         world = new World(this);
 
-        String action = "s";//Console.readString("s/c: ");
+        String action = "s";//StringUtil.readString("s/c: ");
 
         NetworkListener listener = new NetworkListener(this, world);
         client = new Client(listener);
@@ -64,7 +67,6 @@ public class GameState extends BasicGameState {
 
             g.setColor(Color.white);
             g.drawString(isServer() ? "Server" : "Client", 10, 90);
-            g.drawString(camera.x + ", " + camera.y, 10, 110);
         }
     }
 

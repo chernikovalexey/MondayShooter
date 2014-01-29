@@ -30,12 +30,12 @@ public class World {
     private GameState game;
     private Random random = new Random();
 
-    //    private ArrayList<Tile> tiles = new ArrayList<Tile>();
+    private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
     private ParticleManager particles = new ParticleManager(this);
     private ArrayList<Entity> bullets = new ArrayList<Entity>();
 
-    TiledMap map;
+    public static int lastUsedLayer = 1;
 
     private Comparator<Entity> entitySorter = new Comparator<Entity>() {
         @Override
@@ -58,17 +58,37 @@ public class World {
     public World(GameState game) {
         this.game = game;
 
-        //
-
         try {
-            map = new TiledMap("res/untitled.tmx");
+            TiledMap map = new TiledMap("res/untitled.tmx");
 
-            int objectGroupCount = map.getObjectGroupCount();
-            for (int gi = 0; gi < objectGroupCount; gi++) {
+            Tile.setSize(map.getTileWidth(), map.getTileHeight());
+
+            int tw = map.getTileWidth();
+            int th = map.getTileHeight();
+            for (int x = 0, oddOffset = 1, evenOffset = 0; x < map.getWidth(); ++x, oddOffset = 1, evenOffset = 0) {
+                for (int y = 0; y < map.getHeight(); ++y) {
+                    boolean odd = y % 2 != 0;
+                    int id = map.getTileId(x, y, 0);
+
+                    if (id != 0) {
+                        TileList.addTile(id, map.getTileImage(x, y, 0));
+
+                        if (odd) {
+                            tiles.add(new Tile(x * tw + tw / 2, (y - oddOffset++) * th + th / 2 + 1, id));
+                        } else {
+                            tiles.add(new Tile(x * tw, (y - evenOffset++) * th, id));
+                        }
+                    }
+                }
+            }
+
+            for (int gi = 0; gi < map.getObjectGroupCount(); gi++) {
                 int objectCount = map.getObjectCount(gi);
                 for (int oi = 0; oi < objectCount; oi++) {
-                    System.out.println(map.getObjectName(gi, oi));
-                     System.out.println( map.getObjectProperty(gi, oi, "width", "0" ) );
+                    lastUsedLayer = gi + 1;
+                    Entity entity = EntityLoader.getEntityInstanceByName(map.getObjectType(gi, oi), new Object[]{map.getObjectX(gi, oi), map.getObjectY(gi, oi)});
+                    entity.setLayer(lastUsedLayer);
+                    addEntity(entity, true);
                 }
             }
         } catch (SlickException e) {
@@ -79,35 +99,6 @@ public class World {
     public void init() {
         Player player = addPlayer(-1, random.nextInt(TILES_X / 2) * TILE_WIDTH / 3, random.nextInt(TILES_Y - TILES_Y / 7) * TILE_HEIGHT / 3, false);
         game.getCamera().alignCenterOn(player);
-
-        //
-
-        Wall wall1 = new Wall(140, 140);
-        addEntity(wall1, false);
-
-        Wall wall2 = new Wall(240, 140);
-        addEntity(wall2, false);
-
-        Wall wall3 = new Wall(340, 140);
-        addEntity(wall3, false);
-
-        Wall wall4 = new Wall(40, 240);
-        addEntity(wall4, false);
-
-        Wall wall5 = new Wall(140, 340);
-        addEntity(wall5, false);
-
-        Wall wall6 = new Wall(440, 140);
-        addEntity(wall6, false);
-
-        Wall wall7 = new Wall(240, 340);
-        addEntity(wall7, false);
-
-        Wall wall8 = new Wall(440, 340);
-        addEntity(wall8, false);
-
-        Wall wall9 = new Wall(640, 340);
-        addEntity(wall9, false);
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -135,9 +126,11 @@ public class World {
     }
 
     public void render(GameContainer gameContainer, Graphics g) {
+
+
         Camera camera = game.getCamera();
 
-        for (int x = 0; x < TILES_X; ++x) {
+        /*for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y + (TILES_Y - 1) * TILE_HEIGHT / 7; ++y) {
                 int xt = x + (y >> 1) + y & 1;
                 int yt = (y >> 1) - x;
@@ -149,9 +142,13 @@ public class World {
                     g.drawImage(Images.tiles.getSprite(((yt ^ xt) & 1) == 0 ? 0 : 1, 0).getSubImage(0, 34, TILE_WIDTH, TILE_HEIGHT), camera.getX(tileX + (y & 1) * TILE_WIDTH / 2), camera.getY(tileY));
                 }
             }
-        }
+        }*/
 
-        //        map.render((int)camera.getX(0), (int)camera.getY(0));
+        for (Tile tile : tiles) {
+            if (tile.isVisible(camera)) {
+                tile.render(camera, g);
+            }
+        }
 
         g.setColor(Color.red);
         g.drawRect(camera.getX(0), camera.getY(0), TILES_X * TILE_WIDTH, TILES_Y * TILE_HEIGHT);
@@ -280,5 +277,18 @@ public class World {
 
     public ParticleSystem getParticleSystem(int id) {
         return particles.get(id);
+    }
+
+    public Tile getTileAt(float x, float y, int xr, int yr) {
+        for (Tile tile : tiles) {
+            for(int xo = -xr; xo <= xr; ++xo) {
+                for (int yo= -yr; yo <= yr; ++yo) {
+                    if (tile.x == x+xo && tile.y == y + yo) {
+                        return tile;
+                    }
+                }
+            }
+        }
+        return new Tile(0, 0, 0);
     }
 }

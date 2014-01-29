@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="isometric" width="64" height="64" tilewidth="64" tileheight="64">
- <tileset firstgid="1" name="test" tilewidth="64" tileheight="64">
+<map version="1.0" orientation="staggered" width="32" height="32" tilewidth="128" tileheight="65">
+ <tileset firstgid="1" name="tile002a" tilewidth="128" tileheight="65">
+  <image source="tile002a.png" width="128" height="65"/>
+ </tileset>
+ <tileset firstgid="2" name="tiles" tilewidth="64" tileheight="64">
   <image source="tiles.png" width="128" height="128"/>
   <tile id="2">
    <properties>
-    <property name="height" value="64"/>
-    <property name="width" value="64"/>
+    <property name="height" value="49"/>
+    <property name="width" value="62"/>
    </properties>
   </tile>
  </tileset>
- <layer name="Tile Layer 1" width="64" height="64">
+ <layer name="Tile Layer 1" width="32" height="32">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3UQQrAIAwAwej/H12kLYRg78XMQE71sladETHjNtN0kVvHM536l1lmbL6dKjfn/1/34FS5te5BXnOyr/4u7+H4mA7tu/vfpX2p57zTuX91bK46twMAAAAAAAAAAAAAAAD80QVkUHRtAEAAAA==
+   H4sIAAAAAAAAC+3PsQ0AQAgDsbD/0t+iH4A0tkQdbpLMumvN7X9ff3e/Qb/+9g8AAHDlAaDSCl4AEAAA
   </data>
  </layer>
- <objectgroup name="Object Layer 2" width="64" height="64">
-  <object name="wall" gid="3" x="454" y="260" width="4096" height="4096"/>
- </objectgroup>
- <objectgroup name="Object Layer 1" width="64" height="64">
-  <object name="wall" gid="3" x="436" y="308" width="4096" height="4096"/>
-  <object name="wall" gid="3" x="485" y="291" width="4096" height="4096"/>
-  <object name="wall" gid="3" x="533" y="275" width="4096" height="4096"/>
+ <objectgroup name="Object Layer 1" width="32" height="32">
+  <object type="wall" gid="4" x="128" y="128" width="62" height="49"/>
  </objectgroup>
 </map>

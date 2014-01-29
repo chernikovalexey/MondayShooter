@@ -96,9 +96,6 @@ public class Player extends Entity {
         }
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(getX()), camera.getY(getY()));
-
-//        g.setColor(Color.white);
-//        g.drawString(getBBCentre().x + ", " + getBBCentre().y, camera.getX(x), camera.getY(y));
     }
 
     public Shape getBB() {

@@ -79,17 +79,20 @@ public class Entity {
         for (Entity e : entities) {
             if (this.collidesWith(e) && !e.equals(this)) {
                 bumpedInto(e);
-                //System.out.println("Colliding position x: " + x);
+
+                if (movingDirection.y == 0) {
+                    Vector2f hitSide = e.getHitSideVector(this);
+                    float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(getBBCentre().x, 0, 0));
+                    y += (float) Math.sin(angle - Math.PI / 2);
+                }
+
                 while (e.collidesWith(this)) {
                     x -= dx / 10;
-                    //System.out.println("Reducing x: " + x + " (" + ((velocity.x * delta * 0.0001f * 20) / 10) + ")");
                 }
             }
         }
 
         y += dy;
-
-        Camera camera = world.getGame().getCamera();
 
         for (Entity e : entities) {
             if (this.collidesWith(e) && !e.equals(this)) {
@@ -98,11 +101,7 @@ public class Entity {
                 if (movingDirection.x == 0) {
                     Vector2f hitSide = e.getHitSideVector(this);
                     float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
-                    x += (float) Math.cos(0 + angle);
-
-                    System.out.println(hitSide.x + ", " + hitSide.y);
-                    System.out.println(Math.toDegrees(angle));
-                    System.out.println(" ===================== ");
+                    x += (float) Math.cos(angle);
                 }
 
                 while (e.collidesWith(this)) {

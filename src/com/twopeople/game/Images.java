@@ -9,13 +9,13 @@ import org.newdawn.slick.SpriteSheet;
  */
 
 public class Images {
-    public static SpriteSheet tiles;
+    public static SpriteSheet walls;
     public static SpriteSheet player;
 
     // Load separately to handle exceptions
-    static {
+    public static void init() {
         try {
-            tiles = new SpriteSheet("res/tiles.png", 64, 64);
+            walls = new SpriteSheet("res/wall001a.png", 128, 162);
             player = new SpriteSheet("res/player_combine01_fixed.png", 70, 70);
         } catch (SlickException e) {
             e.printStackTrace();
