@@ -79,14 +79,6 @@ public class Client extends NetworkEntity implements Runnable {
         client.sendUDP(new EntityPacket(e));
     }
 
-    Entity[] getEntities() {
-        return listener.getEntities();
-    }
-
-    Entity[] getBullets() {
-        return listener.getBullets();
-    }
-
     public void runningStart(Entity e) {
         client.sendUDP(new RunningRequest(e, RunningRequest.START));
     }
@@ -116,5 +108,9 @@ public class Client extends NetworkEntity implements Runnable {
             e.printStackTrace();
         }
         client.sendUDP(new AuthRequest(nickname));
+    }
+
+    public String getLevelName() {
+        return listener.getLevelName();
     }
 }

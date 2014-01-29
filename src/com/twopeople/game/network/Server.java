@@ -46,7 +46,7 @@ public class Server extends NetworkEntity {
             if (o instanceof AuthRequest) {
                 AuthRequest r = (AuthRequest) o;
                 if (getByClientByName(r.nickname) == null) {
-                    answer = new AuthResponse(c.getID(), client.getEntities(), client.getBullets());
+                    answer = new AuthResponse(c.getID(), client.getLevelName());
                     users.add(new ClientInfo(c, r.nickname));
                     System.out.println("User " + r.nickname + " connected. So there are " + users.size()
                                                + " users on server now!");

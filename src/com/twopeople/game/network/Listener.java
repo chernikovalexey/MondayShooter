@@ -16,9 +16,7 @@ public interface Listener {
 
     public void connectionFailed(Error e);
 
-    public Entity[] getEntities();
-
-    public Entity[] getBullets();
+    public String getLevelName();
 
     public void movingDirectionChanged(float x, float y, float vx, float vy, int id);
 
