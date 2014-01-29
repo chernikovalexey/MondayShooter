@@ -30,10 +30,6 @@ public interface Listener {
 
     public void addEntity(Entity entity);
 
-    public void onRespawn(int spawnerId, int userId);
-
-    public void onUserKilled(int killed, int killer);
-
-    public Spawner getEmptySpawner();
+    public void onUserKilled(int killed, int killer, int spawnerId);
 
 }

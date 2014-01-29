@@ -66,7 +66,6 @@ public class Server extends NetworkEntity {
                 KilledRequest kr = (KilledRequest)o;
                 kr.killedId = c.getID();
                 server.sendToAllExceptUDP(c.getID(), kr);
-                server.sendToAllUDP(new SpawnResponse(client.getEmptySpawner().id, c.getID()));
             }
 
 

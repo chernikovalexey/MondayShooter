@@ -64,18 +64,15 @@ public class Client extends NetworkEntity implements Runnable {
                 listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
             } else if(o instanceof EntityPacket) {
                 listener.addEntity(((EntityPacket)o).entity);
-            } else if(o instanceof SpawnResponse) {
-                SpawnResponse sr = (SpawnResponse)o;
-                listener.onRespawn(sr.spawnerId, sr.userId);
-            } else if(o instanceof KilledRequest) {
+            }  else if(o instanceof KilledRequest) {
                 KilledRequest kr = (KilledRequest) o;
-                listener.onUserKilled(kr.killedId, kr.killerId);
+                listener.onUserKilled(kr.killedId, kr.killerId, kr.spawnerId);
             }
         }
     }
 
-    public void killed(int killerId) {
-        client.sendUDP(new KilledRequest(killerId));
+    public void killed(int killerId, int spawnerId) {
+        client.sendUDP(new KilledRequest(killerId, spawnerId));
     }
 
     public void sendEntity(Entity e) {
@@ -108,10 +105,6 @@ public class Client extends NetworkEntity implements Runnable {
 
     public void shoot(Entity shooter) {
         client.sendUDP(new RunningRequest(shooter, RunningRequest.SHOOT));
-    }
-
-    public Spawner getEmptySpawner() {
-        return listener.getEmptySpawner();
     }
 
     @Override
