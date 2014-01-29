@@ -24,12 +24,6 @@ public class NetworkListener implements Listener {
         Entity.serialId = response.yourId;
 
         if (!game.isServer()) {
-            for (int i = 0, len = response.entities.length; i < len; ++i) {
-                Entity entity = response.entities[i];
-                entity.setWorld(world);
-                world.addEntity(entity, true);
-            }
-
             for (int i = 0, len = response.bullets.length; i < len; ++i) {
                 Bullet bullet = (Bullet) response.bullets[i];
                 bullet.setWorld(world);
@@ -46,6 +40,16 @@ public class NetworkListener implements Listener {
     }
 
     @Override
+    public void onUserKilled(int killed, int killer, int spawnerId) {
+        System.out.println("User " + killed + " has been killed by " + killer);
+
+        Player killedPlayer = (Player) world.getEntityById(killed);
+        Player killerPlayer = (Player) world.getEntityById(killer);
+
+        killedPlayer.killed(killerPlayer, true);
+    }
+
+    @Override
     public void playerConnected(int id, String nickname) {
         Entity.serialId = id;
     }
@@ -55,12 +59,12 @@ public class NetworkListener implements Listener {
     }
 
     @Override
-    public Entity[] getEntities() {
-        return world.getEntities().values().toArray(new Entity[]{});
+    public String getLevelName() {
+        return "untitled.tmx";
     }
 
     @Override
-    public Entity[] getBullets() {
+    public Bullet[] getBullets() {
         return world.getBullets().toArray(new Bullet[]{});
     }
 

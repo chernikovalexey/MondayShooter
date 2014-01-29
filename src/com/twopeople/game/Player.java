@@ -21,6 +21,13 @@ public class Player extends Entity {
 
     private long lastShootTime = System.currentTimeMillis();
 
+  /*  private float[][] gunshotOffsets = new float[]{
+            new float[] {}, new float[] {},
+            new float[] {}, new float[] {},
+            new float[] {}, new float[] {},
+            new float[] {}, new float[] {}
+    };*/
+
     public Player() {
         loadAnimations(Images.player);
     }
@@ -29,8 +36,9 @@ public class Player extends Entity {
         super(x, y, WIDTH, HEIGHT, true);
 
         setLayer(1);
-        setSpeed(2.1f);
+        setSpeed(3.1f);
         loadAnimations(Images.player);
+        setHealth(100,100);
     }
 
     @Override
@@ -91,7 +99,7 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            g.fill(shape);
+//            g.fill(shape);
             g.setColor(Color.green);
         }
 
@@ -104,5 +112,21 @@ public class Player extends Entity {
 
     public boolean isControllable() {
         return getId() == world.getGame().getUserId();
+    }
+
+    public Spawner respawn() {
+        Spawner spawner = world.getRandomSpawner();
+        setX(spawner.x);
+        setY(spawner.y);
+        return spawner;
+    }
+
+    @Override
+    public void killed(Entity by, boolean fromListener) {
+        System.out.println("Killed by: " + by.getId());
+        Spawner spawner = respawn();
+        if (!fromListener) {
+            world.getGame().getClient().killed(by.getId(), spawner.id);
+        }
     }
 }

@@ -20,7 +20,7 @@ public class Bullet extends Entity {
     public Bullet(World world, float x, float y, Vector2f movingDirection) {
         super(x, y, WIDTH, HEIGHT, false);
         this.movingDirection = movingDirection;
-        setSpeed(5f);
+        setSpeed(15f);
         setWorld(world);
         setLayer(-1);
     }
@@ -47,7 +47,6 @@ public class Bullet extends Entity {
 
     public void bumpedInto(Entity entity) {
         remove = true;
-
-        System.out.println("Bullet hit " + entity);
+        entity.hurt(this, 25);
     }
 }

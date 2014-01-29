@@ -3,6 +3,7 @@ package com.twopeople.game;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -13,7 +14,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class Wall extends Entity {
     public static final float WIDTH = 128;
-    public static final float HEIGHT = 162;
+    public static final float HEIGHT = 126;
 
     public Wall() {
     }
@@ -25,18 +26,21 @@ public class Wall extends Entity {
 
     @Override
     public void render(GameContainer container, Camera camera, Graphics g) {
+        g.drawImage(Images.walls.getSprite(skin[0], skin[1]), camera.getX(getX()), camera.getY(getY()));
+
         g.setColor(Color.gray);
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            g.fill(shape);
+//            g.fill(shape);
             g.setColor(Color.green);
         }
 
-        g.drawImage(Images.walls.getSprite(0, 0), camera.getX(getX()), camera.getY(getY()));
+        g.setColor(Color.white);
+//        g.drawString(x + ", " + y, camera.getX(x), camera.getY(y));
 
-        g.setColor(new Color(204, 204, 204, 120));
-        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, HEIGHT);
+        //        g.setColor(new Color(204, 204, 204, 120));
+        //        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, HEIGHT);
     }
 
     @Override
@@ -79,6 +83,12 @@ public class Wall extends Entity {
 
     @Override
     public Shape[] getSkeleton() {
-        return world.getTileAt(x, y + 98, 3, 15).getSkeleton();
+        float yo = 62;
+        float bbw = 128;
+        float bbh = 64;
+        return new Shape[]{
+                new Polygon(new float[]{x, yo + y + bbh / 2, x + bbw / 2, yo + y + 3, x + bbw, yo + y + bbh / 2}),
+                new Polygon(new float[]{x, yo + y + bbh / 2, x + bbw, yo + y + bbh / 2, x + bbw / 2, yo + y + bbh}),
+        };
     }
 }

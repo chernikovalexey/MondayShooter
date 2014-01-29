@@ -6,7 +6,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Main {
-    public static final int WIDTH = 720;
+    public static final int WIDTH = 800;
     public static final int HEIGHT = WIDTH * 3 / 4;
 
     public static class GameController extends StateBasedGame {

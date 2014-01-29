@@ -15,7 +15,7 @@ public class Images {
     // Load separately to handle exceptions
     public static void init() {
         try {
-            walls = new SpriteSheet("res/wall001a.png", 128, 162);
+            walls = new SpriteSheet("res/walls.png", 128, 126);
             player = new SpriteSheet("res/player_combine01_fixed.png", 70, 70);
         } catch (SlickException e) {
             e.printStackTrace();

@@ -6,6 +6,14 @@ package com.twopeople.game;
  */
 
 public class Spawner {
+    private static int serialSpawnerId;
+
     public int id;
     public float x, y;
+
+    public Spawner(float x, float y) {
+        this.x = x;
+        this.y = y;
+        this.id = ++serialSpawnerId;
+    }
 }

@@ -25,6 +25,8 @@ public class Entity {
     private float width, height;
     private float speed;
 
+    protected int health, maxHealth;
+
     protected boolean remove = false;
 
     protected Vector2f movingDirection = new Vector2f(0f, 0f);
@@ -40,6 +42,7 @@ public class Entity {
 
     protected int currentAnimationState;
     protected transient Animation[] animations = new Animation[8];
+    protected int[] skin;
 
     public Entity() {
     }
@@ -74,38 +77,42 @@ public class Entity {
         float dx = velocity.x * delta * 0.0001f * 20;
         float dy = velocity.y * delta * 0.0001f * 20;
 
-        x += dx;
+        if (dx != 0) {
+            x += dx;
 
-        for (Entity e : entities) {
-            if (this.collidesWith(e) && !e.equals(this)) {
-                bumpedInto(e);
+            for (Entity e : entities) {
+                if (this.collidesWith(e) && !e.equals(this)) {
+                    bumpedInto(e);
 
-                if (movingDirection.y == 0) {
-                    Vector2f hitSide = e.getHitSideVector(this);
-                    float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(getBBCentre().x, 0, 0));
-                    y += (float) Math.sin(angle - Math.PI / 2);
-                }
+                    if (movingDirection.y == 0) {
+                        Vector2f hitSide = e.getHitSideVector(this);
+                        float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(getBBCentre().x, 0, 0));
+                        y += (float) Math.sin(angle - Math.PI / 2);
+                    }
 
-                while (e.collidesWith(this)) {
-                    x -= dx / 10;
+                    while (e.collidesWith(this)) {
+                        x -= dx / 10;
+                    }
                 }
             }
         }
 
-        y += dy;
+        if (dy != 0) {
+            y += dy;
 
-        for (Entity e : entities) {
-            if (this.collidesWith(e) && !e.equals(this)) {
-                bumpedInto(e);
+            for (Entity e : entities) {
+                if (this.collidesWith(e) && !e.equals(this)) {
+                    bumpedInto(e);
 
-                if (movingDirection.x == 0) {
-                    Vector2f hitSide = e.getHitSideVector(this);
-                    float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
-                    x += (float) Math.cos(angle);
-                }
+                    if (movingDirection.x == 0) {
+                        Vector2f hitSide = e.getHitSideVector(this);
+                        float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
+                        x += (float) Math.cos(angle);
+                    }
 
-                while (e.collidesWith(this)) {
-                    y -= dy / 10;
+                    while (e.collidesWith(this)) {
+                        y -= dy / 10;
+                    }
                 }
             }
         }
@@ -203,6 +210,16 @@ public class Entity {
 
     public void bumpedInto(Entity entity) {}
 
+    public void hurt(Entity by, int damage) {
+        health -= damage;
+        if (health <= 0) {
+            health = 0;
+            killed(by, false);
+        }
+    }
+
+    public void killed(Entity by, boolean fromListener) {}
+
     public boolean seeksForRemoval() {
         return remove;
     }
@@ -297,5 +314,18 @@ public class Entity {
 
     public void setLayer(int layer) {
         this.layer = layer;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setHealth(int health, int maxHealth) {
+        setHealth(health);
+        this.maxHealth = maxHealth;
+    }
+
+    public void setSkin(int[] skin) {
+        this.skin = skin;
     }
 }

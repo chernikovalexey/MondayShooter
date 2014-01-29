@@ -26,12 +26,20 @@ public class EntityLoader {
         }
     }
 
-    public static Entity getEntityInstanceByName(String name, Object[] args) {
+    public static boolean has(String name) {
+        return entities.containsKey(name);
+    }
+
+    public static Entity getEntityInstanceByName(String name, Object[] args, int[] skin) {
         Class<?> clazz = entities.get(name.toLowerCase());
         if (clazz != null) {
             try {
                 Constructor<?> constructor = clazz.getConstructor(float.class, float.class);
-                return (Entity) constructor.newInstance(args);
+                Entity entity = (Entity) constructor.newInstance(args);
+                --skin[0];
+                --skin[1];
+                entity.setSkin(skin);
+                return entity;
             } catch (Exception e) {
                 e.printStackTrace();
             }

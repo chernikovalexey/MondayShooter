@@ -13,7 +13,7 @@ public class Tile {
     public int id;
     public float x, y;
 
-    private static float width, height;
+    public static float width, height;
 
     public static void setSize(float w, float h) {
         width = w;
@@ -28,13 +28,6 @@ public class Tile {
 
     public void render(Camera camera, Graphics g) {
         g.drawImage(TileList.getTile(id), camera.getX(x), camera.getY(y));
-    }
-
-    public Shape[] getSkeleton() {
-        return new Shape[]{
-                new Polygon(new float[]{x, y + height / 2, x + width / 2, y + 3, x + width, y + height / 2}),
-                new Polygon(new float[]{x, y + height / 2, x + width, y + height / 2, x + width / 2, y + height}),
-        };
     }
 
     public boolean isVisible(Camera camera) {

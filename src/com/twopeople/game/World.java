@@ -22,27 +22,26 @@ import java.util.Random;
  */
 
 public class World {
-    public static final int TILE_WIDTH = 64;
-    public static final int TILE_HEIGHT = 30;
-    public static final int TILES_X = 64;
-    public static final int TILES_Y = 64;
+    private int tilesX, tilesY;
 
     private GameState game;
     private Random random = new Random();
 
+    private ArrayList<Spawner> spawners = new ArrayList<Spawner>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
     private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
     private ParticleManager particles = new ParticleManager(this);
     private ArrayList<Entity> bullets = new ArrayList<Entity>();
 
-    public static int lastUsedLayer = 1;
+    private boolean loaded = false;
+    public static int lastUsedLayer;
 
     private Comparator<Entity> entitySorter = new Comparator<Entity>() {
         @Override
         public int compare(Entity entity1, Entity entity2) {
-            if (entity1.getY() + entity1.getHeight() >= entity2.getY() + entity2.getHeight() / 2) {
+            if (entity1.getBBCentre().getY() + entity1.getHeight() / 6 >= entity2.getBBCentre().getY()) {
                 return 1;
-            } else if (entity1.getY() + entity1.getHeight() < entity2.getY() + entity2.getHeight() / 2) {
+            } else if (entity1.getBBCentre().getY() + entity1.getHeight() / 6 < entity2.getBBCentre().getY()) {
                 return -1;
             }
 
@@ -58,50 +57,26 @@ public class World {
     public World(GameState game) {
         this.game = game;
 
-        try {
-            TiledMap map = new TiledMap("res/untitled.tmx");
-
-            Tile.setSize(map.getTileWidth(), map.getTileHeight());
-
-            int tw = map.getTileWidth();
-            int th = map.getTileHeight();
-            for (int x = 0, oddOffset = 1, evenOffset = 0; x < map.getWidth(); ++x, oddOffset = 1, evenOffset = 0) {
-                for (int y = 0; y < map.getHeight(); ++y) {
-                    boolean odd = y % 2 != 0;
-                    int id = map.getTileId(x, y, 0);
-
-                    if (id != 0) {
-                        TileList.addTile(id, map.getTileImage(x, y, 0));
-
-                        if (odd) {
-                            tiles.add(new Tile(x * tw + tw / 2, (y - oddOffset++) * th + th / 2 + 1, id));
-                        } else {
-                            tiles.add(new Tile(x * tw, (y - evenOffset++) * th, id));
-                        }
-                    }
-                }
-            }
-
-            for (int gi = 0; gi < map.getObjectGroupCount(); gi++) {
-                int objectCount = map.getObjectCount(gi);
-                for (int oi = 0; oi < objectCount; oi++) {
-                    lastUsedLayer = gi + 1;
-                    Entity entity = EntityLoader.getEntityInstanceByName(map.getObjectType(gi, oi), new Object[]{map.getObjectX(gi, oi), map.getObjectY(gi, oi)});
-                    entity.setLayer(lastUsedLayer);
-                    addEntity(entity, true);
-                }
-            }
-        } catch (SlickException e) {
-            e.printStackTrace();
-        }
+//        spawners.add(new Spawner(0, 0));
+//        spawners.add(new Spawner(140, 120));
+//        spawners.add(new Spawner(240, 340));
+//        spawners.add(new Spawner(120, 200));
     }
 
     public void init() {
-        Player player = addPlayer(-1, random.nextInt(TILES_X / 2) * TILE_WIDTH / 3, random.nextInt(TILES_Y - TILES_Y / 7) * TILE_HEIGHT / 3, false);
+        loadMap("map");
+
+        Player player = addPlayer(-1, random.nextInt(400), random.nextInt(340), false);
+        player.respawn();
         game.getCamera().alignCenterOn(player);
     }
 
     public void update(GameContainer gameContainer, int delta) {
+        if (!loaded) {
+
+            loaded = true;
+        }
+
         synchronized (entities) {
             updateFromIterator(gameContainer, delta, entities.values().iterator());
         }
@@ -113,6 +88,8 @@ public class World {
         synchronized (bullets) {
             updateFromIterator(gameContainer, delta, bullets.iterator());
         }
+
+        System.out.println("spawners="+spawners.size());
     }
 
     public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it) {
@@ -126,23 +103,7 @@ public class World {
     }
 
     public void render(GameContainer gameContainer, Graphics g) {
-
-
         Camera camera = game.getCamera();
-
-        /*for (int x = 0; x < TILES_X; ++x) {
-            for (int y = 0; y < TILES_Y + (TILES_Y - 1) * TILE_HEIGHT / 7; ++y) {
-                int xt = x + (y >> 1) + y & 1;
-                int yt = (y >> 1) - x;
-
-                float tileX = x * TILE_WIDTH;
-                float tileY = y * TILE_HEIGHT - y * 14;
-
-                if (game.getCamera().isVisible(tileX, tileY, TILE_WIDTH, TILE_HEIGHT)) {
-                    g.drawImage(Images.tiles.getSprite(((yt ^ xt) & 1) == 0 ? 0 : 1, 0).getSubImage(0, 34, TILE_WIDTH, TILE_HEIGHT), camera.getX(tileX + (y & 1) * TILE_WIDTH / 2), camera.getY(tileY));
-                }
-            }
-        }*/
 
         for (Tile tile : tiles) {
             if (tile.isVisible(camera)) {
@@ -150,8 +111,9 @@ public class World {
             }
         }
 
-        g.setColor(Color.red);
-        g.drawRect(camera.getX(0), camera.getY(0), TILES_X * TILE_WIDTH, TILES_Y * TILE_HEIGHT);
+        for (ParticleSystem system : particles.list.values()) {
+            system.render();
+        }
 
         ArrayList<Entity> sorted = new ArrayList<Entity>();
 
@@ -162,12 +124,9 @@ public class World {
             }
         }
 
-        for (ParticleSystem system : particles.list.values()) {
-            system.render();
-        }
-
         synchronized (bullets) {
             Iterator<Entity> it = bullets.iterator();
+            renderFromIterator(gameContainer, g, it);
             while (it.hasNext()) {
                 sorted.add(it.next());
             }
@@ -193,11 +152,11 @@ public class World {
     // Utilities
 
     public float getWidth() {
-        return TILES_X * TILE_WIDTH;
+        return tilesX * Tile.width;
     }
 
     public float getHeight() {
-        return TILES_Y * TILE_HEIGHT;
+        return tilesY * Tile.height;
     }
 
     public boolean ranOut(Entity entity) {
@@ -242,6 +201,67 @@ public class World {
         }
     }
 
+    public void loadMap(String level) {
+        try {
+            long time = System.currentTimeMillis();
+            TiledMap map = new TiledMap("res/maps/" + level + ".tmx");
+
+            Tile.setSize(map.getTileWidth(), map.getTileHeight());
+            tilesX = map.getWidth();
+            tilesY = map.getHeight();
+
+            int tw = map.getTileWidth();
+            int th = map.getTileHeight();
+
+            tiles.clear();
+            removeEntitiesByIdExcept(new int[]{getGame().getUserId()});
+
+            for (int layer = 0; layer < map.getLayerCount(); ++layer) {
+                for (int x = 0, oddOffset = 1, evenOffset = 0; x < map.getWidth(); ++x, oddOffset = 1, evenOffset = 0) {
+                    for (int y = 0; y < map.getHeight(); ++y) {
+                        int id = map.getTileId(x, y, layer);
+                        boolean odd = y % 2 != 0;
+
+                        if (id != 0) {
+                            float xt, yt;
+                            String type = map.getTileProperty(id, "type", "");
+                            String[] rawSkin = map.getTileProperty(id, "skin", "0,0").split(",");
+                            int skin[] = new int[]{Integer.parseInt(rawSkin[0]), Integer.parseInt(rawSkin[1])};
+
+                            if (odd) {
+                                xt = x * tw + tw / 2;
+                                yt = (y - oddOffset++) * th + th / 2;
+                            } else {
+                                xt = x * tw;
+                                yt = (y - evenOffset++) * th;
+                            }
+
+                            if (type.equals("spawner")) {
+                                spawners.add(new Spawner(xt,yt));
+                            } else if (EntityLoader.has(type)) {
+                                Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt - 61}, skin);
+                                addEntity(entity, true);
+                            } else {
+                                TileList.addTile(id, map.getTileImage(x, y, layer));
+                                tiles.add(new Tile(xt, yt, id));
+                            }
+                        } else {
+                            if (odd) {
+                                oddOffset++;
+                            } else {
+                                evenOffset++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            System.out.println("Level parsed in " + (System.currentTimeMillis() - time) + " ms");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
+    }
+
     // =======
     // Getters
 
@@ -257,6 +277,24 @@ public class World {
             while (it.hasNext()) {
                 Entity bullet = it.next();
                 if (bullet.getOwner() == id) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    public void removeEntitiesByIdExcept(int[] ids) {
+        synchronized (entities) {
+            Iterator<Entity> it = entities.values().iterator();
+            while (it.hasNext()) {
+                Entity entity = it.next();
+                boolean found = false;
+                for (int id : ids) {
+                    if (entity.getId() == id) {
+                        found = true;
+                    }
+                }
+                if (!found) {
                     it.remove();
                 }
             }
@@ -279,16 +317,7 @@ public class World {
         return particles.get(id);
     }
 
-    public Tile getTileAt(float x, float y, int xr, int yr) {
-        for (Tile tile : tiles) {
-            for(int xo = -xr; xo <= xr; ++xo) {
-                for (int yo= -yr; yo <= yr; ++yo) {
-                    if (tile.x == x+xo && tile.y == y + yo) {
-                        return tile;
-                    }
-                }
-            }
-        }
-        return new Tile(0, 0, 0);
+    public Spawner getRandomSpawner() {
+        return spawners.get(random.nextInt(spawners.size()));
     }
 }
