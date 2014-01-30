@@ -42,7 +42,7 @@
   </tile>
   <tile id="8">
    <properties>
-    <property name="skin" value="2,1"/>
+    <property name="skin" value="1,2"/>
     <property name="type" value="wall"/>
    </properties>
   </tile>
