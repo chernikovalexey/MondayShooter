@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="staggered" width="100" height="100" tilewidth="128" tileheight="65">
+ <tileset firstgid="1" name="floors" tilewidth="128" tileheight="65">
+  <image source="../tiles.png" width="1024" height="130"/>
+  <tile id="2">
+   <properties>
+    <property name="type" value="spawner"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="17" name="walls" tilewidth="128" tileheight="126">
+  <image source="../walls.png" width="1024" height="504"/>
+  <tile id="0">
+   <properties>
+    <property name="skin" value="1,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="skin" value="2,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="skin" value="3,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="skin" value="4,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="4">
+   <properties>
+    <property name="skin" value="5,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="8">
+   <properties>
+    <property name="skin" value="2,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="skin" value="2,2"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="skin" value="3,2"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="11">
+   <properties>
+    <property name="skin" value="4,2"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="12">
+   <properties>
+    <property name="skin" value="5,2"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="skin" value="3,1"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="17">
+   <properties>
+    <property name="skin" value="2,3"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="skin" value="3,3"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="19">
+   <properties>
+    <property name="skin" value="4,3"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="20">
+   <properties>
+    <property name="skin" value="5,3"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="skin" value="1,4"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="skin" value="2,4"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="skin" value="3,4"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+  <tile id="27">
+   <properties>
+    <property name="skin" value="4,4"/>
+    <property name="type" value="wall"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer name="Floor" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3ZMQrDMBBFwZW7kNz/vMGFwFGU+i/xDBhcCh7rBbkKAAAAAAAAAAAAAAAAAAC+jfQB+DBKky5G6dHJKE26mA2epUcH62xokrPOhhnJ+zUfR/JQN7bbH0fpkbTbHZrk7Pa4Hlm7vXG+PzLHub11b8wWemQdl2f28N3K2bXQI2vXQ5Oc9TulR966N8539yg560y418q7NnH3mzd7uIvv49rjVZqk+V/VyzobZiTLfPRjf/RiNvrRoxct+tEDAAAAAAAAAAAAAAAA/tsbdAStnECcAAA=
+  </data>
+ </layer>
+ <layer name="Walls" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3WwWqDQBCAYV8hlh7S2IPv/5LNlASGpeqlzOzh+0Ayq5eFn9UsCwAAAAAAAAAAAAAAAADAHLbn9ejeBL+2168ec9jSrEmvbVjr0St67GkdsyY9xrPxpkePox5Bk173Ya1Hva+L55rU0mM+0WQf7uW1JrXGM7IvenS7avJRuBf+7pHpUS+afJ8816Te2f8tPXpoMpexxy3NevTITW6LJt3WNOsxh7FJpkm99eB+tNGjx1GToEk9PeY2fkeodXY+Pst2QXbURI8e0SO/p2LWotfZe4t6uYezMYd3Ez3mED20AAAAAAAAAAAAAAAA4L/9ACsRJzBAnAAA
+  </data>
+ </layer>
+ <layer name="spawners" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3ZIQ4AMAgDQBL+/+fpETJFMsSdqcXUlAgAAAAAAAAAAAAAAAAAAACAGfn7AFgqSwI33QAAAAAAJtkcoednBW+6AQAAAAAAAAAAAAAAAABAdQCo+7tHQJwAAA==
+  </data>
+ </layer>
+ <layer name="Walls_visible" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3OMQ0AAAgDsInAv1ZEjISnVdAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKA33wEAAAAAAAAAAAAAAAAAAAA4sitMdUFAnAAA
+  </data>
+ </layer>
+ <layer name="Walls_invisible" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3OMQ0AAAgDsOnAv1BEjISnVdAEAAAAAAAAAAAAAAAAAAAAAAAAADrzHQAAAAAAAAAAAAAAAAAAAAAAAAA4tNCVM6VAnAAA
+  </data>
+ </layer>
+ <layer name="fences" width="100" height="100">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3VMQ0AAAjAMPyAf314ICQctAr2LQIAAAAAAAAAAAAAAAAAAAAA4Le6DgAARjwcgG15HQAAjPk4AAAAAAAAAAAAAAAAAAAAsK0BZHJAn0CcAAA=
+  </data>
+ </layer>
+</map>
