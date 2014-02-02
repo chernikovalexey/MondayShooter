@@ -1,7 +1,7 @@
 package com.twopeople.game.particle;
 
 import com.twopeople.game.Camera;
-import com.twopeople.game.World;
+import com.twopeople.game.world.World;
 import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleSystem;
 

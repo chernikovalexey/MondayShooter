@@ -1,9 +1,19 @@
-package com.twopeople.game;
+package com.twopeople.game.world;
 
+import com.twopeople.game.entity.Bullet;
+import com.twopeople.game.Camera;
+import com.twopeople.game.EntityVault;
+import com.twopeople.game.GameState;
+import com.twopeople.game.world.tile.Tile;
+import com.twopeople.game.world.tile.TileList;
+import com.twopeople.game.entity.Entity;
+import com.twopeople.game.entity.EntityLoader;
+import com.twopeople.game.entity.Player;
 import com.twopeople.game.particle.ParticleManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.ParticleSystem;
@@ -12,7 +22,6 @@ import org.newdawn.slick.tiled.TiledMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -27,21 +36,21 @@ public class World {
     private GameState game;
     private Random random = new Random();
 
-    private ArrayList<Spawner> spawners = new ArrayList<Spawner>();
+    private ArrayList<Vector2f> spawners = new ArrayList<Vector2f>();
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
-    private HashMap<Integer, Entity> entities = new HashMap<Integer, Entity>();
+    private EntityVault entities = new EntityVault(12800, 12800);
+    private EntityVault bullets = new EntityVault(12800, 12800);
     private ParticleManager particles = new ParticleManager(this);
-    private ArrayList<Entity> bullets = new ArrayList<Entity>();
 
-    private boolean loaded = false;
-    public static int lastUsedLayer;
+    private boolean canLoad = false;
+    //    public static int lastUsedLayer;
 
     private Comparator<Entity> entitySorter = new Comparator<Entity>() {
         @Override
         public int compare(Entity entity1, Entity entity2) {
-            if (entity1.getBBCentre().getY() + entity1.getHeight() / 6 >= entity2.getBBCentre().getY()) {
+            if (entity1.getBBCentre().getY() - entity2.getZ() + 0 * entity1.getHeight() / 6 >= entity2.getBBCentre().getY()) {
                 return 1;
-            } else if (entity1.getBBCentre().getY() + entity1.getHeight() / 6 < entity2.getBBCentre().getY()) {
+            } else if (entity1.getBBCentre().getY() - entity2.getZ() + entity1.getHeight() / 6 < entity2.getBBCentre().getY()) {
                 return -1;
             }
 
@@ -56,54 +65,51 @@ public class World {
 
     public World(GameState game) {
         this.game = game;
-
-//        spawners.add(new Spawner(0, 0));
-//        spawners.add(new Spawner(140, 120));
-//        spawners.add(new Spawner(240, 340));
-//        spawners.add(new Spawner(120, 200));
     }
 
     public void init() {
-        loadMap("map");
-
-        Player player = addPlayer(-1, random.nextInt(400), random.nextInt(340), false);
-        player.respawn();
-        game.getCamera().alignCenterOn(player);
+        canLoad = true;
     }
 
     public void update(GameContainer gameContainer, int delta) {
-        if (!loaded) {
+        final long time = System.currentTimeMillis();
 
-            loaded = true;
+        if (canLoad) {
+            Player player = addPlayer(-1, random.nextInt(400), random.nextInt(340), false);
+            game.getCamera().alignCenterOn(player);
+
+            loadMap("dm_map01");
+            player.respawn();
+
+            canLoad = false;
         }
 
-        synchronized (entities) {
-            updateFromIterator(gameContainer, delta, entities.values().iterator());
-        }
+        updateFromIterator(gameContainer, delta, entities.getAll().iterator(), entities);
+        updateFromIterator(gameContainer, delta, bullets.getAll().iterator(), bullets);
 
         for (ParticleSystem system : particles.list.values()) {
             system.update(delta);
         }
 
-        synchronized (bullets) {
-            updateFromIterator(gameContainer, delta, bullets.iterator());
-        }
-
-        System.out.println("spawners="+spawners.size());
+        //        System.out.println("world update " + (System.currentTimeMillis() - time) + " ms");
     }
 
-    public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it) {
+    public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it, EntityVault vault) {
         while (it.hasNext()) {
             Entity entity = it.next();
-            entity.update(container, delta);
-            if (entity.seeksForRemoval()) {
+
+            // Note that regardless value of the `vault` variable, entities are sent to the update method
+            entity.update(container, delta, entities);
+            if (entity.isRemovalFlagOn()) {
                 it.remove();
+                vault.remove(entity);
             }
         }
     }
 
     public void render(GameContainer gameContainer, Graphics g) {
-        Camera camera = game.getCamera();
+        final long time = System.currentTimeMillis();
+        final Camera camera = game.getCamera();
 
         for (Tile tile : tiles) {
             if (tile.isVisible(camera)) {
@@ -115,36 +121,50 @@ public class World {
             system.render();
         }
 
-        ArrayList<Entity> sorted = new ArrayList<Entity>();
-
-        synchronized (entities) {
-            Iterator<Entity> it = entities.values().iterator();
-            while (it.hasNext()) {
-                sorted.add(it.next());
+        ArrayList<Entity> sorted = new ArrayList<Entity>() {{
+            Iterator<Entity> ite = entities.getVisible(camera).iterator();
+            while (ite.hasNext()) {
+                add(ite.next());
             }
-        }
 
-        synchronized (bullets) {
-            Iterator<Entity> it = bullets.iterator();
-            renderFromIterator(gameContainer, g, it);
-            while (it.hasNext()) {
-                sorted.add(it.next());
+            Iterator<Entity> itb = bullets.getVisible(camera).iterator();
+            while (itb.hasNext()) {
+                add(itb.next());
             }
-        }
+        }};
 
         Collections.sort(sorted, entitySorter);
         renderFromIterator(gameContainer, g, sorted.iterator());
+
+        //        renderGrid(camera, g, entities);
 
         g.setColor(Color.white);
         g.drawString("blood particles=" + particles.get(ParticleManager.BLOOD_DEBRIS).getParticleCount(), 10, 30);
         g.drawString("entities=" + entities.size(), 10, 50);
         g.drawString("bullets=" + bullets.size(), 10, 70);
+
+        //        System.out.println("world render " + (System.currentTimeMillis() - time) + " ms");
     }
 
     public void renderFromIterator(GameContainer container, Graphics g, Iterator<Entity> it) {
         while (it.hasNext()) {
             Entity entity = it.next();
             entity.render(container, game.getCamera(), g);
+        }
+    }
+
+    private void renderGrid(Camera camera, Graphics g, EntityVault vault) {
+        g.setColor(Color.white);
+
+        for (float x = 0; x < vault.xCells * EntityVault.EntityVaultCell.WIDTH; x += EntityVault.EntityVaultCell.WIDTH) {
+            for (float y = 0; y < vault.yCells * EntityVault.EntityVaultCell.HEIGHT; y += EntityVault.EntityVaultCell.HEIGHT) {
+                if (camera.isVisible(x, y, EntityVault.EntityVaultCell.WIDTH, EntityVault.EntityVaultCell.HEIGHT)) {
+                    g.drawLine(camera.getX(x), camera.getY(y), camera.getX(x + EntityVault.EntityVaultCell.WIDTH), camera.getY(y));
+                    g.drawLine(camera.getX(x), camera.getY(y), camera.getX(x), camera.getY(y + EntityVault.EntityVaultCell.HEIGHT));
+                    int cell = ((int) (x / EntityVault.EntityVaultCell.WIDTH + y / EntityVault.EntityVaultCell.HEIGHT * vault.xCells));
+                    g.drawString("(" + x / EntityVault.EntityVaultCell.WIDTH + ", " + y / EntityVault.EntityVaultCell.HEIGHT + ") items=" + vault.getCell(cell).getEntities().size(), camera.getX(x + 15), camera.getY(y + 15));
+                }
+            }
         }
     }
 
@@ -168,9 +188,7 @@ public class World {
             entity.setWorld(this);
         }
 
-        synchronized (entities) {
-            entities.put(entity.getId(), entity);
-        }
+        entities.add(entity);
 
         if (!fromReceiver) {
             getGame().getClient().sendEntity(entity);
@@ -188,13 +206,11 @@ public class World {
         return player;
     }
 
-    public void addBullet(float x, float y, Entity shooter, Vector2f direction, boolean fromReceiver) {
-        Bullet bullet = new Bullet(this, x, y, direction);
+    public void addBullet(float x, float y, float z, Entity shooter, Vector2f direction, boolean fromReceiver) {
+        Bullet bullet = new Bullet(this, x, y, z, direction);
         bullet.setOwner(shooter.getId());
 
-        synchronized (bullets) {
-            bullets.add(bullet);
-        }
+        bullets.add(bullet);
 
         if (!fromReceiver) {
             getGame().getClient().shoot(shooter);
@@ -224,33 +240,35 @@ public class World {
 
                         if (id != 0) {
                             float xt, yt;
+                            Image image = map.getTileImage(x, y, layer);
                             String type = map.getTileProperty(id, "type", "");
                             String[] rawSkin = map.getTileProperty(id, "skin", "0,0").split(",");
                             int skin[] = new int[]{Integer.parseInt(rawSkin[0]), Integer.parseInt(rawSkin[1])};
 
                             if (odd) {
                                 xt = x * tw + tw / 2;
-                                yt = (y - oddOffset++) * th + th / 2;
+                                yt = (y - oddOffset) * th + th / 2;
                             } else {
                                 xt = x * tw;
-                                yt = (y - evenOffset++) * th;
+                                yt = (y - evenOffset) * th;
                             }
 
                             if (type.equals("spawner")) {
-                                spawners.add(new Spawner(xt,yt));
+                                spawners.add(new Vector2f(xt, yt));
                             } else if (EntityLoader.has(type)) {
-                                Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt - 61}, skin);
+                                Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt}, image, skin);
+                                entity.setY(entity.getY() - entity.getHeight());
                                 addEntity(entity, true);
                             } else {
-                                TileList.addTile(id, map.getTileImage(x, y, layer));
+                                TileList.addTile(id, image);
                                 tiles.add(new Tile(xt, yt, id));
                             }
+                        }
+
+                        if (odd) {
+                            oddOffset++;
                         } else {
-                            if (odd) {
-                                oddOffset++;
-                            } else {
-                                evenOffset++;
-                            }
+                            evenOffset++;
                         }
                     }
                 }
@@ -266,46 +284,44 @@ public class World {
     // Getters
 
     public Entity getEntityById(int id) {
-        return entities.get(id);
+        return entities.getById(id);
     }
 
     public void removeEntityById(int id) {
-        entities.remove(id);
+        entities.remove(entities.getById(id));
 
-        synchronized (bullets) {
-            Iterator<Entity> it = bullets.iterator();
-            while (it.hasNext()) {
-                Entity bullet = it.next();
-                if (bullet.getOwner() == id) {
-                    it.remove();
-                }
+        Iterator<Entity> it = bullets.getAll().iterator();
+        while (it.hasNext()) {
+            Entity bullet = it.next();
+            if (bullet.getOwner() == id) {
+                it.remove();
+                bullets.remove(bullet);
             }
         }
     }
 
     public void removeEntitiesByIdExcept(int[] ids) {
-        synchronized (entities) {
-            Iterator<Entity> it = entities.values().iterator();
-            while (it.hasNext()) {
-                Entity entity = it.next();
-                boolean found = false;
-                for (int id : ids) {
-                    if (entity.getId() == id) {
-                        found = true;
-                    }
+        Iterator<Entity> it = entities.getAll().iterator();
+        while (it.hasNext()) {
+            Entity entity = it.next();
+            boolean found = false;
+            for (int id : ids) {
+                if (entity.getId() == id) {
+                    found = true;
                 }
-                if (!found) {
-                    it.remove();
-                }
+            }
+            if (!found) {
+                it.remove();
+                entities.remove(entity);
             }
         }
     }
 
-    public HashMap<Integer, Entity> getEntities() {
+    public EntityVault getEntities() {
         return entities;
     }
 
-    public ArrayList<Entity> getBullets() {
+    public EntityVault getBullets() {
         return bullets;
     }
 
@@ -317,7 +333,7 @@ public class World {
         return particles.get(id);
     }
 
-    public Spawner getRandomSpawner() {
+    public Vector2f getRandomSpawner() {
         return spawners.get(random.nextInt(spawners.size()));
     }
 }

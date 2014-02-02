@@ -1,8 +1,7 @@
 package com.twopeople.game.network;
 
 import com.esotericsoftware.kryonet.Connection;
-import com.twopeople.game.Entity;
-import com.twopeople.game.Spawner;
+import com.twopeople.game.entity.Entity;
 import com.twopeople.game.network.packet.*;
 
 import java.io.IOException;
@@ -62,17 +61,17 @@ public class Client extends NetworkEntity implements Runnable {
                 listener.disconnected(((DisconnectionRequest) o).userId);
             } else if (o instanceof UserResponse) {
                 listener.playerConnected(((UserResponse) o).userId, ((UserResponse) o).nickname);
-            } else if(o instanceof EntityPacket) {
-                listener.addEntity(((EntityPacket)o).entity);
-            }  else if(o instanceof KilledRequest) {
+            } else if (o instanceof EntityPacket) {
+                listener.addEntity(((EntityPacket) o).entity);
+            } else if (o instanceof KilledRequest) {
                 KilledRequest kr = (KilledRequest) o;
-                listener.onUserKilled(kr.killedId, kr.killerId, kr.spawnerId);
+                listener.onUserKilled(kr.killedId, kr.killerId, kr.spawnerX, kr.spawnerY);
             }
         }
     }
 
-    public void killed(int killerId, int spawnerId) {
-        client.sendUDP(new KilledRequest(killerId, spawnerId));
+    public void killed(int killerId, float spawnerX, float spawnerY) {
+        client.sendUDP(new KilledRequest(killerId, spawnerX, spawnerY));
     }
 
     public void sendEntity(Entity e) {

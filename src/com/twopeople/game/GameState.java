@@ -1,7 +1,9 @@
 package com.twopeople.game;
 
+import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.network.Client;
 import com.twopeople.game.network.Server;
+import com.twopeople.game.world.World;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -33,10 +35,12 @@ public class GameState extends BasicGameState {
         Images.init();
         EntityLoader.init();
 
+        gameContainer.getGraphics().setAntiAlias(true);
+
         camera = new Camera(gameContainer);
         world = new World(this);
 
-        String action = "s";//StringUtil.readString("s/c: ");
+        String action = "s";//Console.readString("s/c: ");
 
         NetworkListener listener = new NetworkListener(this, world);
         client = new Client(listener);

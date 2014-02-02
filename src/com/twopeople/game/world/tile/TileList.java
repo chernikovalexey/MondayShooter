@@ -1,4 +1,4 @@
-package com.twopeople.game;
+package com.twopeople.game.world.tile;
 
 import org.newdawn.slick.Image;
 

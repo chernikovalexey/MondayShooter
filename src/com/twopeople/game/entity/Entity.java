@@ -1,5 +1,8 @@
-package com.twopeople.game;
+package com.twopeople.game.entity;
 
+import com.twopeople.game.Camera;
+import com.twopeople.game.EntityVault;
+import com.twopeople.game.world.World;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
@@ -12,17 +15,19 @@ import org.newdawn.slick.geom.Vector2f;
 
 import java.util.Collection;
 
-public class Entity {
+public abstract class Entity {
     public static int serialId;
 
     protected transient World world;
+
+    private int cellX, cellY;
 
     protected int id;
     private int owner;
     private int layer;
 
-    protected float x, y;
-    private float width, height;
+    protected float x, y, z;
+    protected float width, height, depth;
     private float speed;
 
     protected int health, maxHealth;
@@ -44,14 +49,20 @@ public class Entity {
     protected transient Animation[] animations = new Animation[8];
     protected int[] skin;
 
+    // Used for static on-the-fly-created entities (parsed)
+    // Remains unused in other cases
+    protected transient Image image;
+
     public Entity() {
     }
 
-    public Entity(float x, float y, float width, float height, boolean hasId) {
+    public Entity(float x, float y, float z, float width, float height, float depth, boolean hasId) {
         this.x = x;
         this.y = y;
+        this.z = z;
         this.width = width;
         this.height = height;
+        this.depth = depth;
         init(hasId);
     }
 
@@ -61,7 +72,7 @@ public class Entity {
         }
     }
 
-    public void update(GameContainer container, int delta) {
+    public void update(GameContainer container, int delta, EntityVault entities) {
         long time = System.currentTimeMillis();
 
         float speed = getSpeed();
@@ -72,52 +83,54 @@ public class Entity {
         velocity.x = accelerationX * delta;
         velocity.y = accelerationZ * delta;
 
-        Collection<Entity> entities = world.getEntities().values();
-
         float dx = velocity.x * delta * 0.0001f * 20;
         float dy = velocity.y * delta * 0.0001f * 20;
 
-        if (dx != 0) {
-            x += dx;
+        if (dx != 0 || dy != 0) {
+            Collection<Entity> nearby = entities.getNearbyEntities(this);
 
-            for (Entity e : entities) {
-                if (this.collidesWith(e) && !e.equals(this)) {
-                    bumpedInto(e);
+            if (dx != 0) {
+                x += dx;
 
-                    if (movingDirection.y == 0) {
-                        Vector2f hitSide = e.getHitSideVector(this);
-                        float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(getBBCentre().x, 0, 0));
-                        y += (float) Math.sin(angle - Math.PI / 2);
+                for (Entity e : nearby) {
+                    if (this.collidesWith(e)) {
+                        bumpedInto(e);
+
+                        if (movingDirection.y == 0) {
+                            Vector2f hitSide = e.getHitSideVector(this);
+                            float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(getBBCentre().x, 0, 0));
+                            y += (float) Math.sin(angle - Math.PI / 2);
+                        }
+
+                        while (e.collidesWith(this)) {
+                            x -= dx / 10;
+                        }
                     }
+                }
+            }
 
-                    while (e.collidesWith(this)) {
-                        x -= dx / 10;
+            if (dy != 0) {
+                y += dy;
+
+                for (Entity e : nearby) {
+                    if (this.collidesWith(e)) {
+                        bumpedInto(e);
+
+                        if (movingDirection.x == 0) {
+                            Vector2f hitSide = e.getHitSideVector(this);
+                            float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
+                            x += (float) Math.cos(angle) * 2;
+                        }
+
+                        while (e.collidesWith(this)) {
+                            y -= dy / 10;
+                        }
                     }
                 }
             }
         }
 
-        if (dy != 0) {
-            y += dy;
-
-            for (Entity e : entities) {
-                if (this.collidesWith(e) && !e.equals(this)) {
-                    bumpedInto(e);
-
-                    if (movingDirection.x == 0) {
-                        Vector2f hitSide = e.getHitSideVector(this);
-                        float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
-                        x += (float) Math.cos(angle);
-                    }
-
-                    while (e.collidesWith(this)) {
-                        y -= dy / 10;
-                    }
-                }
-            }
-        }
-
-        //        System.out.println("Time elapsed on updating and moving: " + (System.currentTimeMillis() - time));
+        //                System.out.println((System.currentTimeMillis()-time) + " elapsed on moving.");
     }
 
     public void render(GameContainer container, Camera camera, Graphics g) {
@@ -197,14 +210,28 @@ public class Entity {
         return new Shape[]{getBB()};
     }
 
+    public boolean collidesWith(Shape shape) {
+        for (Shape s : getSkeleton()) {
+            if (shape.intersects(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean collidesWith(Entity entity) {
         for (Shape shape1 : getSkeleton()) {
             for (Shape shape2 : entity.getSkeleton()) {
+                if (getZ() > 0 && getZ() <= entity.getHeight()) {
+                    shape2.setY(shape2.getY() - getZ());
+                }
+
                 if (shape1.intersects(shape2)) {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -214,13 +241,13 @@ public class Entity {
         health -= damage;
         if (health <= 0) {
             health = 0;
-            killed(by, false);
+            killed(by);
         }
     }
 
-    public void killed(Entity by, boolean fromListener) {}
+    public void killed(Entity by) {}
 
-    public boolean seeksForRemoval() {
+    public boolean isRemovalFlagOn() {
         return remove;
     }
 
@@ -251,6 +278,14 @@ public class Entity {
         this.y = y;
     }
 
+    public float getZ() {
+        return z;
+    }
+
+    public void setZ(float z) {
+        this.z = z;
+    }
+
     public float getWidth() {
         return width;
     }
@@ -263,8 +298,20 @@ public class Entity {
         return height;
     }
 
+    public float getOrthogonalHeight() {
+        return height + depth;
+    }
+
     public void setHeight(float height) {
         this.height = height;
+    }
+
+    public float getDepth() {
+        return depth;
+    }
+
+    public void setDepth(float depth) {
+        this.depth = depth;
     }
 
     public float getSpeed() {
@@ -325,7 +372,27 @@ public class Entity {
         this.maxHealth = maxHealth;
     }
 
+    public void setImage(Image image) {
+        this.image = image;
+    }
+
     public void setSkin(int[] skin) {
         this.skin = skin;
+    }
+
+    public int getCellX() {
+        return cellX;
+    }
+
+    public void setCellX(int cellX) {
+        this.cellX = cellX;
+    }
+
+    public int getCellY() {
+        return cellY;
+    }
+
+    public void setCellY(int cellY) {
+        this.cellY = cellY;
     }
 }

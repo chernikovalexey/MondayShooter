@@ -1,5 +1,9 @@
-package com.twopeople.game;
+package com.twopeople.game.entity;
 
+import com.twopeople.game.Camera;
+import com.twopeople.game.EntityVault;
+import com.twopeople.game.Images;
+import com.twopeople.game.entity.Entity;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.particle.debris.BloodDebrisEmitter;
 import org.newdawn.slick.Color;
@@ -17,35 +21,36 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class Player extends Entity {
     public static final float WIDTH = 70;
-    public static final float HEIGHT = 70;
+    public static final float HEIGHT = 50;
+    public static final float DEPTH = 20;
 
     private long lastShootTime = System.currentTimeMillis();
 
-  /*  private float[][] gunshotOffsets = new float[]{
-            new float[] {}, new float[] {},
-            new float[] {}, new float[] {},
-            new float[] {}, new float[] {},
-            new float[] {}, new float[] {}
-    };*/
+    private float[][] gunshotOffsets = new float[][]{
+            new float[]{41, -14}, new float[]{58, 3},
+            new float[]{24, 0}, new float[]{8, -1},
+            new float[]{8, -14}, new float[]{56, -1},
+            new float[]{6, 12}, new float[]{48, 18}
+    };
 
     public Player() {
         loadAnimations(Images.player);
     }
 
     public Player(float x, float y) {
-        super(x, y, WIDTH, HEIGHT, true);
+        super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
 
         setLayer(1);
-        setSpeed(3.1f);
+        setSpeed(4.5f);
         loadAnimations(Images.player);
-        setHealth(100,100);
+        setHealth(100, 100);
     }
 
     @Override
-    public void update(GameContainer container, int delta) {
+    public void update(GameContainer container, int delta, EntityVault entities) {
         Input input = container.getInput();
 
-        super.update(container, delta);
+        super.update(container, delta, entities);
         movingDirection.set(0f, 0f);
 
         if (isControllable()) {
@@ -74,6 +79,7 @@ public class Player extends Entity {
             }
 
             if (isMoving) {
+                entities.move(this);
                 world.getGame().getClient().directionChange(this);
                 world.getGame().getCamera().alignCenterOn(this);
 
@@ -88,7 +94,7 @@ public class Player extends Entity {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 125) {
                 lastShootTime = currentShootTime;
                 double angle = Math.atan2(getHeadingVector().y, getHeadingVector().x);
-                world.addBullet(getX(), getY(), this, new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
+                world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], getZ() + 42, this, new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
             }
         }
     }
@@ -99,34 +105,41 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-//            g.fill(shape);
-            g.setColor(Color.green);
+            g.fill(shape);
         }
 
-        g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(getX()), camera.getY(getY()));
+        g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
+        //        g.drawString(getCellX() + ", " + getCellY(), camera.getX(this), camera.getY(this));
+
+        g.setColor(new Color(204, 204, 204, 120));
+        //        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, getOrthogonalHeight());
     }
 
+    @Override
     public Shape getBB() {
-        return new Circle(getX() + WIDTH / 2, getY() + HEIGHT / 2 + 25, 12);
+        return new Circle(getX() + WIDTH / 2, getY() + HEIGHT + 12, 12);
     }
 
     public boolean isControllable() {
         return getId() == world.getGame().getUserId();
     }
 
-    public Spawner respawn() {
-        Spawner spawner = world.getRandomSpawner();
-        setX(spawner.x);
-        setY(spawner.y);
+    public Vector2f respawn() {
+        Vector2f spawner = world.getRandomSpawner();
+        respawnAt(spawner);
         return spawner;
     }
 
+    public void respawnAt(Vector2f spawner) {
+        setX(spawner.x + 64 / 2);
+        setY(spawner.y - 16);
+        world.getGame().getCamera().alignCenterOn(this);
+        world.getEntities().move(this);
+    }
+
     @Override
-    public void killed(Entity by, boolean fromListener) {
-        System.out.println("Killed by: " + by.getId());
-        Spawner spawner = respawn();
-        if (!fromListener) {
-            world.getGame().getClient().killed(by.getId(), spawner.id);
-        }
+    public void killed(Entity by) {
+        Vector2f spawner = respawn();
+        world.getGame().getClient().killed(by.getId(), spawner.x, spawner.y);
     }
 }

@@ -1,5 +1,6 @@
 package com.twopeople.game;
 
+import com.twopeople.game.entity.Entity;
 import org.newdawn.slick.GameContainer;
 
 /**
@@ -34,6 +35,10 @@ public class Camera {
         return ox + width * 2 >= x && oy + height * 2 >= y && ox - width * 2 <= x + container.getWidth() && oy - height * 2 <= y + container.getHeight();
     }
 
+    public boolean isVisible(Entity entity) {
+        return isVisible(entity.getX(), entity.getY() - entity.getZ(), entity.getWidth(), entity.getDepth());
+    }
+
     public void alignCenterOn(Entity entity) {
         setTargetX(entity.getX() - container.getWidth() / 2 + entity.getWidth());
         setTargetY(entity.getY() - container.getHeight() / 2 + entity.getHeight());
@@ -45,5 +50,13 @@ public class Camera {
 
     public float getY(float ey) {
         return ey - this.y;
+    }
+
+    public float getX(Entity entity) {
+        return getX(entity.getX());
+    }
+
+    public float getY(Entity entity) {
+        return getY(entity.getY() - entity.getZ());
     }
 }

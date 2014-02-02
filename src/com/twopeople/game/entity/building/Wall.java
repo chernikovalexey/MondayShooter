@@ -1,5 +1,7 @@
-package com.twopeople.game;
+package com.twopeople.game.entity.building;
 
+import com.twopeople.game.Camera;
+import com.twopeople.game.entity.Entity;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,33 +16,36 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class Wall extends Entity {
     public static final float WIDTH = 128;
-    public static final float HEIGHT = 126;
+    public static final float HEIGHT = 62;
+    public static final float DEPTH = 64;
 
     public Wall() {
     }
 
     public Wall(float x, float y) {
-        super(x, y, WIDTH, HEIGHT, true);
+        super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
         setLayer(2);
     }
 
     @Override
     public void render(GameContainer container, Camera camera, Graphics g) {
-        g.drawImage(Images.walls.getSprite(skin[0], skin[1]), camera.getX(getX()), camera.getY(getY()));
+        g.drawImage(image, camera.getX(this), camera.getY(this));
 
-        g.setColor(Color.gray);
-        for (Shape shape : getSkeleton()) {
-            shape.setX(camera.getX(shape.getX()));
-            shape.setY(camera.getY(shape.getY()));
-//            g.fill(shape);
-            g.setColor(Color.green);
+        for (float zo = 0; zo <= 0; zo++) {
+            for (Shape shape : getSkeleton()) {
+                shape.setX(camera.getX(shape.getX()));
+                shape.setY(camera.getY(shape.getY() - 42));
+                g.setColor(new Color(255, 255 - (int) zo, 255 - (int) zo, 255));
+                //                g.fill(shape);
+            }
         }
 
         g.setColor(Color.white);
-//        g.drawString(x + ", " + y, camera.getX(x), camera.getY(y));
+        //        g.drawString(getCellX() + ", "  +getCellY(),camera.getX(this),camera.getY(this));
+        //        g.drawString(x + ", " + y, camera.getX(x), camera.getY(y));
 
-        //        g.setColor(new Color(204, 204, 204, 120));
-        //        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, HEIGHT);
+        g.setColor(new Color(204, 204, 204, 120));
+        //                g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, getOrthogonalHeight());
     }
 
     @Override
@@ -79,16 +84,12 @@ public class Wall extends Entity {
         return vector;
     }
 
-    // It is standing on a tile
-
     @Override
     public Shape[] getSkeleton() {
-        float yo = 62;
-        float bbw = 128;
-        float bbh = 64;
+        float yo = HEIGHT;
         return new Shape[]{
-                new Polygon(new float[]{x, yo + y + bbh / 2, x + bbw / 2, yo + y + 3, x + bbw, yo + y + bbh / 2}),
-                new Polygon(new float[]{x, yo + y + bbh / 2, x + bbw, yo + y + bbh / 2, x + bbw / 2, yo + y + bbh}),
+                new Polygon(new float[]{x, yo + y + DEPTH / 2, x + WIDTH / 2, yo + y, x + WIDTH, yo + y + DEPTH / 2}),
+                new Polygon(new float[]{x, yo + y + DEPTH / 2, x + WIDTH, yo + y + DEPTH / 2, x + WIDTH / 2, yo + y + DEPTH}),
         };
     }
 }

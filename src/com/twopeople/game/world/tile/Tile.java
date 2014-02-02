@@ -1,8 +1,7 @@
-package com.twopeople.game;
+package com.twopeople.game.world.tile;
 
+import com.twopeople.game.Camera;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.geom.Polygon;
-import org.newdawn.slick.geom.Shape;
 
 /**
  * Created by Alexey

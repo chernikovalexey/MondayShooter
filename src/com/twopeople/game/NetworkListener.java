@@ -1,7 +1,11 @@
 package com.twopeople.game;
 
+import com.twopeople.game.entity.Bullet;
+import com.twopeople.game.entity.Entity;
+import com.twopeople.game.entity.Player;
 import com.twopeople.game.network.Listener;
 import com.twopeople.game.network.packet.AuthResponse;
+import com.twopeople.game.world.World;
 import org.newdawn.slick.geom.Vector2f;
 
 /**
@@ -27,7 +31,7 @@ public class NetworkListener implements Listener {
             for (int i = 0, len = response.bullets.length; i < len; ++i) {
                 Bullet bullet = (Bullet) response.bullets[i];
                 bullet.setWorld(world);
-                world.addBullet(bullet.getX(), bullet.getY(), world.getEntityById(bullet.getOwner()), bullet.getMovingVector(), true);
+                world.addBullet(bullet.getX(), bullet.getY(), 42, world.getEntityById(bullet.getOwner()), bullet.getMovingVector(), true);
             }
         }
 
@@ -40,13 +44,16 @@ public class NetworkListener implements Listener {
     }
 
     @Override
-    public void onUserKilled(int killed, int killer, int spawnerId) {
+    public void onUserKilled(int killed, int killer, float spawnerX, float spawnerY) {
         System.out.println("User " + killed + " has been killed by " + killer);
 
         Player killedPlayer = (Player) world.getEntityById(killed);
         Player killerPlayer = (Player) world.getEntityById(killer);
 
-        killedPlayer.killed(killerPlayer, true);
+        killedPlayer.respawnAt(new Vector2f(spawnerX, spawnerY));
+
+        // todo
+        // score leading
     }
 
     @Override
@@ -65,7 +72,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public Bullet[] getBullets() {
-        return world.getBullets().toArray(new Bullet[]{});
+        return world.getBullets().getAll().toArray(new Bullet[]{});
     }
 
     private Entity updateEntityState(int id, float x, float y) {
@@ -87,7 +94,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
-        world.addBullet(x, y, world.getEntityById(shooterId), new Vector2f(vx, vy), true);
+        world.addBullet(x, y, 42, world.getEntityById(shooterId), new Vector2f(vx, vy), true);
     }
 
     @Override

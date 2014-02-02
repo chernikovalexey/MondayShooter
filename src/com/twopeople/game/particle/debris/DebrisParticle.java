@@ -1,6 +1,6 @@
 package com.twopeople.game.particle.debris;
 
-import com.twopeople.game.World;
+import com.twopeople.game.world.World;
 import com.twopeople.game.particle.MSParticle;
 import org.newdawn.slick.particles.ParticleSystem;
 

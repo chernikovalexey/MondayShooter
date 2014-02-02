@@ -1,6 +1,6 @@
 package com.twopeople.game.network.packet;
 
-import com.twopeople.game.Entity;
+import com.twopeople.game.entity.Entity;
 import org.newdawn.slick.geom.Vector2f;
 
 /**

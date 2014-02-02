@@ -8,13 +8,15 @@ package com.twopeople.game.network.packet;
 public class KilledRequest extends Packet {
     public int killerId;
     public int killedId;
-    public int spawnerId;
-    public KilledRequest() {
+    public float spawnerX;
+    public float spawnerY;
 
+    public KilledRequest() {
     }
 
-    public KilledRequest(int killer, int spawner) {
+    public KilledRequest(int killer, float spawnerX, float spawnerY) {
         killerId = killer;
-        spawnerId = spawner;
+        this.spawnerX = spawnerX;
+        this.spawnerY = spawnerY;
     }
 }
