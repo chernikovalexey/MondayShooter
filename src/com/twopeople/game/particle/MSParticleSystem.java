@@ -1,10 +1,12 @@
 package com.twopeople.game.particle;
 
+import com.twopeople.game.particle.debris.DebrisEmitter;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleSystem;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 /**
  * Created by Alexey
@@ -19,6 +21,14 @@ public class MSParticleSystem extends ParticleSystem {
         super(defaultSpriteRef, maxParticles);
         this.clazz = clazz;
         this.world = world;
+    }
+
+    public ArrayList<MSParticle> getAllParticles() {
+        ArrayList<MSParticle> particles = new ArrayList<MSParticle>();
+        for (Object emitter : emitters) {
+            particles.addAll(((DebrisEmitter) emitter).getParticles());
+        }
+        return particles;
     }
 
     @Override

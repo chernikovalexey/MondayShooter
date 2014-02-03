@@ -2,6 +2,7 @@ package com.twopeople.game.entity;
 
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
+import com.twopeople.game.IRenderable;
 import com.twopeople.game.world.World;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Animation;
@@ -15,7 +16,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import java.util.Collection;
 
-public abstract class Entity {
+public class Entity implements IRenderable {
     public static int serialId;
 
     protected transient World world;
@@ -133,8 +134,7 @@ public abstract class Entity {
         //                System.out.println((System.currentTimeMillis()-time) + " elapsed on moving.");
     }
 
-    public void render(GameContainer container, Camera camera, Graphics g) {
-    }
+    public void render(GameContainer container, Camera camera, Graphics g) {}
 
     private void updateDirection(float dx, float dy) {
         float oldX = headingDirection.x;

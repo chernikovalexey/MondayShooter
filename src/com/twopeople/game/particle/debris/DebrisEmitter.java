@@ -2,20 +2,24 @@ package com.twopeople.game.particle.debris;
 
 import com.twopeople.game.entity.Player;
 import com.twopeople.game.particle.MSParticle;
+import com.twopeople.game.world.World;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleEmitter;
 import org.newdawn.slick.particles.ParticleSystem;
 
-import java.util.Random;
+import java.util.ArrayList;
 
 public class DebrisEmitter implements ParticleEmitter {
-    private Random random = new Random();
+    private World world;
+    private ArrayList<MSParticle> particles = new ArrayList<MSParticle>();
 
     private float x, y;
     private boolean used = false;
+    private int amount;
 
-    public DebrisEmitter(float x, float y) {
+    public DebrisEmitter(World world, float x, float y) {
+        this.world = world;
         this.x = x;
         this.y = y;
     }
@@ -25,17 +29,17 @@ public class DebrisEmitter implements ParticleEmitter {
         if (!used) {
             used = true;
 
-            for (int i = 0; i < 18 + random.nextInt(6); ++i) {
-                MSParticle p = (MSParticle) particleSystem.getNewParticle(this, 2500);
+            for (int i = 0; i < 36 + world.getRandom().nextInt(12); ++i) {
+                MSParticle p = (MSParticle) particleSystem.getNewParticle(this, 3000);
 
                 p.setPosition(x + Player.WIDTH / 2, y + Player.HEIGHT / 2, 16);
 
                 float vx, vy, vz, dd;
 
                 do {
-                    vx = random.nextFloat() * 2 - 1;
-                    vy = random.nextFloat() * 2 - 1;
-                    vz = random.nextFloat() * 2 - 1;
+                    vx = world.getRandom().nextFloat() * 2 - 1;
+                    vy = world.getRandom().nextFloat() * 2 - 1;
+                    vz = world.getRandom().nextFloat() * 2 - 1;
                 } while ((dd = vx * vx + vy * vy + vz * vz) > 1);
                 dd = (float) Math.sqrt(dd);
                 float speed = 1f;
@@ -44,6 +48,9 @@ public class DebrisEmitter implements ParticleEmitter {
                 vz = (vz / dd + 1f) * speed;
 
                 p.setVelocity(vx, vy, vz, speed);
+
+                ++amount;
+                particles.add(p);
             }
         }
     }
@@ -52,40 +59,47 @@ public class DebrisEmitter implements ParticleEmitter {
     public void updateParticle(Particle particle, int delta) {
         DebrisParticle p = (DebrisParticle) particle;
 
-        if (p.finished) {
-            return;
+        if (particle.getLife() < 20f) {
+            --amount;
+            particles.remove(particle);
         }
 
-        float gravity = 0.199f;
+        if (!p.finished) {
+            float gravity = 0.109f;
 
-        if (p.getZ() < 1f) {
-            p.setVelocityZ(0f);
-            if (p.getVelocityX() > 1f) { p.setVelocity(0f, p.getVelocityY()); }
-            if (p.getVelocityY() > 1f) { p.setVelocity(p.getVelocityX(), 0f); }
-            if (p.bounced) {
-                if (p.getVelocityX() <= 0) {
-                    p.finished = true;
-                    p.setSpeed(0f);
+            if (p.getZ() < 1f) {
+                p.setVelocityZ(0f);
+                if (p.getVelocityX() > 1f) { p.setVelocity(0f, p.getVelocityY()); }
+                if (p.getVelocityY() > 1f) { p.setVelocity(p.getVelocityX(), 0f); }
+                if (p.bounced) {
+                    if (p.getVelocityX() <= 0) {
+                        p.finished = true;
+                        p.setSpeed(0f);
+                    }
+                    p.increaseVelocityX(0.445f);
+                    p.increaseVelocityY((float) Math.random() * 0.495f);
+                } else {
+                    p.bounced = true;
+                    p.increaseVelocityY(0.965f);
                 }
-                p.increaseVelocityX(0.445f);
-                p.increaseVelocityY((float) Math.random() * 0.495f);
             } else {
-                p.bounced = true;
-                p.increaseVelocityY(0.965f);
+                p.increaseVelocityX(0.895f);
+                p.increaseVelocityY(0.735f);
+                p.adjustVelocity(0, 0, -gravity);
             }
-        } else {
-            p.increaseVelocityX(0.895f);
-            p.increaseVelocityY(0.735f);
-            p.adjustVelocity(0, 0, -gravity);
-        }
 
-        float c = 0.002f * delta;
-        particle.adjustColor(0, -c / 2, -c * 2, -c / 4);
+            float c = 0.0065f * delta;
+            particle.adjustColor(0, -c / 2, -c * 2, -c / 4);
+        }
+    }
+
+    public ArrayList<MSParticle> getParticles() {
+        return particles;
     }
 
     @Override
     public boolean completed() {
-        return !used;
+        return used && amount == 0;
     }
 
     @Override

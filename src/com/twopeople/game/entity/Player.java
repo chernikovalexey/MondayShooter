@@ -3,7 +3,6 @@ package com.twopeople.game.entity;
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.Images;
-import com.twopeople.game.entity.Entity;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.particle.debris.BloodDebrisEmitter;
 import org.newdawn.slick.Color;
@@ -75,7 +74,7 @@ public class Player extends Entity {
             }
 
             if (input.isKeyPressed(Input.KEY_P)) {
-                world.getParticleSystem(ParticleManager.BLOOD_DEBRIS).addEmitter(new BloodDebrisEmitter(getX(), getY()));
+                world.getParticleSystem(ParticleManager.BLOOD_DEBRIS).addEmitter(new BloodDebrisEmitter(world, getX(), getY() - getZ()));
             }
 
             if (isMoving) {

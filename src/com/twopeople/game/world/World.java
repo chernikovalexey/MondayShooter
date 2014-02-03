@@ -1,15 +1,17 @@
 package com.twopeople.game.world;
 
-import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.GameState;
-import com.twopeople.game.world.tile.Tile;
-import com.twopeople.game.world.tile.TileList;
+import com.twopeople.game.IRenderable;
+import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.entity.Player;
+import com.twopeople.game.particle.MSParticleSystem;
 import com.twopeople.game.particle.ParticleManager;
+import com.twopeople.game.world.tile.Tile;
+import com.twopeople.game.world.tile.TileList;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -45,20 +47,20 @@ public class World {
     private boolean canLoad = false;
     //    public static int lastUsedLayer;
 
-    private Comparator<Entity> entitySorter = new Comparator<Entity>() {
+    private Comparator<IRenderable> entitySorter = new Comparator<IRenderable>() {
         @Override
-        public int compare(Entity entity1, Entity entity2) {
+        public int compare(IRenderable entity1, IRenderable entity2) {
             if (entity1.getBBCentre().getY() - entity2.getZ() + 0 * entity1.getHeight() / 6 >= entity2.getBBCentre().getY()) {
                 return 1;
             } else if (entity1.getBBCentre().getY() - entity2.getZ() + entity1.getHeight() / 6 < entity2.getBBCentre().getY()) {
                 return -1;
             }
 
-            if (entity1.getLayer() > entity2.getLayer()) {
-                return 1;
-            } else if (entity1.getLayer() < entity2.getLayer()) {
-                return -1;
-            }
+            //            if (entity1.getLayer() > entity2.getLayer()) {
+            //                return 1;
+            //            } else if (entity1.getLayer() < entity2.getLayer()) {
+            //                return -1;
+            //            }
             return 0;
         }
     };
@@ -117,11 +119,7 @@ public class World {
             }
         }
 
-        for (ParticleSystem system : particles.list.values()) {
-            system.render();
-        }
-
-        ArrayList<Entity> sorted = new ArrayList<Entity>() {{
+        ArrayList<IRenderable> sorted = new ArrayList<IRenderable>() {{
             Iterator<Entity> ite = entities.getVisible(camera).iterator();
             while (ite.hasNext()) {
                 add(ite.next());
@@ -132,6 +130,13 @@ public class World {
                 add(itb.next());
             }
         }};
+
+        for (ParticleSystem system : particles.list.values()) {
+            if (system instanceof MSParticleSystem) {
+                System.out.println("all particles=" + ((MSParticleSystem) system).getAllParticles().size());
+                sorted.addAll(((MSParticleSystem) system).getAllParticles());
+            }
+        }
 
         Collections.sort(sorted, entitySorter);
         renderFromIterator(gameContainer, g, sorted.iterator());
@@ -146,10 +151,10 @@ public class World {
         //        System.out.println("world render " + (System.currentTimeMillis() - time) + " ms");
     }
 
-    public void renderFromIterator(GameContainer container, Graphics g, Iterator<Entity> it) {
+    public void renderFromIterator(GameContainer container, Graphics g, Iterator<IRenderable> it) {
         while (it.hasNext()) {
-            Entity entity = it.next();
-            entity.render(container, game.getCamera(), g);
+            IRenderable entity = it.next();
+            entity.render(container, game.getCamera(), g); // others
         }
     }
 
@@ -327,6 +332,10 @@ public class World {
 
     public GameState getGame() {
         return game;
+    }
+
+    public Random getRandom() {
+        return random;
     }
 
     public ParticleSystem getParticleSystem(int id) {
