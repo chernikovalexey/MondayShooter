@@ -83,7 +83,7 @@ public class MSParticle extends Particle implements IRenderable {
                 v2.x *= delta * 0.05f;
                 v2.y *= delta * 0.05f;
 
-                System.out.println(v2);
+                //System.out.println(v2);
 
                 velx = v2.x;
                 vely = v2.y;

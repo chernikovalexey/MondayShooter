@@ -127,15 +127,8 @@ public class World {
         }
 
         ArrayList<IRenderable> sorted = new ArrayList<IRenderable>() {{
-            Iterator<Entity> ite = entities.getVisible(camera).iterator();
-            while (ite.hasNext()) {
-                add(ite.next());
-            }
-
-            Iterator<Entity> itb = bullets.getVisible(camera).iterator();
-            while (itb.hasNext()) {
-                add(itb.next());
-            }
+            addAll(entities.getVisible(camera));
+            addAll(bullets.getVisible(camera));
         }};
 
         for (ParticleSystem system : particles.list.values()) {
