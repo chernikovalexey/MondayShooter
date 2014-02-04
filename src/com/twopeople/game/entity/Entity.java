@@ -210,15 +210,6 @@ public class Entity implements IRenderable {
         return new Shape[]{getBB()};
     }
 
-    public boolean collidesWith(Shape shape) {
-        for (Shape s : getSkeleton()) {
-            if (shape.intersects(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean collidesWith(Entity entity) {
         for (Shape shape1 : getSkeleton()) {
             for (Shape shape2 : entity.getSkeleton()) {

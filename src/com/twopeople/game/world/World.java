@@ -55,11 +55,17 @@ public class World {
             float e2y = entity2.getBBCentre().getY() - entity2.getZ();
 
             if (entity1 instanceof MSParticle) {
-                e1y += entity1.getZ();
+                if (new Float(e1y).equals(Float.NaN)) {
+                    return -1;
+                }
+
+                System.out.println("p(y)=" + e1y + ", entity(y)=" + e2y);
             }
 
             if (entity2 instanceof MSParticle) {
-                e2y += entity2.getZ();
+                if (new Float(e2y).equals(Float.NaN)) {
+                    return 1;
+                }
             }
 
             if (e1y > e2y) {
