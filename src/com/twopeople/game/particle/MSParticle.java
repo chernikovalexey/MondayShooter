@@ -31,7 +31,7 @@ public class MSParticle extends Particle implements IRenderable {
         super(engine);
         this.world = world;
         this.engine = engine;
-        this.associatedEntity = new Entity(x, y, 0, size, size, size, false);
+        this.associatedEntity = new Entity(x, y, z, size, size, size, false);
     }
 
     @Override
@@ -47,12 +47,11 @@ public class MSParticle extends Particle implements IRenderable {
         this.velx = vx;
         this.vely = vy;
 
-        float d = delta * 0.25f;
+        float d = delta * 0.125f;
         int steps = (int) Math.sqrt(velx * velx + vely * vely + velz * velz) + 1;
 
         for (int i = 0; i < steps; ++i) {
-            partialMove(d * velx / steps, 0, 0);
-            partialMove(0, d * vely / steps, 0);
+            partialMove(d * velx / steps, d * vely / steps, delta);
         }
 
         if (life > 0) {
@@ -60,30 +59,40 @@ public class MSParticle extends Particle implements IRenderable {
         }
     }
 
-    private void partialMove(float dx, float dy, float dz) {
+    private void partialMove(float dx, float dy, int delta) {
         x += dx;
         y += dy;
 
         associatedEntity.setX(x);
         associatedEntity.setY(y);
-        associatedEntity.setZ(z/2);
+        associatedEntity.setZ(z);
         Collection<Entity> nearby = world.getEntities().getNearbyEntities(associatedEntity);
-
-        //        System.out.println(nearby.size());
 
         for (Entity e : nearby) {
             if (associatedEntity.collidesWith(e) && !(e instanceof Player)) {
-                collideWithEntity(dx, dy, dz);
+                Vector2f hitSide = e.getHitSideVector(associatedEntity);
+
+                Vector2f u = hitSide.getPerpendicular();
+                Vector2f w = hitSide.sub(u);
+                w.x *= 0.01f;
+                w.y *= 0.01f;
+                u.x *= 0.001f;
+                u.y *= 0.001f;
+                Vector2f v2 = w.sub(u);
+
+                v2.x *= delta * 0.05f;
+                v2.y *= delta * 0.05f;
+
+                System.out.println(v2);
+
+                velx = v2.x;
+                vely = v2.y;
+
                 x -= dx;
                 y -= dy;
                 break;
             }
         }
-    }
-
-    private void collideWithEntity(float dx, float dy, float dz) {
-        if (dx != 0) { velx = -velx; }
-        if (dy != 0) { vely = -vely; }
     }
 
     @Override

@@ -210,6 +210,9 @@ public class EntityVault {
         if (num < 0) {
             num = 0;
         }
+        if (num >= xCells * yCells) {
+            num = xCells * yCells - 1;
+        }
         return cells[num];
     }
 

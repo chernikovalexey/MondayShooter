@@ -120,7 +120,7 @@ public class Entity implements IRenderable {
                         if (movingDirection.x == 0) {
                             Vector2f hitSide = e.getHitSideVector(this);
                             float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
-                            x += (float) Math.cos(angle) * 2;
+                            x += (float) Math.cos(angle);
                         }
 
                         while (e.collidesWith(this)) {

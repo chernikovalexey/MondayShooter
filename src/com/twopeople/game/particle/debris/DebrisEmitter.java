@@ -29,10 +29,10 @@ public class DebrisEmitter implements ParticleEmitter {
         if (!used) {
             used = true;
 
-            for (int i = 0; i < 36 + world.getRandom().nextInt(12); ++i) {
-                MSParticle p = (MSParticle) particleSystem.getNewParticle(this, 3000);
+            for (int i = 0; i < 12 + world.getRandom().nextInt(1); ++i) {
+                MSParticle p = (MSParticle) particleSystem.getNewParticle(this, 1500);
 
-                p.setPosition(x + Player.WIDTH / 2, y + Player.HEIGHT / 2, 16);
+                p.setPosition(x + Player.WIDTH / 2, y + Player.HEIGHT, 16);
 
                 float vx, vy, vz, dd;
 
@@ -65,7 +65,7 @@ public class DebrisEmitter implements ParticleEmitter {
         }
 
         if (!p.finished) {
-            float gravity = 0.109f;
+            float gravity = 0.09f;
 
             if (p.getZ() < 1f) {
                 p.setVelocityZ(0f);
@@ -89,7 +89,7 @@ public class DebrisEmitter implements ParticleEmitter {
             }
 
             float c = 0.0065f * delta;
-            particle.adjustColor(0, -c / 2, -c * 2, -c / 4);
+//            particle.adjustColor(0, -c / 2, -c * 2, -c / 4);
         }
     }
 

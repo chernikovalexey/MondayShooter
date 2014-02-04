@@ -8,6 +8,7 @@ import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.entity.Player;
+import com.twopeople.game.particle.MSParticle;
 import com.twopeople.game.particle.MSParticleSystem;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.world.tile.Tile;
@@ -50,17 +51,23 @@ public class World {
     private Comparator<IRenderable> entitySorter = new Comparator<IRenderable>() {
         @Override
         public int compare(IRenderable entity1, IRenderable entity2) {
-            if (entity1.getBBCentre().getY() - entity2.getZ() + 0 * entity1.getHeight() / 6 >= entity2.getBBCentre().getY()) {
+            float e1y = entity1.getBBCentre().getY() - entity1.getZ();
+            float e2y = entity2.getBBCentre().getY() - entity2.getZ();
+
+            if (entity1 instanceof MSParticle) {
+                e1y += entity1.getZ();
+            }
+
+            if (entity2 instanceof MSParticle) {
+                e2y += entity2.getZ();
+            }
+
+            if (e1y > e2y) {
                 return 1;
-            } else if (entity1.getBBCentre().getY() - entity2.getZ() + entity1.getHeight() / 6 < entity2.getBBCentre().getY()) {
+            } else if (e1y < e2y) {
                 return -1;
             }
 
-            //            if (entity1.getLayer() > entity2.getLayer()) {
-            //                return 1;
-            //            } else if (entity1.getLayer() < entity2.getLayer()) {
-            //                return -1;
-            //            }
             return 0;
         }
     };
@@ -133,7 +140,7 @@ public class World {
 
         for (ParticleSystem system : particles.list.values()) {
             if (system instanceof MSParticleSystem) {
-                System.out.println("all particles=" + ((MSParticleSystem) system).getAllParticles().size());
+                //                System.out.println("all particles=" + ((MSParticleSystem) system).getAllParticles().size());
                 sorted.addAll(((MSParticleSystem) system).getAllParticles());
             }
         }
