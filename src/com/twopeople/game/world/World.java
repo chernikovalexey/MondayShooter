@@ -46,7 +46,6 @@ public class World {
     private ParticleManager particles = new ParticleManager(this);
 
     private boolean canLoad = false;
-    //    public static int lastUsedLayer;
 
     private Comparator<IRenderable> entitySorter = new Comparator<IRenderable>() {
         @Override
@@ -59,13 +58,15 @@ public class World {
                     return -1;
                 }
 
-                System.out.println("p(y)=" + e1y + ", entity(y)=" + e2y);
+                e1y += entity1.getZ() + entity2.getHeight();
             }
 
             if (entity2 instanceof MSParticle) {
                 if (new Float(e2y).equals(Float.NaN)) {
                     return 1;
                 }
+
+                e2y += entity2.getZ() + entity2.getHeight();
             }
 
             if (e1y > e2y) {
