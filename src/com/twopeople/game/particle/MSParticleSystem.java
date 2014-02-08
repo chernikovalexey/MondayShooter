@@ -2,6 +2,8 @@ package com.twopeople.game.particle;
 
 import com.twopeople.game.particle.debris.DebrisEmitter;
 import com.twopeople.game.world.World;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleSystem;
 
@@ -17,10 +19,14 @@ public class MSParticleSystem extends ParticleSystem {
     protected Class<?> clazz;
     protected World world;
 
-    public MSParticleSystem(World world, String defaultSpriteRef, int maxParticles, Class<?> clazz) {
-        super(defaultSpriteRef, maxParticles);
+    public MSParticleSystem(World world, Image defaultSprite, int maxParticles, Class<?> clazz) {
+        super(defaultSprite, maxParticles);
         this.clazz = clazz;
         this.world = world;
+    }
+
+    public MSParticleSystem(World world, SpriteSheet sprite, int maxParticles, Class<?> clazz) {
+        this(world, sprite.getSprite(world.getRandom().nextInt(sprite.getHorizontalCount()), world.getRandom().nextInt(sprite.getVerticalCount())), maxParticles, clazz);
     }
 
     public ArrayList<MSParticle> getAllParticles() {

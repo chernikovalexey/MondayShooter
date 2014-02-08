@@ -2,8 +2,6 @@ package com.twopeople.game.entity;
 
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
-import com.twopeople.game.entity.Entity;
-import com.twopeople.game.entity.Player;
 import com.twopeople.game.entity.building.Fence;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.Color;
@@ -44,6 +42,8 @@ public class Bullet extends Entity {
 
     @Override
     public void render(GameContainer container, Camera camera, Graphics g) {
+        renderOvalShadow(camera, g, z - height);
+
         g.setColor(Color.red);
         g.fillOval(camera.getX(this), camera.getY(this), getWidth(), getHeight());
 

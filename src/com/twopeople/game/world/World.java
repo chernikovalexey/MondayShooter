@@ -53,19 +53,25 @@ public class World {
             float e1y = entity1.getBBCentre().getY() - entity1.getZ();
             float e2y = entity2.getBBCentre().getY() - entity2.getZ();
 
+            if (entity1 instanceof Bullet) {
+                e1y = entity1.getY();
+            }
+
+            if (entity2 instanceof Bullet) {
+                e2y = entity2.getY();
+            }
+
             if (entity1 instanceof MSParticle) {
-                if (new Float(e1y).equals(Float.NaN)) {
+                if (Float.isNaN(e1y)) {
                     return -1;
                 }
-
-                e1y += entity1.getZ() + entity2.getHeight();
+                e1y += entity1.getZ() + entity1.getHeight();
             }
 
             if (entity2 instanceof MSParticle) {
-                if (new Float(e2y).equals(Float.NaN)) {
+                if (Float.isNaN(e2y)) {
                     return 1;
                 }
-
                 e2y += entity2.getZ() + entity2.getHeight();
             }
 
@@ -138,9 +144,10 @@ public class World {
             addAll(bullets.getVisible(camera));
         }};
 
+        int pa = 0;
         for (ParticleSystem system : particles.list.values()) {
             if (system instanceof MSParticleSystem) {
-                //                System.out.println("all particles=" + ((MSParticleSystem) system).getAllParticles().size());
+                pa += ((MSParticleSystem) system).getAllParticles().size();
                 sorted.addAll(((MSParticleSystem) system).getAllParticles());
             }
         }
@@ -151,7 +158,7 @@ public class World {
         //        renderGrid(camera, g, entities);
 
         g.setColor(Color.white);
-        g.drawString("blood particles=" + particles.get(ParticleManager.BLOOD_DEBRIS).getParticleCount(), 10, 30);
+        g.drawString("particles=" + pa, 10, 30);
         g.drawString("entities=" + entities.size(), 10, 50);
         g.drawString("bullets=" + bullets.size(), 10, 70);
 

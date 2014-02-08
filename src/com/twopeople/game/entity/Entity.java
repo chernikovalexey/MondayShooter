@@ -6,6 +6,7 @@ import com.twopeople.game.IRenderable;
 import com.twopeople.game.world.World;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Animation;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
@@ -135,6 +136,14 @@ public class Entity implements IRenderable {
     }
 
     public void render(GameContainer container, Camera camera, Graphics g) {}
+
+    public void renderOvalShadow(Camera camera, Graphics g, float shadowDistance) {
+        float shadowOpacity = 0.15f;
+
+        g.setColor(new Color(0, 0, 0, shadowOpacity));
+        float sw = getBB().getWidth() * 1.5f;
+        g.fillOval(camera.getX(x + (width - sw) / 2), camera.getY(y + height + shadowDistance - z), sw, getBB().getHeight() / 1.75f);
+    }
 
     private void updateDirection(float dx, float dy) {
         float oldX = headingDirection.x;

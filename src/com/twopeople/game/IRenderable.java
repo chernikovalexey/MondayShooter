@@ -16,5 +16,7 @@ public interface IRenderable {
 
     public float getHeight();
 
+    public float getY();
+
     public float getZ();
 }

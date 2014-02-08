@@ -5,6 +5,7 @@ import com.twopeople.game.EntityVault;
 import com.twopeople.game.Images;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.particle.debris.BloodDebrisEmitter;
+import com.twopeople.game.particle.debris.GunshotDebrisEmitter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -26,10 +27,10 @@ public class Player extends Entity {
     private long lastShootTime = System.currentTimeMillis();
 
     private float[][] gunshotOffsets = new float[][]{
-            new float[]{41, -14}, new float[]{58, 3},
-            new float[]{24, 0}, new float[]{8, -1},
-            new float[]{8, -14}, new float[]{56, -1},
-            new float[]{6, 12}, new float[]{48, 18}
+            new float[]{40, 2}, new float[]{56, 16},
+            new float[]{24, 25}, new float[]{10, 12},
+            new float[]{16, 6}, new float[]{60, 8},
+            new float[]{6, 20}, new float[]{46, 28}
     };
 
     public Player() {
@@ -90,10 +91,14 @@ public class Player extends Entity {
             }
 
             long currentShootTime = System.currentTimeMillis();
-            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 125) {
+            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 105) {
                 lastShootTime = currentShootTime;
                 double angle = Math.atan2(getHeadingVector().y, getHeadingVector().x);
                 world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], getZ() + 42, this, new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
+
+                float vx = getHeadingVector().x;
+                float vy = getHeadingVector().y;
+                world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(new GunshotDebrisEmitter(world, getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], vx, vy));
             }
         }
     }
@@ -104,8 +109,10 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            g.fill(shape);
+            //            g.fill(shape);
         }
+
+        renderOvalShadow(camera, g, 8f);
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
         //        g.drawString(getCellX() + ", " + getCellY(), camera.getX(this), camera.getY(this));
