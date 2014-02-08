@@ -5,7 +5,6 @@ import com.twopeople.game.EntityVault;
 import com.twopeople.game.Images;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.particle.debris.BloodDebrisEmitter;
-import com.twopeople.game.particle.debris.GunshotDebrisEmitter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -13,6 +12,11 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
+import org.newdawn.slick.particles.ConfigurableEmitter;
+import org.newdawn.slick.particles.ParticleIO;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Alexey
@@ -40,7 +44,6 @@ public class Player extends Entity {
     public Player(float x, float y) {
         super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
 
-        setLayer(1);
         setSpeed(4.5f);
         loadAnimations(Images.player);
         setHealth(100, 100);
@@ -51,7 +54,7 @@ public class Player extends Entity {
         Input input = container.getInput();
 
         super.update(container, delta, entities);
-        movingDirection.set(0f, 0f);
+        movingDirection.set(0f, 0f, 0f);
 
         if (isControllable()) {
             boolean isMoving = false;
@@ -72,6 +75,9 @@ public class Player extends Entity {
             if (input.isKeyDown(Input.KEY_D)) {
                 movingDirection.x += 1;
                 isMoving = true;
+            }
+            if (input.isKeyPressed(Input.KEY_SPACE) && velocity.z == 0) {
+                movingDirection.z = -1;
             }
 
             if (input.isKeyPressed(Input.KEY_P)) {
@@ -96,9 +102,17 @@ public class Player extends Entity {
                 double angle = Math.atan2(getHeadingVector().y, getHeadingVector().x);
                 world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], getZ() + 42, this, new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
 
-                float vx = getHeadingVector().x;
-                float vy = getHeadingVector().y;
-                world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(new GunshotDebrisEmitter(world, getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], vx, vy));
+                Camera camera = world.getGame().getCamera();
+
+                try {
+                    File xmlFile = new File("res/gunshot.xml");
+                    ConfigurableEmitter emitter = ParticleIO.loadEmitter(xmlFile);
+                    emitter.setPosition(camera.getX(x) - 130 - width / 2 + gunshotOffsets[currentAnimationState][0] / 2, camera.getY(y - z) - 125 + gunshotOffsets[currentAnimationState][1]);
+                    emitter.angularOffset.setValue((float) (getHeadingVector().getTheta() + 90));
+                    ParticleManager.g.addEmitter(emitter);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -112,7 +126,7 @@ public class Player extends Entity {
             //            g.fill(shape);
         }
 
-        renderOvalShadow(camera, g, 8f);
+        renderOvalShadow(camera, g, 8f, 0.1f);
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
         //        g.drawString(getCellX() + ", " + getCellY(), camera.getX(this), camera.getY(this));

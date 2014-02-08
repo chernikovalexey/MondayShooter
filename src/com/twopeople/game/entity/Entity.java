@@ -26,7 +26,6 @@ public class Entity implements IRenderable {
 
     protected int id;
     private int owner;
-    private int layer;
 
     protected float x, y, z;
     protected float width, height, depth;
@@ -36,9 +35,9 @@ public class Entity implements IRenderable {
 
     protected boolean remove = false;
 
-    protected Vector2f movingDirection = new Vector2f(0f, 0f);
+    protected Vector3f velocity = new Vector3f(0f, 0f, 0f);
+    protected Vector3f movingDirection = new Vector3f(0f, 0f, 0f);
     private Vector2f headingDirection = new Vector2f(0f, 0f);
-    private Vector2f velocity = new Vector2f(0f, 0f);
 
     private Vector2f[] directions = new Vector2f[]{
             new Vector2f(-90), new Vector2f(0),
@@ -54,6 +53,9 @@ public class Entity implements IRenderable {
     // Used for static on-the-fly-created entities (parsed)
     // Remains unused in other cases
     protected transient Image image;
+
+    protected float groundFriction = 1.0f / 1000f;
+    protected float airFriction = 1.0f;
 
     public Entity() {
     }
@@ -74,16 +76,30 @@ public class Entity implements IRenderable {
         }
     }
 
+
     public void update(GameContainer container, int delta, EntityVault entities) {
+        if (movingDirection.z == -1) {
+            velocity.z = 25f;
+        }
+
         long time = System.currentTimeMillis();
 
         float speed = getSpeed();
-        float friction = 0.00001f;
-        float accelerationX = -velocity.x * friction + movingDirection.x * speed;
-        float accelerationZ = -velocity.y * friction + movingDirection.y * speed;
+        //        float friction = 0.00001f;
+        float gravity = 9.8f;
+        float accelerationX = -velocity.x * groundFriction + movingDirection.x * speed;
+        float accelerationY = -velocity.y * groundFriction + movingDirection.y * speed;
+        float accelerationZ = -gravity * airFriction;
 
         velocity.x = accelerationX * delta;
-        velocity.y = accelerationZ * delta;
+        velocity.y = accelerationY * delta;
+        velocity.z += accelerationZ * delta * .0099f;
+
+        z += velocity.z * delta * 0.001f * 20;
+        if (z < 0) {
+            velocity.z = 0;
+            z = 0;
+        }
 
         float dx = velocity.x * delta * 0.0001f * 20;
         float dy = velocity.y * delta * 0.0001f * 20;
@@ -137,12 +153,21 @@ public class Entity implements IRenderable {
 
     public void render(GameContainer container, Camera camera, Graphics g) {}
 
-    public void renderOvalShadow(Camera camera, Graphics g, float shadowDistance) {
+    public void renderOvalShadow(Camera camera, Graphics g, float shadowDistance, float minOpacity) {
         float shadowOpacity = 0.15f;
 
-        g.setColor(new Color(0, 0, 0, shadowOpacity));
-        float sw = getBB().getWidth() * 1.5f;
-        g.fillOval(camera.getX(x + (width - sw) / 2), camera.getY(y + height + shadowDistance - z), sw, getBB().getHeight() / 1.75f);
+        float k = z / height;
+        float minWidth = getBB().getWidth();
+        float minHeight = getBB().getHeight() / 2;
+        float sw = getBB().getWidth() * (1.5f - k);
+        float sh = getBB().getHeight() / 1.5f * (1 - k);
+        if (sw < minWidth) { sw = minWidth; }
+        if (sh < minHeight) { sh = minHeight; }
+
+        float opacity = shadowOpacity * (1 - k);
+        if (opacity < minOpacity) { opacity = minOpacity; }
+        g.setColor(new Color(0, 0, 0, opacity));
+        g.fillOval(camera.getX(x + (width - sw) / 2), camera.getY(y + height + shadowDistance), sw, sh);
     }
 
     private void updateDirection(float dx, float dy) {
@@ -222,7 +247,8 @@ public class Entity implements IRenderable {
     public boolean collidesWith(Entity entity) {
         for (Shape shape1 : getSkeleton()) {
             for (Shape shape2 : entity.getSkeleton()) {
-                if (getZ() > 0 && getZ() <= entity.getHeight()) {
+                // If entity will land back, compute collisions for it as if it were on the ground
+                if (getZ() > 0 && getZ() <= entity.getHeight() && alwaysFlying()) {
                     shape2.setY(shape2.getY() - getZ());
                 }
 
@@ -249,6 +275,10 @@ public class Entity implements IRenderable {
 
     public boolean isRemovalFlagOn() {
         return remove;
+    }
+
+    public boolean alwaysFlying() {
+        return false;
     }
 
     // ===================
@@ -339,11 +369,11 @@ public class Entity implements IRenderable {
         updateDirection(heading.x, heading.y);
     }
 
-    public Vector2f getMovingVector() {
+    public Vector3f getMovingVector() {
         return movingDirection;
     }
 
-    public void setMovingVector(Vector2f moving) {
+    public void setMovingVector(Vector3f moving) {
         this.movingDirection = moving;
     }
 
@@ -353,14 +383,6 @@ public class Entity implements IRenderable {
 
     public void setWorld(World world) {
         this.world = world;
-    }
-
-    public int getLayer() {
-        return layer;
-    }
-
-    public void setLayer(int layer) {
-        this.layer = layer;
     }
 
     public void setHealth(int health) {

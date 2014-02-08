@@ -1,6 +1,5 @@
 package com.twopeople.game.particle.debris;
 
-import com.twopeople.game.particle.MSParticle;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.particles.Particle;
@@ -11,11 +10,10 @@ import java.util.ArrayList;
 
 public class DebrisEmitter implements ParticleEmitter {
     private World world;
-    private ArrayList<MSParticle> particles = new ArrayList<MSParticle>();
+    private ArrayList<Debris> particles = new ArrayList<Debris>();
 
     private float x, y;
     private boolean used = false;
-    private int amount;
 
     private int minParticles, maxParticles;
     private int particleLife;
@@ -24,12 +22,15 @@ public class DebrisEmitter implements ParticleEmitter {
     private float dx, dy, dz;
     private float strength;
     private float velx, vely;
+    private float size;
+    private boolean hasShadow = true;
+    private boolean collides = true;
 
     public DebrisEmitter(World world, float x, float y, int particleLife,
                          float xOffset, float yOffset, float zOffset,
                          float gravity, float dx, float dy, float dz,
                          int minParticles, int maxParticles, float strength,
-                         float velx, float vely) {
+                         float velx, float vely, float size, boolean hasShadow, boolean collides) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -48,6 +49,9 @@ public class DebrisEmitter implements ParticleEmitter {
         this.strength = strength;
         this.velx = velx;
         this.vely = vely;
+        this.size = size;
+        this.hasShadow = hasShadow;
+        this.collides = collides;
     }
 
     @Override
@@ -55,10 +59,14 @@ public class DebrisEmitter implements ParticleEmitter {
         if (!used) {
             used = true;
 
-            for (int i = 0; i < minParticles + world.getRandom().nextInt(maxParticles - minParticles); ++i) {
-                MSParticle p = (MSParticle) particleSystem.getNewParticle(this, particleLife);
+            for (int i = 0; i < minParticles + world.getRandom().nextInt(maxParticles - minParticles + 1); ++i) {
+                Debris p = (Debris) particleSystem.getNewParticle(this, particleLife);
 
                 p.setPosition(x + xOffset, y + yOffset, zOffset);
+                p.setSize(size);
+
+                p.hasShadow = hasShadow;
+                p.collides = collides;
 
                 float vx, vy, vz, dd;
 
@@ -77,18 +85,24 @@ public class DebrisEmitter implements ParticleEmitter {
                     p.setVelocity(velx, vely);
                 }
 
-                ++amount;
                 particles.add(p);
             }
+        } else {
+            /*Iterator<MSParticle> it = particles.iterator();
+            while (it.hasNext()) {
+                MSParticle particle = it.next();
+                if (particle.getLife() < 10f) {
+                    it.remove();
+                }
+            }*/
         }
     }
 
     @Override
     public void updateParticle(Particle particle, int delta) {
-        DebrisParticle p = (DebrisParticle) particle;
+        Debris p = (Debris) particle;
 
-        if (particle.getLife() < 20f) {
-            --amount;
+        if (particle.getLife() < 50f) {
             particles.remove(particle);
         }
 
@@ -108,13 +122,13 @@ public class DebrisEmitter implements ParticleEmitter {
         }
     }
 
-    public ArrayList<MSParticle> getParticles() {
+    public ArrayList<Debris> getParticles() {
         return particles;
     }
 
     @Override
     public boolean completed() {
-        return used && amount == 0;
+        return used && particles.size() == 0;
     }
 
     @Override

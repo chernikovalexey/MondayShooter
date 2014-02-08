@@ -1,8 +1,7 @@
 package com.twopeople.game.particle;
 
 import com.twopeople.game.Images;
-import com.twopeople.game.particle.debris.DebrisParticle;
-import com.twopeople.game.particle.debris.GunshotDebrisEmitter;
+import com.twopeople.game.particle.debris.Debris;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.particles.ParticleSystem;
 
@@ -14,14 +13,16 @@ import java.util.HashMap;
  */
 
 public class ParticleManager {
-    public final HashMap<Integer, MSParticleSystem> list = new HashMap<Integer, MSParticleSystem>();
+    public final HashMap<Integer, ParticleSystem> list = new HashMap<Integer, ParticleSystem>();
+    public static ParticleSystem g = new ParticleSystem("res/gunshots.png", 200);
 
     public static final int BLOOD_DEBRIS = 1;
     public static final int GUNSHOT_DEBRIS = 2;
+    public static final int CHIPPING_DEBRIS = 3;
 
     public ParticleManager(World world) {
-        list.put(BLOOD_DEBRIS, new MSParticleSystem(world, Images.particles, 200, DebrisParticle.class));
-        list.put(GUNSHOT_DEBRIS, new MSParticleSystem(world, Images.gunshots, 200, DebrisParticle.class));
+        list.put(BLOOD_DEBRIS, new MSParticleSystem(world, Images.particles, 200, Debris.class));
+        list.put(CHIPPING_DEBRIS, new MSParticleSystem(world, Images.concrete_chipping, 200, Debris.class));
     }
 
     public ParticleSystem get(int id) {

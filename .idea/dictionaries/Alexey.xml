@@ -3,6 +3,8 @@
     <words>
       <w>renderable</w>
       <w>respawn</w>
+      <w>velx</w>
+      <w>vely</w>
       <w>velz</w>
     </words>
   </dictionary>

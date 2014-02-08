@@ -110,10 +110,11 @@ public class World {
         updateFromIterator(gameContainer, delta, bullets.getAll().iterator(), bullets);
 
         for (ParticleSystem system : particles.list.values()) {
+            ParticleManager.g.update(delta);
             system.update(delta);
         }
 
-        //        System.out.println("world update " + (System.currentTimeMillis() - time) + " ms");
+//        System.out.println("World updated in " + (System.currentTimeMillis() - time) + " ms");
     }
 
     public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it, EntityVault vault) {
@@ -146,6 +147,7 @@ public class World {
 
         int pa = 0;
         for (ParticleSystem system : particles.list.values()) {
+            ParticleManager.g.render();
             if (system instanceof MSParticleSystem) {
                 pa += ((MSParticleSystem) system).getAllParticles().size();
                 sorted.addAll(((MSParticleSystem) system).getAllParticles());
@@ -162,7 +164,7 @@ public class World {
         g.drawString("entities=" + entities.size(), 10, 50);
         g.drawString("bullets=" + bullets.size(), 10, 70);
 
-        //        System.out.println("world render " + (System.currentTimeMillis() - time) + " ms");
+//        System.out.println("World rendered in " + (System.currentTimeMillis() - time) + " ms");
     }
 
     public void renderFromIterator(GameContainer container, Graphics g, Iterator<IRenderable> it) {
@@ -225,11 +227,15 @@ public class World {
         return player;
     }
 
+    public void addBullet(Bullet bullet) {
+        bullets.add(bullet);
+    }
+
     public void addBullet(float x, float y, float z, Entity shooter, Vector2f direction, boolean fromReceiver) {
         Bullet bullet = new Bullet(this, x, y, z, direction);
         bullet.setOwner(shooter.getId());
 
-        bullets.add(bullet);
+        addBullet(bullet);
 
         if (!fromReceiver) {
             getGame().getClient().shoot(shooter);

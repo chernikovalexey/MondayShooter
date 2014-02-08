@@ -6,6 +6,7 @@ import com.twopeople.game.entity.Player;
 import com.twopeople.game.network.Listener;
 import com.twopeople.game.network.packet.AuthResponse;
 import com.twopeople.game.world.World;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.geom.Vector2f;
 
 /**
@@ -31,7 +32,7 @@ public class NetworkListener implements Listener {
             for (int i = 0, len = response.bullets.length; i < len; ++i) {
                 Bullet bullet = (Bullet) response.bullets[i];
                 bullet.setWorld(world);
-                world.addBullet(bullet.getX(), bullet.getY(), 42, world.getEntityById(bullet.getOwner()), bullet.getMovingVector(), true);
+                world.addBullet(bullet);
             }
         }
 
@@ -84,7 +85,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public void movingDirectionChanged(float x, float y, float vx, float vy, int id) {
-        updateEntityState(id, x, y).setMovingVector(new Vector2f(vx, vy));
+        updateEntityState(id, x, y).setMovingVector(new Vector3f(vx, vy, 0f));
     }
 
     @Override

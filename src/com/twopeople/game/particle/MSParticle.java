@@ -3,16 +3,12 @@ package com.twopeople.game.particle;
 import com.twopeople.game.Camera;
 import com.twopeople.game.IRenderable;
 import com.twopeople.game.entity.Entity;
-import com.twopeople.game.entity.Player;
 import com.twopeople.game.world.World;
-import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.geom.Vector2f;
 import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleSystem;
-
-import java.util.Collection;
 
 /**
  * Created by Alexey
@@ -20,80 +16,17 @@ import java.util.Collection;
  */
 
 public class MSParticle extends Particle implements IRenderable {
-    private World world;
+    protected World world;
 
     protected float z;
     protected float velz;
 
-    private Entity associatedEntity;
-
-    public boolean hasShadow = true;
-    public boolean collides = true;
+    protected Entity associatedEntity;
 
     public MSParticle(World world, ParticleSystem engine) {
         super(engine);
         this.world = world;
-        this.associatedEntity = new Entity(x, y, z, size, size, size, false);
-    }
-
-    @Override
-    public void update(int delta) {
-        float px = x;
-        float py = y;
-
-        super.update(delta);
-
-        this.x = px;
-        this.y = py;
-
-        float d = delta * 0.150f;
-        int steps = (int) Math.sqrt(velx * velx + vely * vely + velz * velz) + 1;
-
-        for (int i = 0; i < steps; ++i) {
-            partialMove(d * velx / steps, d * vely / steps, delta);
-        }
-
-        if (life > 0) {
-            z += d * velz;
-        }
-    }
-
-    private void partialMove(float dx, float dy, int delta) {
-        x += dx;
-        y += dy;
-
-        if (collides) {
-            associatedEntity.setX(x);
-            associatedEntity.setY(y);
-            associatedEntity.setZ(z);
-            Collection<Entity> nearby = world.getEntities().getNearbyEntities(associatedEntity);
-
-            for (Entity e : nearby) {
-                if (associatedEntity.collidesWith(e) && !(e instanceof Player)) {
-                    Vector2f hitSide = e.getHitSideVector(associatedEntity);
-
-                    Vector2f u = hitSide.getPerpendicular();
-                    Vector2f w = hitSide.sub(u);
-                    w.x *= 0.01f;
-                    w.y *= 0.01f;
-                    u.x *= 0.001f;
-                    u.y *= 0.001f;
-                    Vector2f v2 = w.sub(u);
-
-                    v2.x *= delta * 0.05f;
-                    v2.y *= delta * 0.05f;
-
-                    //System.out.println(v2);
-
-                    velx = v2.x;
-                    vely = v2.y;
-
-                    x -= dx;
-                    y -= dy;
-                    break;
-                }
-            }
-        }
+        this.associatedEntity = new Entity(x, y, z, size, size, 0, false);
     }
 
     @Override
@@ -102,20 +35,6 @@ public class MSParticle extends Particle implements IRenderable {
     @Override
     public void render(GameContainer container, Camera camera, Graphics g) {
         if (inUse()) {
-            // Because of not extending `Entity` I am repeating myself
-            if (hasShadow) {
-                float shadowDistance = z - size;
-                float shadowOpacity = 0.1f;
-
-                g.setColor(new Color(0, 0, 0, shadowOpacity));
-                float sw = size * 1.5f;
-                g.fillOval(camera.getX(x + (size - sw) / 2), camera.getY(y + size + shadowDistance - z), sw, size / 1.75f);
-
-            }
-
-            // ================
-            // After the shadow
-
             GL.glPushMatrix();
 
             GL.glTranslatef(camera.getX(x), camera.getY(y - z), 0);
@@ -133,6 +52,9 @@ public class MSParticle extends Particle implements IRenderable {
         }
     }
 
+    // =======
+    // Getters and setters
+
     @Override
     public Vector2f getBBCentre() {
         return associatedEntity.getBBCentre();
@@ -142,9 +64,6 @@ public class MSParticle extends Particle implements IRenderable {
     public float getHeight() {
         return size;
     }
-
-    // =======
-    // Getters and setters
 
     public void setVelocity(float dx, float dy, float dz, float speed) {
         super.setVelocity(dx, dy, speed);
@@ -190,17 +109,18 @@ public class MSParticle extends Particle implements IRenderable {
     }
 
     public void increaseVelocityX(float dx) {
-        velx = velx * dx;
+        velx *= dx;
     }
 
     public void increaseVelocityY(float dy) {
-        vely = vely * dy;
+        vely *= dy;
     }
 
     public void increaseVelocityZ(float dz) {
-        velz = velz * dz;
+        velz *= dz;
     }
 
+    @Override
     public float getZ() {
         return z;
     }

@@ -4,7 +4,6 @@ import com.twopeople.game.particle.debris.DebrisEmitter;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.particles.Particle;
 import org.newdawn.slick.particles.ParticleSystem;
 
 import java.lang.reflect.Constructor;
@@ -16,16 +15,16 @@ import java.util.ArrayList;
  */
 
 public class MSParticleSystem extends ParticleSystem {
-    protected Class<?> clazz;
+    protected Class<? extends MSParticle> clazz;
     protected World world;
 
-    public MSParticleSystem(World world, Image defaultSprite, int maxParticles, Class<?> clazz) {
+    public MSParticleSystem(World world, Image defaultSprite, int maxParticles, Class<? extends MSParticle> clazz) {
         super(defaultSprite, maxParticles);
         this.clazz = clazz;
         this.world = world;
     }
 
-    public MSParticleSystem(World world, SpriteSheet sprite, int maxParticles, Class<?> clazz) {
+    public MSParticleSystem(World world, SpriteSheet sprite, int maxParticles, Class<? extends MSParticle> clazz) {
         this(world, sprite.getSprite(world.getRandom().nextInt(sprite.getHorizontalCount()), world.getRandom().nextInt(sprite.getVerticalCount())), maxParticles, clazz);
     }
 
@@ -38,11 +37,11 @@ public class MSParticleSystem extends ParticleSystem {
     }
 
     @Override
-    protected Particle createParticle(ParticleSystem system) {
+    protected MSParticle createParticle(ParticleSystem system) {
         if (clazz != null) {
             try {
-                Constructor<?> constructor = clazz.getConstructor(World.class, ParticleSystem.class);
-                return (Particle) constructor.newInstance(new Object[]{world, system});
+                Constructor<? extends MSParticle> constructor = clazz.getConstructor(World.class, ParticleSystem.class);
+                return constructor.newInstance(new Object[]{world, system});
             } catch (Exception e) {
                 e.printStackTrace();
             }

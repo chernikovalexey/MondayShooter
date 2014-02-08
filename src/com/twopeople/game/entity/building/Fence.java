@@ -20,7 +20,6 @@ public class Fence extends Entity {
 
     public Fence(float x, float y) {
         super(x, y, 0, Wall.WIDTH, Wall.HEIGHT, Wall.DEPTH, true);
-        setLayer(2);
     }
 
     @Override
