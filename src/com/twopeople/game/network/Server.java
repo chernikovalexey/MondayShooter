@@ -61,6 +61,7 @@ public class Server extends NetworkEntity {
             } else if (o instanceof RunningRequest) {
                 answer = (RunningRequest) o;
             } else if (o instanceof EntityPacket) {//I don't what for.
+                ((EntityPacket) o).entity.setConnectionId(c.getID());
                 answer = (Packet) o;
             } else if(o instanceof KilledRequest) {
                 KilledRequest kr = (KilledRequest)o;

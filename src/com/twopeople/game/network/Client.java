@@ -75,6 +75,7 @@ public class Client extends NetworkEntity implements Runnable {
     }
 
     public void sendEntity(Entity e) {
+        e.setConnectionId(client.getID());
         client.sendUDP(new EntityPacket(e));
     }
 

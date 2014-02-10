@@ -1,6 +1,7 @@
 package com.twopeople.game.network.packet;
 
 import com.twopeople.game.entity.Entity;
+import com.twopeople.game.entity.Player;
 import org.newdawn.slick.geom.Vector2f;
 
 /**
@@ -23,7 +24,7 @@ public class RunningRequest extends Packet {
     public RunningRequest() {}
 
     public RunningRequest(Entity e, byte type) {
-        this.id = e.getId();
+        this.id = e.getConnectionId();
         this.x = e.getX();
         this.y = e.getY();
         this.type = type;
