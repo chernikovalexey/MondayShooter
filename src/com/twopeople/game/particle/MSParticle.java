@@ -95,6 +95,9 @@ public class MSParticle extends Particle implements IEntity {
     public void setPosition(float x, float y, float z) {
         super.setPosition(x, y);
         this.z = z;
+        associatedEntity.setX(x);
+        associatedEntity.setY(y);
+        associatedEntity.setZ(z);
     }
 
     public float getVelocityX() {

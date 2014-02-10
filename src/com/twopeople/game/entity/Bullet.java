@@ -92,9 +92,4 @@ public class Bullet extends Entity {
             world.getParticleSystem(ParticleManager.BULLET_HOLE_DEBRIS).addEmitter(bhEmitter);
         }
     }
-
-    @Override
-    public boolean alwaysFlying() {
-        return true;
-    }
 }

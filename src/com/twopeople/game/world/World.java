@@ -51,36 +51,17 @@ public class World {
         public int compare(IEntity entity1, IEntity entity2) {
             float e1y = entity1.getBBCentre().getY();
             float e2y = entity2.getBBCentre().getY();
-            if ((entity1.getWidth() * entity1.getHeight() )/ (entity2.getWidth() * entity2.getHeight()) < 1f) {
-                e1y-=entity1.getZ();
-                e2y-=entity2.getZ();
-            }
 
-            if (e1y > e2y) return 1;
-            else if (e1y < e2y) return -1;
-            else if (e1y == e2y) return 0;
-
-            /*if (entity1 instanceof Bullet) {
-                e1y = entity1.getY();
-            }
-
-            if (entity2 instanceof Bullet) {
-                e2y = entity2.getY();
-            }
-
-            if (entity1 instanceof MSParticle) {
-                e1y += entity1.getZ() + entity1.getHeight();
-            }
-
-            if (entity2 instanceof MSParticle) {
-                e2y += entity2.getZ() + entity2.getHeight();
+            if ((entity1.getWidth() * entity1.getHeight()) / (entity2.getWidth() * entity2.getHeight()) < 1f) {
+                e1y -= entity1.getZ();
+                e2y -= entity2.getZ();
             }
 
             if (e1y > e2y) {
                 return 1;
             } else if (e1y < e2y) {
                 return -1;
-            }*/
+            }
 
             return 0;
         }
@@ -96,7 +77,7 @@ public class World {
 
     public void update(GameContainer gameContainer, int delta) {
 
-//        System.out.println("Last used entity serial id = " + Entity.serialId);
+        //        System.out.println("Last used entity serial id = " + Entity.serialId);
         final long time = System.currentTimeMillis();
 
         if (canLoad) {
@@ -225,7 +206,7 @@ public class World {
 
     public Player addPlayer(int connectionId, float x, float y, boolean fromReceiver) {
         Player player = new Player(x, y);
-//        player.setId(userId);
+        //        player.setId(userId);
         if (connectionId != -1) {
             player.setConnectionId(connectionId);
         }

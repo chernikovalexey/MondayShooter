@@ -233,12 +233,13 @@ public class Entity implements IEntity {
         return new Vector2f(0, 0);
     }
 
+    @Override
     public Vector2f getBBCentre() {
         return new Vector2f(getBB().getCenterX(), getBB().getCenterY());
     }
 
     public Shape getBB() {
-        return new Rectangle(getX(), getY(), getWidth(), getHeight());
+        return new Rectangle(x, y, width, height);
     }
 
     public Shape[] getSkeleton() {
@@ -277,10 +278,6 @@ public class Entity implements IEntity {
         return remove;
     }
 
-    public boolean alwaysFlying() {
-        return false;
-    }
-
     // ===================
     // Getters and setters
 
@@ -300,6 +297,7 @@ public class Entity implements IEntity {
         this.connectionId = connectionId;
     }
 
+    @Override
     public float getX() {
         return x;
     }
@@ -308,6 +306,7 @@ public class Entity implements IEntity {
         this.x = x;
     }
 
+    @Override
     public float getY() {
         return y;
     }
@@ -316,6 +315,7 @@ public class Entity implements IEntity {
         this.y = y;
     }
 
+    @Override
     public float getZ() {
         return z;
     }
@@ -324,6 +324,7 @@ public class Entity implements IEntity {
         this.z = z;
     }
 
+    @Override
     public float getWidth() {
         return width;
     }
@@ -332,6 +333,7 @@ public class Entity implements IEntity {
         this.width = width;
     }
 
+    @Override
     public float getHeight() {
         return height;
     }

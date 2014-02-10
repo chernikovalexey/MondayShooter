@@ -33,15 +33,17 @@ public class Debris extends MSParticle {
         this.x = px;
         this.y = py;
 
-        float d = delta * 0.150f;
-        int steps = (int) Math.sqrt(velx * velx + vely * vely + velz * velz) + 1;
+        if (velx != 0 || vely != 0 || velz != 0) {
+            float d = delta * 0.150f;
+            int steps = (int) Math.sqrt(velx * velx + vely * vely + velz * velz) + 1;
 
-        for (int i = 0; i < steps; ++i) {
-            partialMove(d * velx / steps, d * vely / steps, delta);
-        }
+            for (int i = 0; i < steps; ++i) {
+                partialMove(d * velx / steps, d * vely / steps, delta);
+            }
 
-        if (life > 0) {
-            z += d * velz;
+            if (life > 0) {
+                z += d * velz;
+            }
         }
     }
 
