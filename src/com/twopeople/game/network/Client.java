@@ -116,4 +116,8 @@ public class Client extends NetworkEntity implements Runnable {
     public String getLevelName() {
         return listener.getLevelName();
     }
+
+    public Entity[] getUsers() {
+        return listener.getUsers();
+    }
 }

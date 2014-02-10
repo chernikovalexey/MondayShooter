@@ -30,4 +30,6 @@ public interface Listener {
     public void onUserKilled(int killed, int killer, float spawnerX, float spawnerY);
 
     public Entity[] getBullets();
+
+    Entity[] getUsers();
 }

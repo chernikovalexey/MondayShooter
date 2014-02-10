@@ -6,6 +6,7 @@ import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.Player;
 import com.twopeople.game.entity.building.Wall;
 import com.twopeople.game.network.packet.*;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.geom.Vector2f;
 
 /**
@@ -38,5 +39,6 @@ public class NetworkEntity extends com.esotericsoftware.kryonet.Listener {
         kryo.register(DisconnectionRequest.class);
         kryo.register(EntityPacket.class);
         kryo.register(KilledRequest.class);
+        kryo.register(Vector3f.class);
     }
 }

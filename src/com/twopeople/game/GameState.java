@@ -40,7 +40,7 @@ public class GameState extends BasicGameState {
         camera = new Camera(gameContainer);
         world = new World(this);
 
-        String action = "s";//Console.readString("s/c: ");
+        String action = Console.readString("s/c: ");
 
         NetworkListener listener = new NetworkListener(this, world);
         client = new Client(listener);

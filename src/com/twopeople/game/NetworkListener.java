@@ -60,6 +60,7 @@ public class NetworkListener implements Listener {
     @Override
     public void playerConnected(int id, String nickname) {
         Entity.serialId = id;
+        System.out.println(id+" "+nickname);
     }
 
     @Override
@@ -74,6 +75,11 @@ public class NetworkListener implements Listener {
     @Override
     public Bullet[] getBullets() {
         return world.getBullets().getAll().toArray(new Bullet[]{});
+    }
+
+    @Override
+    public Entity[] getUsers() {
+        return world.
     }
 
     private Entity updateEntityState(int id, float x, float y) {
