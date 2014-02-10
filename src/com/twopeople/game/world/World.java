@@ -49,11 +49,17 @@ public class World {
     private Comparator<IEntity> entitySorter = new Comparator<IEntity>() {
         @Override
         public int compare(IEntity entity1, IEntity entity2) {
-            float e1y = entity1.getBBCentre().getY() - entity1.getZ();
-            float e2y = entity2.getBBCentre().getY() - entity2.getZ();
-            if(e1y>e2y) return 1;
-            else if(e1y<e2y) return -1;
-            else if(e1y==e2y) return 0;
+            float e1y = entity1.getBBCentre().getY();
+            float e2y = entity2.getBBCentre().getY();
+            if (entity1.getWidth() * entity1.getHeight() / entity2.getWidth() * entity2.getHeight() > 1) {
+                e1y-=entity1.getZ();
+                e2y-=entity2.getZ();
+            }
+
+            if (e1y > e2y) return 1;
+            else if (e1y < e2y) return -1;
+            else if (e1y == e2y) return 0;
+
 
             float s1x = entity1.getX();
             float s2x = entity2.getX();
@@ -62,17 +68,33 @@ public class World {
             float s1z = entity1.getZ();
             float s2z = entity2.getZ();
 
-            if (s1y + s1x < s2y + s2x) { return -1; }
-            if (s1y + s1x > s2y + s2x) { return 1; }
+            if (s1y + s1x < s2y + s2x) {
+                return -1;
+            }
+            if (s1y + s1x > s2y + s2x) {
+                return 1;
+            }
 
-            if (s1y < s2y) { return -1; }
-            if (s1y > s2y) { return 1; }
+            if (s1y < s2y) {
+                return -1;
+            }
+            if (s1y > s2y) {
+                return 1;
+            }
 
-            if (s1z < s2z) { return -1; }
-            if (s1z > s2z) { return 1; }
+            if (s1z < s2z) {
+                return -1;
+            }
+            if (s1z > s2z) {
+                return 1;
+            }
 
-            if (s1x < s2x) { return -1; }
-            if (s1x > s2x) { return 1; }
+            if (s1x < s2x) {
+                return -1;
+            }
+            if (s1x > s2x) {
+                return 1;
+            }
 
 
             /*if (entity1 instanceof Bullet) {
