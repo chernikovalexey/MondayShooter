@@ -11,14 +11,14 @@ public class AuthResponse extends Packet {
     public int yourId;
     public String levelName;
     public Entity[] bullets;
-    public Entity[] players;
+    public Entity[] users;
 
     public AuthResponse() {}
 
     public AuthResponse(int yourId,Entity[] bullets, Entity[] players, String levelName) {
         this.yourId = yourId;
         this.bullets = bullets;
-        this.players = players;
+        this.users = players;
         this.levelName = levelName;
     }
 }
