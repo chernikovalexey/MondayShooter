@@ -9,6 +9,6 @@ import com.twopeople.game.world.World;
 
 public class BulletHoleEmitter extends DebrisEmitter {
     public BulletHoleEmitter(World world, float x, float y, float z) {
-        super(world, x, y, 1250, 0, 0, z, 0.0f, 0.0f, 0.0f, 0.0f, 1, 1, 0.0f, 0.0f, 0.0f, 40, false, false);
+        super(world, x, y, 1250, 0, 0, z, 0.0f, 0.0f, 0.0f, 0.0f, 1, 1, 0.0f, 0.0f, 0.0f, 4, false, false);
     }
 }

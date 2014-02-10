@@ -107,10 +107,12 @@ public class World {
     }
 
     public void update(GameContainer gameContainer, int delta) {
+
+//        System.out.println("Last used entity serial id = " + Entity.serialId);
         final long time = System.currentTimeMillis();
 
         if (canLoad) {
-            Player player = addPlayer(-1, random.nextInt(400), random.nextInt(340), false);
+            Player player = addPlayer(Entity.connectionSerialId, random.nextInt(400), random.nextInt(340), false);
             game.getCamera().alignCenterOn(player);
 
             loadMap("dm_map01");
@@ -233,10 +235,11 @@ public class World {
         return entity;
     }
 
-    public Player addPlayer(int userId, float x, float y, boolean fromReceiver) {
+    public Player addPlayer(int connectionId, float x, float y, boolean fromReceiver) {
         Player player = new Player(x, y);
-        if (userId != -1) {
-            player.setId(userId);
+//        player.setId(userId);
+        if (connectionId != -1) {
+            player.setConnectionId(connectionId);
         }
         addEntity(player, fromReceiver);
         return player;
@@ -333,8 +336,13 @@ public class World {
         return players;
     }
 
-    public Entity getEntityById(int id) {
-        return entities.getById(id);
+    public Entity getEntityByConnectionId(int cid) {
+        for (Entity entity : entities.getAll()) {
+            if (entity.getConnectionId() == cid) {
+                return entity;
+            }
+        }
+        return null;
     }
 
     public void removeEntityById(int id) {

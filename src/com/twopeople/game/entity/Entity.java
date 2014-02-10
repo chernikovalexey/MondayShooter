@@ -19,12 +19,13 @@ import java.util.Collection;
 
 public class Entity implements IEntity {
     public static int serialId;
+    public static int connectionSerialId;
 
     protected transient World world;
 
     private int cellX, cellY;
 
-    protected int id;
+    protected int id, connectionId;
     private int owner;
 
     protected float x, y, z;
@@ -289,6 +290,14 @@ public class Entity implements IEntity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getConnectionId() {
+        return connectionId;
+    }
+
+    public void setConnectionId(int connectionId) {
+        this.connectionId = connectionId;
     }
 
     public float getX() {

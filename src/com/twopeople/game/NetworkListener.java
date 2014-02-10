@@ -26,12 +26,16 @@ public class NetworkListener implements Listener {
     @Override
     public void connectionSuccess(AuthResponse response) {
         game.setUserId(response.yourId);
-        Entity.serialId = response.yourId;
+        Entity.connectionSerialId = response.yourId;
+        System.out.println("connection id="+Entity.connectionSerialId);
+        Entity.serialId += response.yourId;
 
         if (!game.isServer()) {
+            System.out.println("Ids on the client start from " + response.yourId);
+
             for (int i = 0, len = response.users.length; i < len; ++i) {
                 Player player = (Player) response.users[i];
-                world.addPlayer(player.getId(), player.getX(), player.getY(), true);
+                world.addPlayer(player.getConnectionId(), player.getX(), player.getY(), true);
             }
 
             for (int i = 0, len = response.bullets.length; i < len; ++i) {
@@ -53,13 +57,13 @@ public class NetworkListener implements Listener {
     public void onUserKilled(int killed, int killer, float spawnerX, float spawnerY) {
         System.out.println("User " + killed + " has been killed by " + killer);
 
-        Player killedPlayer = (Player) world.getEntityById(killed);
-        Player killerPlayer = (Player) world.getEntityById(killer);
+        /*Player killedPlayer = (Player) world.getEntityByConnectionId(killed);
+        Player killerPlayer = (Player) world.getEntityByConnectionId(killer);
 
         killedPlayer.respawnAt(new Vector2f(spawnerX, spawnerY));
 
         // todo
-        // score leading
+        // score leading*/
     }
 
     @Override
@@ -88,7 +92,7 @@ public class NetworkListener implements Listener {
     }
 
     private Entity updateEntityState(int id, float x, float y) {
-        Entity entity = world.getEntityById(id);
+        Entity entity = world.getEntityByConnectionId(id);
         entity.setX(x);
         entity.setY(y);
         return entity;
@@ -106,7 +110,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
-        world.addBullet(x, y, 42, world.getEntityById(shooterId), new Vector2f(vx, vy), true);
+        world.addBullet(x, y, 42, world.getEntityByConnectionId(shooterId), new Vector2f(vx, vy), true);
     }
 
     @Override

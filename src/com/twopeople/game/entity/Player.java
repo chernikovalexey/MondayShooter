@@ -129,7 +129,8 @@ public class Player extends Entity {
         renderOvalShadow(camera, g, 8f, 0.1f);
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
-        //        g.drawString(getCellX() + ", " + getCellY(), camera.getX(this), camera.getY(this));
+        g.setColor(Color.white);
+        g.drawString(id + " / " + connectionId, camera.getX(this), camera.getY(this));
 
         g.setColor(new Color(204, 204, 204, 120));
         //        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, getOrthogonalHeight());
