@@ -17,7 +17,7 @@ public interface Listener {
 
     public String getLevelName();
 
-    public void movingDirectionChanged(float x, float y, float vx, float vy, int id);
+    public void movingDirectionChanged(float x, float y, float vx, float vy, float vz, int id);
 
     public void headingDirectionChanged(float x, float y, float vx, float vy, int id);
 

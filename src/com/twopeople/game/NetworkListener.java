@@ -99,8 +99,8 @@ public class NetworkListener implements Listener {
     }
 
     @Override
-    public void movingDirectionChanged(float x, float y, float vx, float vy, int id) {
-        updateEntityState(id, x, y).setMovingVector(new Vector3f(vx, vy, 0f));
+    public void movingDirectionChanged(float x, float y, float vx, float vy, float vz, int id) {
+        updateEntityState(id, x, y).setMovingVector(new Vector3f(vx, vy, vz));
     }
 
     @Override

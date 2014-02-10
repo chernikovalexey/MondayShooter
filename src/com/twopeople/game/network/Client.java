@@ -48,7 +48,7 @@ public class Client extends NetworkEntity implements Runnable {
                 RunningRequest r = (RunningRequest) o;
                 switch (r.type) {
                     case RunningRequest.DIRECTION:
-                        listener.movingDirectionChanged(r.x, r.y, r.vx, r.vy, r.id);
+                        listener.movingDirectionChanged(r.x, r.y, r.vx, r.vy, r.vz, r.id);
                         break;
                     case RunningRequest.HEAD_DIRECTION:
                         listener.headingDirectionChanged(r.x, r.y, r.vx, r.vy, r.id);

@@ -18,7 +18,7 @@ public class RunningRequest extends Packet {
 
     public int id;
     public float x, y;
-    public float vx, vy;
+    public float vx, vy,vz;
     public byte type;
 
     public RunningRequest() {}
@@ -36,6 +36,7 @@ public class RunningRequest extends Packet {
         } else {
             this.vx = e.getMovingVector().getX();
             this.vy = e.getMovingVector().getY();
+            this.vz = e.getMovingVector().getZ();
         }
 
         this.type = type;
