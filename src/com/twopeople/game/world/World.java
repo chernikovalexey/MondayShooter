@@ -51,6 +51,9 @@ public class World {
         public int compare(IEntity entity1, IEntity entity2) {
             float e1y = entity1.getBBCentre().getY() - entity1.getZ();
             float e2y = entity2.getBBCentre().getY() - entity2.getZ();
+            if(e1y>e2y) return 1;
+            else if(e1y<e2y) return -1;
+            else if(e1y==e2y) return 0;
 
             float s1x = entity1.getX();
             float s2x = entity2.getX();
