@@ -113,6 +113,9 @@ public class NetworkListener implements Listener {
         world.addBullet(x, y, 42, world.getEntityByConnectionId(shooterId), new Vector2f(vx, vy), true);
     }
 
+    // todo
+    // replace id with connection id
+
     @Override
     public void disconnected(int id) {
         world.removeEntityById(id);

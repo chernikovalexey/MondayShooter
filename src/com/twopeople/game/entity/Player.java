@@ -142,7 +142,7 @@ public class Player extends Entity {
     }
 
     public boolean isControllable() {
-        return getId() == world.getGame().getUserId();
+        return getConnectionId() == world.getGame().getUserId();
     }
 
     public Vector2f respawn() {
