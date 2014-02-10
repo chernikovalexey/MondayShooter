@@ -9,12 +9,16 @@ import org.newdawn.slick.geom.Vector2f;
  * At 8:26 PM on 2/3/14
  */
 
-public interface IRenderable {
+public interface IEntity {
     public void render(GameContainer container, Camera camera, Graphics g);
 
     public Vector2f getBBCentre();
 
+    public float getWidth();
+
     public float getHeight();
+
+    public float getX();
 
     public float getY();
 

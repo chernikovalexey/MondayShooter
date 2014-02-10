@@ -1,6 +1,7 @@
 package com.twopeople.game.entity.building;
 
 import com.twopeople.game.Camera;
+import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -32,9 +33,9 @@ public class Wall extends Entity {
 
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
-            shape.setY(camera.getY(shape.getY()));
+            shape.setY(camera.getY(shape.getY() - Bullet.hz));
             g.setColor(new Color(255, 255, 255, 255));
-            //                g.fill(shape);
+//            g.fill(shape);
         }
 
         g.setColor(new Color(204, 204, 204, 120));

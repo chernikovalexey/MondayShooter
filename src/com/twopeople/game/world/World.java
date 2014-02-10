@@ -3,12 +3,11 @@ package com.twopeople.game.world;
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.GameState;
-import com.twopeople.game.IRenderable;
+import com.twopeople.game.IEntity;
 import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.entity.Player;
-import com.twopeople.game.particle.MSParticle;
 import com.twopeople.game.particle.MSParticleSystem;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.world.tile.Tile;
@@ -47,13 +46,33 @@ public class World {
 
     private boolean canLoad = false;
 
-    private Comparator<IRenderable> entitySorter = new Comparator<IRenderable>() {
+    private Comparator<IEntity> entitySorter = new Comparator<IEntity>() {
         @Override
-        public int compare(IRenderable entity1, IRenderable entity2) {
+        public int compare(IEntity entity1, IEntity entity2) {
             float e1y = entity1.getBBCentre().getY() - entity1.getZ();
             float e2y = entity2.getBBCentre().getY() - entity2.getZ();
 
-            if (entity1 instanceof Bullet) {
+            float s1x = entity1.getX();
+            float s2x = entity2.getX();
+            float s1y = entity1.getY();
+            float s2y = entity2.getY();
+            float s1z = entity1.getZ();
+            float s2z = entity2.getZ();
+
+            if (s1y + s1x < s2y + s2x) { return -1; }
+            if (s1y + s1x > s2y + s2x) { return 1; }
+
+            if (s1y < s2y) { return -1; }
+            if (s1y > s2y) { return 1; }
+
+            if (s1z < s2z) { return -1; }
+            if (s1z > s2z) { return 1; }
+
+            if (s1x < s2x) { return -1; }
+            if (s1x > s2x) { return 1; }
+
+
+            /*if (entity1 instanceof Bullet) {
                 e1y = entity1.getY();
             }
 
@@ -62,16 +81,10 @@ public class World {
             }
 
             if (entity1 instanceof MSParticle) {
-                if (Float.isNaN(e1y)) {
-                    return -1;
-                }
                 e1y += entity1.getZ() + entity1.getHeight();
             }
 
             if (entity2 instanceof MSParticle) {
-                if (Float.isNaN(e2y)) {
-                    return 1;
-                }
                 e2y += entity2.getZ() + entity2.getHeight();
             }
 
@@ -79,7 +92,7 @@ public class World {
                 return 1;
             } else if (e1y < e2y) {
                 return -1;
-            }
+            }*/
 
             return 0;
         }
@@ -110,11 +123,11 @@ public class World {
         updateFromIterator(gameContainer, delta, bullets.getAll().iterator(), bullets);
 
         for (ParticleSystem system : particles.list.values()) {
-            ParticleManager.g.update(delta);
+            //            ParticleManager.g.update(delta);
             system.update(delta);
         }
 
-//        System.out.println("World updated in " + (System.currentTimeMillis() - time) + " ms");
+        //        System.out.println("World updated in " + (System.currentTimeMillis() - time) + " ms");
     }
 
     public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it, EntityVault vault) {
@@ -140,17 +153,19 @@ public class World {
             }
         }
 
-        ArrayList<IRenderable> sorted = new ArrayList<IRenderable>() {{
+        ArrayList<IEntity> sorted = new ArrayList<IEntity>() {{
             addAll(entities.getVisible(camera));
             addAll(bullets.getVisible(camera));
         }};
 
         int pa = 0;
         for (ParticleSystem system : particles.list.values()) {
-            ParticleManager.g.render();
             if (system instanceof MSParticleSystem) {
                 pa += ((MSParticleSystem) system).getAllParticles().size();
                 sorted.addAll(((MSParticleSystem) system).getAllParticles());
+            } else {
+                pa += system.getParticleCount();
+                system.render();
             }
         }
 
@@ -164,12 +179,12 @@ public class World {
         g.drawString("entities=" + entities.size(), 10, 50);
         g.drawString("bullets=" + bullets.size(), 10, 70);
 
-//        System.out.println("World rendered in " + (System.currentTimeMillis() - time) + " ms");
+        //        System.out.println("World rendered in " + (System.currentTimeMillis() - time) + " ms");
     }
 
-    public void renderFromIterator(GameContainer container, Graphics g, Iterator<IRenderable> it) {
+    public void renderFromIterator(GameContainer container, Graphics g, Iterator<IEntity> it) {
         while (it.hasNext()) {
-            IRenderable entity = it.next();
+            IEntity entity = it.next();
             entity.render(container, game.getCamera(), g); // others
         }
     }
@@ -307,6 +322,16 @@ public class World {
 
     // =======
     // Getters
+
+    public ArrayList<Entity> getUsers() {
+        ArrayList<Entity> players = new ArrayList<Entity>();
+        for (Entity entity : entities.getAll()) {
+            if (entity instanceof Player) {
+                players.add(entity);
+            }
+        }
+        return players;
+    }
 
     public Entity getEntityById(int id) {
         return entities.getById(id);

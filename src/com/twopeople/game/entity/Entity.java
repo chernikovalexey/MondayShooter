@@ -2,7 +2,7 @@ package com.twopeople.game.entity;
 
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
-import com.twopeople.game.IRenderable;
+import com.twopeople.game.IEntity;
 import com.twopeople.game.world.World;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Animation;
@@ -17,7 +17,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 import java.util.Collection;
 
-public class Entity implements IRenderable {
+public class Entity implements IEntity {
     public static int serialId;
 
     protected transient World world;
@@ -247,9 +247,8 @@ public class Entity implements IRenderable {
     public boolean collidesWith(Entity entity) {
         for (Shape shape1 : getSkeleton()) {
             for (Shape shape2 : entity.getSkeleton()) {
-                // If entity will land back, compute collisions for it as if it were on the ground
-                if (getZ() > 0 && getZ() <= entity.getHeight() && alwaysFlying()) {
-                    shape2.setY(shape2.getY() - getZ());
+                if (getZ() > entity.getHeight()) {
+                    continue;
                 }
 
                 if (shape1.intersects(shape2)) {

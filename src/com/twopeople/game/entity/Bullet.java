@@ -6,6 +6,7 @@ import com.twopeople.game.Images;
 import com.twopeople.game.entity.building.Fence;
 import com.twopeople.game.entity.building.Wall;
 import com.twopeople.game.particle.ParticleManager;
+import com.twopeople.game.particle.debris.BulletHoleEmitter;
 import com.twopeople.game.particle.debris.ConcreteChippingEmitter;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.Color;
@@ -35,8 +36,13 @@ public class Bullet extends Entity {
         this.airFriction = 0f;
     }
 
+    public static float hz = 0f;
+
     @Override
     public void update(GameContainer container, int delta, EntityVault entities) {
+        if (z > hz) {
+            hz = z;
+        }
         world.getBullets().move(this);
         super.update(container, delta, entities);
 
@@ -55,11 +61,11 @@ public class Bullet extends Entity {
         image.draw(camera.getX(this), camera.getY(this));
 
         g.setColor(new Color(204, 204, 204, 120));
-//        g.fillRect(camera.getX(this), camera.getY(this), getWidth(), getOrthogonalHeight());
+        //        g.fillRect(camera.getX(this), camera.getY(this), getWidth(), getOrthogonalHeight());
     }
 
     public Shape getBB() {
-        return new Circle(x, y - z, SIZE / 2);
+        return new Circle(x, y, SIZE / 2);
     }
 
     @Override
@@ -72,12 +78,18 @@ public class Bullet extends Entity {
 
     @Override
     public void bumpedInto(Entity entity) {
+        if (hz == z) {
+            hz = 0;
+        }
         remove = true;
         entity.hurt(this, 25);
 
         if (entity instanceof Wall) {
-            ConcreteChippingEmitter emitter = new ConcreteChippingEmitter(world, x, y, z);
-            world.getParticleSystem(ParticleManager.CHIPPING_DEBRIS).addEmitter(emitter);
+            ConcreteChippingEmitter ccEmitter = new ConcreteChippingEmitter(world, x, y, z);
+            world.getParticleSystem(ParticleManager.CHIPPING_DEBRIS).addEmitter(ccEmitter);
+
+            BulletHoleEmitter bhEmitter = new BulletHoleEmitter(world, x, y, z);
+            world.getParticleSystem(ParticleManager.BULLET_HOLE_DEBRIS).addEmitter(bhEmitter);
         }
     }
 

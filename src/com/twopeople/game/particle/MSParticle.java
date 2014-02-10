@@ -1,7 +1,7 @@
 package com.twopeople.game.particle;
 
 import com.twopeople.game.Camera;
-import com.twopeople.game.IRenderable;
+import com.twopeople.game.IEntity;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.world.World;
 import org.newdawn.slick.GameContainer;
@@ -15,7 +15,7 @@ import org.newdawn.slick.particles.ParticleSystem;
  * At 9:14 PM on 1/26/14
  */
 
-public class MSParticle extends Particle implements IRenderable {
+public class MSParticle extends Particle implements IEntity {
     protected World world;
 
     protected float z;
@@ -58,6 +58,11 @@ public class MSParticle extends Particle implements IRenderable {
     @Override
     public Vector2f getBBCentre() {
         return associatedEntity.getBBCentre();
+    }
+
+    @Override
+    public float getWidth() {
+        return size;
     }
 
     @Override

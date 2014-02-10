@@ -109,7 +109,7 @@ public class Player extends Entity {
                     ConfigurableEmitter emitter = ParticleIO.loadEmitter(xmlFile);
                     emitter.setPosition(camera.getX(x) - 130 - width / 2 + gunshotOffsets[currentAnimationState][0] / 2, camera.getY(y - z) - 125 + gunshotOffsets[currentAnimationState][1]);
                     emitter.angularOffset.setValue((float) (getHeadingVector().getTheta() + 90));
-                    ParticleManager.g.addEmitter(emitter);
+                    world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(emitter);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

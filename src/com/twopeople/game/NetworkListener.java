@@ -29,6 +29,11 @@ public class NetworkListener implements Listener {
         Entity.serialId = response.yourId;
 
         if (!game.isServer()) {
+            for (int i = 0, len = response.users.length; i < len; ++i) {
+                Player player = (Player) response.users[i];
+                world.addPlayer(player.getId(), player.getX(), player.getY(), true);
+            }
+
             for (int i = 0, len = response.bullets.length; i < len; ++i) {
                 Bullet bullet = (Bullet) response.bullets[i];
                 bullet.setWorld(world);
@@ -60,7 +65,7 @@ public class NetworkListener implements Listener {
     @Override
     public void playerConnected(int id, String nickname) {
         Entity.serialId = id;
-        System.out.println(id+" "+nickname);
+        System.out.println(id + " " + nickname);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public Entity[] getUsers() {
-        return world.
+        return world.getUsers().toArray(new Entity[]{});
     }
 
     private Entity updateEntityState(int id, float x, float y) {
