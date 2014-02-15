@@ -118,7 +118,11 @@ public class Player extends Entity {
         try {
             File xmlFile = new File("res/gunshot.xml");
             ConfigurableEmitter emitter = ParticleIO.loadEmitter(xmlFile);
-            emitter.setPosition(camera.getX(x) - 130 - width / 2 + gunshotOffsets[currentAnimationState][0] / 2, camera.getY(y - z) - 125 + gunshotOffsets[currentAnimationState][1]);
+
+            // todo
+            // play more with it
+            emitter.setPosition((camera.getX(this)+gunshotOffsets[currentAnimationState][0])/2, (camera.getY(this)  + gunshotOffsets[currentAnimationState][1])/2);
+
             emitter.angularOffset.setValue((float) (getHeadingVector().getTheta() + 90));
             world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(emitter);
         } catch (IOException e) {
