@@ -121,7 +121,7 @@ public class Player extends Entity {
 
             // todo
             // play more with it
-            emitter.setPosition((camera.getX(this)+gunshotOffsets[currentAnimationState][0])/2, (camera.getY(this)  + gunshotOffsets[currentAnimationState][1])/2);
+            emitter.setPosition((camera.getX(this) + gunshotOffsets[currentAnimationState][0]) / 2, (camera.getY(this) + gunshotOffsets[currentAnimationState][1]) / 2);
 
             emitter.angularOffset.setValue((float) (getHeadingVector().getTheta() + 90));
             world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(emitter);

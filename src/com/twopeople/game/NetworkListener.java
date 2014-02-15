@@ -57,7 +57,7 @@ public class NetworkListener implements Listener {
     @Override
     public void onUserKilled(int killed, int killer, float spawnerX, float spawnerY) {
         Player killedPlayer = (Player) world.getEntityByConnectionId(killed);
-        Player killerPlayer = (Player) world.getEntityByConnectionId(killer);
+        //Player killerPlayer = (Player) world.getEntityByConnectionId(killer);
 
         killedPlayer.respawnAt(new Vector2f(spawnerX, spawnerY));
 

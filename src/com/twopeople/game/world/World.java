@@ -129,7 +129,7 @@ public class World {
                 sorted.addAll(((MSParticleSystem) system).getAllParticles());
             } else {
                 pa += system.getParticleCount();
-                system.render();
+                system.render(0, 0);
             }
         }
 
