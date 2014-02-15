@@ -76,17 +76,11 @@ public class World {
     }
 
     public void update(GameContainer gameContainer, int delta) {
-
-        //        System.out.println("Last used entity serial id = " + Entity.serialId);
         final long time = System.currentTimeMillis();
 
         if (canLoad) {
-            Player player = addPlayer(Entity.connectionSerialId, random.nextInt(400), random.nextInt(340), false);
-            game.getCamera().alignCenterOn(player);
-
             loadMap("dm_map01");
-            player.respawn();
-
+            createPlayer();
             canLoad = false;
         }
 
@@ -94,7 +88,6 @@ public class World {
         updateFromIterator(gameContainer, delta, bullets.getAll().iterator(), bullets);
 
         for (ParticleSystem system : particles.list.values()) {
-            //            ParticleManager.g.update(delta);
             system.update(delta);
         }
 
@@ -143,7 +136,7 @@ public class World {
         Collections.sort(sorted, entitySorter);
         renderFromIterator(gameContainer, g, sorted.iterator());
 
-        //        renderGrid(camera, g, entities);
+        //renderGrid(camera, g, entities);
 
         g.setColor(Color.white);
         g.drawString("particles=" + pa, 10, 30);
@@ -204,14 +197,23 @@ public class World {
         return entity;
     }
 
-    public Player addPlayer(int connectionId, float x, float y, boolean fromReceiver) {
-        Player player = new Player(x, y);
-        //        player.setId(userId);
+    public Player createPlayer() {
+        Player player = new Player(0, 0);
+        player.setWorld(this);
+        player.respawn();
+        return addPlayer(Entity.connectionSerialId, player, false);
+    }
+
+    public Player addPlayer(int connectionId, Player player, boolean fromReceiver) {
         if (connectionId != -1) {
             player.setConnectionId(connectionId);
         }
         addEntity(player, fromReceiver);
         return player;
+    }
+
+    public Player addPlayer(int connectionId, float x, float y, boolean fromReceiver) {
+        return addPlayer(connectionId, new Player(x, y), fromReceiver);
     }
 
     public void addBullet(Bullet bullet) {
@@ -220,7 +222,7 @@ public class World {
 
     public void addBullet(float x, float y, float z, Entity shooter, Vector2f direction, boolean fromReceiver) {
         Bullet bullet = new Bullet(this, x, y, z, direction);
-        bullet.setOwner(shooter.getId());
+        bullet.setOwner(shooter.getConnectionId());
 
         addBullet(bullet);
 
@@ -292,35 +294,14 @@ public class World {
         }
     }
 
-    // =======
-    // Getters
-
-    public ArrayList<Entity> getUsers() {
-        ArrayList<Entity> players = new ArrayList<Entity>();
-        for (Entity entity : entities.getAll()) {
-            if (entity instanceof Player) {
-                players.add(entity);
-            }
-        }
-        return players;
-    }
-
-    public Entity getEntityByConnectionId(int cid) {
-        for (Entity entity : entities.getAll()) {
-            if (entity.getConnectionId() == cid) {
-                return entity;
-            }
-        }
-        return null;
-    }
-
-    public void removeEntityById(int id) {
-        entities.remove(entities.getById(id));
+    public void removeEntityByConnectionId(int cid) {
+        Entity entity = getEntityByConnectionId(cid);
+        entities.remove(entity);
 
         Iterator<Entity> it = bullets.getAll().iterator();
         while (it.hasNext()) {
             Entity bullet = it.next();
-            if (bullet.getOwner() == id) {
+            if (bullet.getOwner() == entity.getId()) {
                 it.remove();
                 bullets.remove(bullet);
             }
@@ -344,6 +325,28 @@ public class World {
         }
     }
 
+    // =======
+    // Getters
+
+    public ArrayList<Entity> getUsers() {
+        ArrayList<Entity> players = new ArrayList<Entity>();
+        for (Entity entity : entities.getAll()) {
+            if (entity instanceof Player) {
+                players.add(entity);
+            }
+        }
+        return players;
+    }
+
+    public Entity getEntityByConnectionId(int cid) {
+        for (Entity entity : entities.getAll()) {
+            if (entity.getConnectionId() == cid) {
+                return entity;
+            }
+        }
+        return null;
+    }
+
     public EntityVault getEntities() {
         return entities;
     }
@@ -365,6 +368,9 @@ public class World {
     }
 
     public Vector2f getRandomSpawner() {
+        if (spawners.size() == 0) {
+            return null;
+        }
         return spawners.get(random.nextInt(spawners.size()));
     }
 }

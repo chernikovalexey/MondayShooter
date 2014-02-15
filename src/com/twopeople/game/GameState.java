@@ -1,6 +1,8 @@
 package com.twopeople.game;
 
+import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
+import com.twopeople.game.entity.Player;
 import com.twopeople.game.network.Client;
 import com.twopeople.game.network.Server;
 import com.twopeople.game.world.World;
@@ -40,7 +42,7 @@ public class GameState extends BasicGameState {
         camera = new Camera(gameContainer);
         world = new World(this);
 
-        String action = "s";//Console.readString("s/c: ");
+        String action = Console.readString("s/c: ");
 
         NetworkListener listener = new NetworkListener(this, world);
         client = new Client(listener);
@@ -71,6 +73,12 @@ public class GameState extends BasicGameState {
 
             g.setColor(Color.white);
             g.drawString(isServer() ? "Server" : "Client", 10, 90);
+
+            int i = 0;
+            for (Entity e : world.getUsers()) {
+                Player player = (Player) e;
+                g.drawString("p" + player.getConnectionId() + " " + player.kills + " / " + player.deaths, 715, 10 + 20 * i++);
+            }
         }
     }
 

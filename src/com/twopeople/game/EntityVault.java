@@ -157,8 +157,9 @@ public class EntityVault {
     }
 
     public void move(Entity entity) {
-        remove(entity);
-        add(entity);
+        if (remove(entity)) {
+            add(entity);
+        }
     }
 
     public ArrayList<Entity> getAll() {

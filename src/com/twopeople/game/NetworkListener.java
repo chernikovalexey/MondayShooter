@@ -27,7 +27,7 @@ public class NetworkListener implements Listener {
     public void connectionSuccess(AuthResponse response) {
         game.setUserId(response.yourId);
         Entity.connectionSerialId = response.yourId;
-        System.out.println("connection id="+Entity.connectionSerialId);
+        System.out.println("connection id=" + Entity.connectionSerialId);
         Entity.serialId += response.yourId;
 
         if (!game.isServer()) {
@@ -50,20 +50,23 @@ public class NetworkListener implements Listener {
 
     @Override
     public void addEntity(Entity entity) {
+        System.out.println("Add entity " + entity + "(" + entity.getX() + ", " + entity.getY() + ")");
         world.addEntity(entity, true);
     }
 
     @Override
     public void onUserKilled(int killed, int killer, float spawnerX, float spawnerY) {
-        System.out.println("User " + killed + " has been killed by " + killer);
-
-        /*Player killedPlayer = (Player) world.getEntityByConnectionId(killed);
+        Player killedPlayer = (Player) world.getEntityByConnectionId(killed);
         Player killerPlayer = (Player) world.getEntityByConnectionId(killer);
 
         killedPlayer.respawnAt(new Vector2f(spawnerX, spawnerY));
 
-        // todo
-        // score leading*/
+        /*if (!killedPlayer.isControllable()) {
+            ++killedPlayer.deaths;
+        }
+        if (!killerPlayer.isControllable()) {
+            ++killerPlayer.kills;
+        }*/
     }
 
     @Override
@@ -110,14 +113,12 @@ public class NetworkListener implements Listener {
 
     @Override
     public void shoot(float x, float y, float vx, float vy, int shooterId) {
-        world.addBullet(x, y, 42, world.getEntityByConnectionId(shooterId), new Vector2f(vx, vy), true);
+        Player player = (Player) world.getEntityByConnectionId(shooterId);
+        player.shoot(new Vector2f(vx, vy), true);
     }
-
-    // todo
-    // replace id with connection id
 
     @Override
     public void disconnected(int id) {
-        world.removeEntityById(id);
+        world.removeEntityByConnectionId(id);
     }
 }

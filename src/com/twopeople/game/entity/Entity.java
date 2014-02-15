@@ -35,6 +35,7 @@ public class Entity implements IEntity {
     protected int health, maxHealth;
 
     protected boolean remove = false;
+    protected boolean hasMoved = false;
 
     protected Vector3f velocity = new Vector3f(0f, 0f, 0f);
     protected Vector3f movingDirection = new Vector3f(0f, 0f, 0f);
@@ -86,7 +87,6 @@ public class Entity implements IEntity {
         long time = System.currentTimeMillis();
 
         float speed = getSpeed();
-        //        float friction = 0.00001f;
         float gravity = 9.8f;
         float accelerationX = -velocity.x * groundFriction + movingDirection.x * speed;
         float accelerationY = -velocity.y * groundFriction + movingDirection.y * speed;
@@ -104,6 +104,9 @@ public class Entity implements IEntity {
 
         float dx = velocity.x * delta * 0.0001f * 20;
         float dy = velocity.y * delta * 0.0001f * 20;
+
+        float px = x;
+        float py = y;
 
         if (dx != 0 || dy != 0) {
             Collection<Entity> nearby = entities.getNearbyEntities(this);
@@ -148,6 +151,8 @@ public class Entity implements IEntity {
                 }
             }
         }
+
+        hasMoved = x != px || y != py;
 
         //                System.out.println((System.currentTimeMillis()-time) + " elapsed on moving.");
     }
@@ -266,6 +271,7 @@ public class Entity implements IEntity {
 
     public void hurt(Entity by, int damage) {
         health -= damage;
+        //if(this instanceof Player) System.out.println(this + " damaged => " + health);
         if (health <= 0) {
             health = 0;
             killed(by);

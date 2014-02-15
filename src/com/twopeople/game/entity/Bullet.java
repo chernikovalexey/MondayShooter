@@ -12,7 +12,6 @@ import com.twopeople.game.world.World;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.geom.Circle;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
@@ -34,6 +33,11 @@ public class Bullet extends Entity {
         setSpeed(20.0f);
         setWorld(world);
         this.airFriction = 0f;
+
+        // Rotate the image once, and store it then cached
+        image = Images.bullets.getSprite(0, 0);
+        image.setCenterOfRotation(SIZE / 2, SIZE / 2);
+        image.setRotation((float) new Vector2f(movingDirection.x, movingDirection.y).getTheta() + 90);
     }
 
     public static float hz = 0f;
@@ -55,13 +59,11 @@ public class Bullet extends Entity {
     public void render(GameContainer container, Camera camera, Graphics g) {
         renderOvalShadow(camera, g, z - height * 6, 0.2f);
 
-        Image image = Images.bullets.getSprite(0, 0);
-        image.setCenterOfRotation(SIZE / 2, SIZE / 2);
-        image.setRotation((float) new Vector2f(movingDirection.x, movingDirection.y).getTheta() + 90);
         image.draw(camera.getX(this), camera.getY(this));
 
-        g.setColor(new Color(204, 204, 204, 120));
-        //        g.fillRect(camera.getX(this), camera.getY(this), getWidth(), getOrthogonalHeight());
+        g.setColor(new Color(204, 204, 204, 255));
+        //g.drawString("" + getOwner(), camera.getX(this), camera.getY(this));
+        //g.fillRect(camera.getX(this), camera.getY(this), getWidth(), getOrthogonalHeight());
     }
 
     public Shape getBB() {
@@ -70,7 +72,8 @@ public class Bullet extends Entity {
 
     @Override
     public boolean collidesWith(Entity entity) {
-        if (entity instanceof Player && entity.getId() == getOwner() || entity instanceof Fence) {
+        if (entity instanceof Player && entity.getConnectionId() == getOwner() || entity instanceof Fence) {
+            //System.out.println(entity.getConnectionId() + ", " + getOwner());
             return false;
         }
         return super.collidesWith(entity);
@@ -81,8 +84,11 @@ public class Bullet extends Entity {
         if (hz == z) {
             hz = 0;
         }
+        if (entity instanceof Player) {
+            //            System.out.println("bullet bumped into player ...");
+        }
         remove = true;
-        entity.hurt(this, 25);
+        entity.hurt(this, 15);
 
         if (entity instanceof Wall) {
             ConcreteChippingEmitter ccEmitter = new ConcreteChippingEmitter(world, x, y, z);

@@ -37,6 +37,8 @@ public class Player extends Entity {
             new float[]{6, 20}, new float[]{46, 28}
     };
 
+    public int kills, deaths;
+
     public Player() {
         loadAnimations(Images.player);
     }
@@ -85,7 +87,6 @@ public class Player extends Entity {
             }
 
             if (isMoving) {
-                entities.move(this);
                 world.getGame().getClient().directionChange(this);
                 world.getGame().getCamera().alignCenterOn(this);
 
@@ -100,20 +101,28 @@ public class Player extends Entity {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON) && currentShootTime - lastShootTime > 105) {
                 lastShootTime = currentShootTime;
                 double angle = Math.atan2(getHeadingVector().y, getHeadingVector().x);
-                world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], getZ() + 42, this, new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
-
-                Camera camera = world.getGame().getCamera();
-
-                try {
-                    File xmlFile = new File("res/gunshot.xml");
-                    ConfigurableEmitter emitter = ParticleIO.loadEmitter(xmlFile);
-                    emitter.setPosition(camera.getX(x) - 130 - width / 2 + gunshotOffsets[currentAnimationState][0] / 2, camera.getY(y - z) - 125 + gunshotOffsets[currentAnimationState][1]);
-                    emitter.angularOffset.setValue((float) (getHeadingVector().getTheta() + 90));
-                    world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(emitter);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                shoot(new Vector2f((float) Math.cos(angle), (float) Math.sin(angle)), false);
             }
+        }
+
+        if (hasMoved) {
+            entities.move(this);
+        }
+    }
+
+    public void shoot(Vector2f vec, boolean fromReceiver) {
+        world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], getZ() + 42, this, vec, fromReceiver);
+
+        Camera camera = world.getGame().getCamera();
+
+        try {
+            File xmlFile = new File("res/gunshot.xml");
+            ConfigurableEmitter emitter = ParticleIO.loadEmitter(xmlFile);
+            emitter.setPosition(camera.getX(x) - 130 - width / 2 + gunshotOffsets[currentAnimationState][0] / 2, camera.getY(y - z) - 125 + gunshotOffsets[currentAnimationState][1]);
+            emitter.angularOffset.setValue((float) (getHeadingVector().getTheta() + 90));
+            world.getParticleSystem(ParticleManager.GUNSHOT_DEBRIS).addEmitter(emitter);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -130,7 +139,7 @@ public class Player extends Entity {
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
         g.setColor(Color.white);
-        g.drawString(id + " / " + connectionId, camera.getX(this), camera.getY(this));
+        g.drawString("" + health, camera.getX(this) + 10, camera.getY(this));
 
         g.setColor(new Color(204, 204, 204, 120));
         //        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, getOrthogonalHeight());
@@ -152,15 +161,25 @@ public class Player extends Entity {
     }
 
     public void respawnAt(Vector2f spawner) {
-        setX(spawner.x + 64 / 2);
-        setY(spawner.y - 16);
-        world.getGame().getCamera().alignCenterOn(this);
-        world.getEntities().move(this);
+        if (spawner != null) {
+            setX(spawner.x + 64 / 2);
+            setY(spawner.y - 16);
+            world.getGame().getCamera().alignCenterOn(this);
+            world.getEntities().move(this);
+            health = maxHealth;
+        }
     }
 
     @Override
     public void killed(Entity by) {
-        Vector2f spawner = respawn();
-        world.getGame().getClient().killed(by.getId(), spawner.x, spawner.y);
+        Player killedBy = (Player) world.getEntityByConnectionId(by.getOwner());
+
+        if (isControllable()) {
+            Vector2f spawner = respawn();
+            world.getGame().getClient().killed(killedBy.getConnectionId(), spawner.x, spawner.y);
+        }
+
+        ++killedBy.kills;
+        ++this.deaths;
     }
 }
