@@ -26,13 +26,11 @@ public class Fence extends Entity {
     public void render(GameContainer container, Camera camera, Graphics g) {
         g.drawImage(image, camera.getX(this), camera.getY(this));
 
-        for (float zo = 0; zo <= 0; zo++) {
-            for (Shape shape : getSkeleton()) {
-                shape.setX(camera.getX(shape.getX()));
-                shape.setY(camera.getY(shape.getY() - 42));
-                g.setColor(new Color(255, 255 - (int) zo, 255 - (int) zo, 255));
-                //                g.fill(shape);
-            }
+        for (Shape shape : getSkeleton()) {
+            shape.setX(camera.getX(shape.getX()));
+            shape.setY(camera.getY(shape.getY()));
+            g.setColor(new Color(255, 255, 255, 255));
+            g.fill(shape);
         }
 
         g.setColor(new Color(204, 204, 204, 120));

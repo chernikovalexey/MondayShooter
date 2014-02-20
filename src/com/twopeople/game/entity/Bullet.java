@@ -40,13 +40,8 @@ public class Bullet extends Entity {
         image.setRotation((float) new Vector2f(movingDirection.x, movingDirection.y).getTheta() + 90);
     }
 
-    public static float hz = 0f;
-
     @Override
     public void update(GameContainer container, int delta, EntityVault entities) {
-        if (z > hz) {
-            hz = z;
-        }
         world.getBullets().move(this);
         super.update(container, delta, entities);
 
@@ -57,13 +52,15 @@ public class Bullet extends Entity {
 
     @Override
     public void render(GameContainer container, Camera camera, Graphics g) {
-        renderOvalShadow(camera, g, z - height * 6, 0.2f);
+        renderOvalShadow(camera, g, z - height*10, 0.2f);
 
         image.draw(camera.getX(this), camera.getY(this));
 
-        g.setColor(new Color(204, 204, 204, 255));
-        //g.drawString("" + getOwner(), camera.getX(this), camera.getY(this));
-        //g.fillRect(camera.getX(this), camera.getY(this), getWidth(), getOrthogonalHeight());
+        /*g.setColor(Color.red);
+        Shape shape = getBB();
+        shape.setX(camera.getX(shape.getX()));
+        shape.setY(camera.getY(shape.getY()));
+        g.fill(shape);*/
     }
 
     public Shape getBB() {
@@ -73,7 +70,6 @@ public class Bullet extends Entity {
     @Override
     public boolean collidesWith(Entity entity) {
         if (entity instanceof Player && entity.getConnectionId() == getOwner() || entity instanceof Fence) {
-            //System.out.println(entity.getConnectionId() + ", " + getOwner());
             return false;
         }
         return super.collidesWith(entity);
@@ -81,12 +77,6 @@ public class Bullet extends Entity {
 
     @Override
     public void bumpedInto(Entity entity) {
-        if (hz == z) {
-            hz = 0;
-        }
-        if (entity instanceof Player) {
-            //            System.out.println("bullet bumped into player ...");
-        }
         remove = true;
         entity.hurt(this, 15);
 

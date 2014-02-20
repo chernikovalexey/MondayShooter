@@ -13,7 +13,7 @@ import java.util.HashMap;
  */
 
 public class EntityLoader {
-    public static HashMap<String, Class<? extends Entity>> entities = new HashMap<String, Class<? extends Entity>>();
+    private static HashMap<String, Class<? extends Entity>> entities = new HashMap<String, Class<? extends Entity>>();
 
     public static void init() {
         registerClass(Wall.class);

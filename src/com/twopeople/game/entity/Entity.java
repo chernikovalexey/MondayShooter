@@ -35,7 +35,7 @@ public class Entity implements IEntity {
     protected int health, maxHealth;
 
     protected boolean remove = false;
-    protected boolean hasMoved = false;
+    protected boolean hasMoved = false; // Whether it moved in the current tick
 
     protected Vector3f velocity = new Vector3f(0f, 0f, 0f);
     protected Vector3f movingDirection = new Vector3f(0f, 0f, 0f);
@@ -78,7 +78,6 @@ public class Entity implements IEntity {
         }
     }
 
-
     public void update(GameContainer container, int delta, EntityVault entities) {
         if (movingDirection.z == -1) {
             velocity.z = 25f;
@@ -97,7 +96,7 @@ public class Entity implements IEntity {
         velocity.z += accelerationZ * delta * .0099f;
 
         z += velocity.z * delta * 0.001f * 20;
-        if (z < 0) {
+        if (z <= 0) {
             velocity.z = 0;
             z = 0;
         }
@@ -111,42 +110,83 @@ public class Entity implements IEntity {
         if (dx != 0 || dy != 0) {
             Collection<Entity> nearby = entities.getNearbyEntities(this);
 
-            if (dx != 0) {
-                x += dx;
+            int steps = (int) speed;
+            float d2x = 0f;
+            float d2y = 0f;
+
+            o:
+            while (d2x / dx < 1f || d2y / dy < 1f) {
+                d2x += dx / steps;
+                if (d2x / dx > 1f) { d2x = dx; }
+                d2y += dy / steps;
+                if (d2y / dy > 1f) { d2y = dy; }
+
+                float pdx = d2x;
+                float pdy = d2y;
 
                 for (Entity e : nearby) {
+                    x += pdx;
+                    y += pdy;
+
                     if (this.collidesWith(e)) {
+                        y -= pdy;
+                        boolean canMoveX = !this.collidesWith(e);
+                        y += pdy;
+
+                        x -= pdx;
+                        boolean canMoveY = !this.collidesWith(e);
+                        y -= pdy;
+
+                        d2x -= dx / steps;
+                        d2y -= dy / steps;
+
+                        float smx = 0f;
+                        float smy = 0f;
+
+                        if (canMoveX) { smx = pdy; }
+                        if (canMoveY) { smy = pdx * 0.325f; }
+
+                        if (getBBCentre().x < e.getBBCentre().x && getBBCentre().y < e.getBBCentre().y || getBBCentre().x > e.getBBCentre().x && getBBCentre().y > e.getBBCentre().y) {
+                            smx *= -1;
+                            smy *= -1;
+                        }
+
+                        if (!canMoveY && canMoveX) {
+                            x += smx;
+                        }
+                        if (!canMoveX && canMoveY) {
+                            y += smy;
+                        }
+
+                        velocity.set(0, 0);
                         bumpedInto(e);
-
-                        if (movingDirection.y == 0) {
-                            Vector2f hitSide = e.getHitSideVector(this);
-                            float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(getBBCentre().x, 0, 0));
-                            y += (float) Math.sin(angle - Math.PI / 2);
-                        }
-
-                        while (e.collidesWith(this)) {
-                            x -= dx / 10;
-                        }
+                        break o;
                     }
+
+                    x -= pdx;
+                    y -= pdy;
                 }
             }
 
-            if (dy != 0) {
-                y += dy;
+            x += d2x;
+            y += d2y;
 
-                for (Entity e : nearby) {
-                    if (this.collidesWith(e)) {
-                        bumpedInto(e);
-
-                        if (movingDirection.x == 0) {
-                            Vector2f hitSide = e.getHitSideVector(this);
-                            float angle = Vector3f.angle(new Vector3f(hitSide.x, 0, hitSide.y), new Vector3f(0, 0, getBBCentre().y));
-                            x += (float) Math.cos(angle);
+            for (Entity e : nearby) {
+                if (this.collidesWith(e)) {
+                    if (d2x != 0 || d2y != 0) {
+                        x -= d2x;
+                        y -= d2y;
+                    } else {
+                        float xi = 0.1f;
+                        float yi = 0.1f;
+                        if (e.getBBCentre().getX() < getBBCentre().getX()) {
+                            xi *= -1;
                         }
-
-                        while (e.collidesWith(this)) {
-                            y -= dy / 10;
+                        if (e.getBBCentre().getY() < getBBCentre().getY()) {
+                            yi *= -1;
                         }
+                        x -= xi;
+                        y -= yi;
                     }
                 }
             }
@@ -154,7 +194,9 @@ public class Entity implements IEntity {
 
         hasMoved = x != px || y != py;
 
-        //                System.out.println((System.currentTimeMillis()-time) + " elapsed on moving.");
+        if (hasMoved) {
+            //System.out.println((System.currentTimeMillis() - time) + " ms elapsed on moving.");
+        }
     }
 
     public void render(GameContainer container, Camera camera, Graphics g) {}
@@ -271,7 +313,6 @@ public class Entity implements IEntity {
 
     public void hurt(Entity by, int damage) {
         health -= damage;
-        //if(this instanceof Player) System.out.println(this + " damaged => " + health);
         if (health <= 0) {
             health = 0;
             killed(by);
@@ -289,10 +330,6 @@ public class Entity implements IEntity {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getConnectionId() {
@@ -335,10 +372,6 @@ public class Entity implements IEntity {
         return width;
     }
 
-    public void setWidth(float width) {
-        this.width = width;
-    }
-
     @Override
     public float getHeight() {
         return height;
@@ -348,16 +381,8 @@ public class Entity implements IEntity {
         return height + depth;
     }
 
-    public void setHeight(float height) {
-        this.height = height;
-    }
-
     public float getDepth() {
         return depth;
-    }
-
-    public void setDepth(float depth) {
-        this.depth = depth;
     }
 
     public float getSpeed() {

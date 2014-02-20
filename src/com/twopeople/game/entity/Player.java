@@ -46,7 +46,7 @@ public class Player extends Entity {
     public Player(float x, float y) {
         super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
 
-        setSpeed(4.5f);
+        setSpeed(6.5f);
         loadAnimations(Images.player);
         setHealth(100, 100);
     }
@@ -111,7 +111,7 @@ public class Player extends Entity {
     }
 
     public void shoot(Vector2f vec, boolean fromReceiver) {
-        world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], getZ() + 42, this, vec, fromReceiver);
+        world.addBullet(getX() + gunshotOffsets[currentAnimationState][0], getY() + height + gunshotOffsets[currentAnimationState][1], z + 42, this, vec, fromReceiver);
 
         Camera camera = world.getGame().getCamera();
 
@@ -136,7 +136,7 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            //            g.fill(shape);
+            //g.fill(shape);
         }
 
         renderOvalShadow(camera, g, 8f, 0.1f);

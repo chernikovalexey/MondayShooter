@@ -41,7 +41,7 @@ public class MSParticleSystem extends ParticleSystem {
         if (clazz != null) {
             try {
                 Constructor<? extends MSParticle> constructor = clazz.getConstructor(World.class, ParticleSystem.class);
-                return constructor.newInstance(new Object[]{world, system});
+                return constructor.newInstance(world, system);
             } catch (Exception e) {
                 e.printStackTrace();
             }
