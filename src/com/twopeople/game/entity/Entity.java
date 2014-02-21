@@ -36,6 +36,7 @@ public class Entity implements IEntity {
 
     protected boolean remove = false;
     protected boolean hasMoved = false; // Whether it moved in the current tick
+    protected boolean simpleMovement = false;
 
     protected Vector3f velocity = new Vector3f(0f, 0f, 0f);
     protected Vector3f movingDirection = new Vector3f(0f, 0f, 0f);
@@ -110,9 +111,12 @@ public class Entity implements IEntity {
         if (dx != 0 || dy != 0) {
             Collection<Entity> nearby = entities.getNearbyEntities(this);
 
-            int steps = (int) speed;
+            int steps = (int) speed * 2;
+            if(simpleMovement) steps /= 2*6;
             float d2x = 0f;
             float d2y = 0f;
+
+            //System.out.println(dx + ", " + steps + ", " + dx / steps);
 
             o:
             while (d2x / dx < 1f || d2y / dy < 1f) {
@@ -129,6 +133,16 @@ public class Entity implements IEntity {
                     y += pdy;
 
                     if (this.collidesWith(e)) {
+                        d2x -= dx / steps;
+                        d2y -= dy / steps;
+
+                        if (simpleMovement) {
+                            x -= pdx;
+                            y -= pdy;
+                            bumpedInto(e);
+                            break o;
+                        }
+
                         y -= pdy;
                         boolean canMoveX = !this.collidesWith(e);
                         y += pdy;
@@ -137,14 +151,11 @@ public class Entity implements IEntity {
                         boolean canMoveY = !this.collidesWith(e);
                         y -= pdy;
 
-                        d2x -= dx / steps;
-                        d2y -= dy / steps;
-
                         float smx = 0f;
                         float smy = 0f;
 
                         if (canMoveX) { smx = pdy; }
-                        if (canMoveY) { smy = pdx * 0.325f; }
+                        if (canMoveY) { smy = pdx*0.35f; }
 
                         if (getBBCentre().x < e.getBBCentre().x && getBBCentre().y < e.getBBCentre().y || getBBCentre().x > e.getBBCentre().x && getBBCentre().y > e.getBBCentre().y) {
                             smx *= -1;

@@ -32,7 +32,9 @@ public class Bullet extends Entity {
         this.movingDirection.set(movingDirection.x, movingDirection.y);
         setSpeed(20.0f);
         setWorld(world);
+
         this.airFriction = 0f;
+        this.simpleMovement=true;
 
         // Rotate the image once, and store it then cached
         image = Images.bullets.getSprite(0, 0);
@@ -81,10 +83,13 @@ public class Bullet extends Entity {
         entity.hurt(this, 15);
 
         if (entity instanceof Wall) {
-            ConcreteChippingEmitter ccEmitter = new ConcreteChippingEmitter(world, x, y, z);
+            float dist = entity.getBBCentre().distance(getBBCentre());
+            float az =  dist < 35 ? z / 2 : z;
+
+            ConcreteChippingEmitter ccEmitter = new ConcreteChippingEmitter(world, x, y, az);
             world.getParticleSystem(ParticleManager.CHIPPING_DEBRIS).addEmitter(ccEmitter);
 
-            BulletHoleEmitter bhEmitter = new BulletHoleEmitter(world, x, y, z);
+            BulletHoleEmitter bhEmitter = new BulletHoleEmitter(world, x, y,az);
             world.getParticleSystem(ParticleManager.BULLET_HOLE_DEBRIS).addEmitter(bhEmitter);
         }
     }

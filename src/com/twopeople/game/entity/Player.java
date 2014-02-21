@@ -46,7 +46,7 @@ public class Player extends Entity {
     public Player(float x, float y) {
         super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
 
-        setSpeed(6.5f);
+        setSpeed(4.5f);
         loadAnimations(Images.player);
         setHealth(100, 100);
     }
@@ -136,10 +136,10 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            //g.fill(shape);
+            g.fill(shape);
         }
 
-        renderOvalShadow(camera, g, 8f, 0.1f);
+        //renderOvalShadow(camera, g, 8f, 0.1f);
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
         g.setColor(Color.white);

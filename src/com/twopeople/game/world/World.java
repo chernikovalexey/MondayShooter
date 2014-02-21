@@ -91,8 +91,11 @@ public class World {
             system.update(delta);
         }
 
-        //        System.out.println("World updated in " + (System.currentTimeMillis() - time) + " ms");
+        updated = System.currentTimeMillis() - time;
+        //System.out.println(updated);
     }
+
+    private long updated = 0;
 
     public void updateFromIterator(GameContainer container, int delta, Iterator<Entity> it, EntityVault vault) {
         while (it.hasNext()) {
@@ -142,8 +145,9 @@ public class World {
         g.drawString("particles=" + pa, 10, 30);
         g.drawString("entities=" + entities.size(), 10, 50);
         g.drawString("bullets=" + bullets.size(), 10, 70);
+        //g.drawString("updated in " + updated + " ms", 10, 110);
 
-        //        System.out.println("World rendered in " + (System.currentTimeMillis() - time) + " ms");
+        //System.out.println("Rendered in " + (System.currentTimeMillis() - time) + " ms");
     }
 
     public void renderFromIterator(GameContainer container, Graphics g, Iterator<IEntity> it) {
