@@ -3,6 +3,7 @@ package com.twopeople.game.entity;
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.IEntity;
+import com.twopeople.game.MathUtil;
 import com.twopeople.game.world.World;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.Animation;
@@ -70,14 +71,13 @@ public class Entity implements IEntity {
         this.width = width;
         this.height = height;
         this.depth = depth;
-        init(hasId);
-    }
 
-    public void init(boolean hasId) {
         if (hasId) {
             id = serialId++;
         }
     }
+
+    public void init() {}
 
     public void update(GameContainer container, int delta, EntityVault entities) {
         if (movingDirection.z == -1) {
@@ -112,7 +112,7 @@ public class Entity implements IEntity {
             Collection<Entity> nearby = entities.getNearbyEntities(this);
 
             int steps = (int) speed * 2;
-            if(simpleMovement) steps /= 2*6;
+            if (simpleMovement) { steps /= 2 * 6; }
             float d2x = 0f;
             float d2y = 0f;
 
@@ -155,7 +155,7 @@ public class Entity implements IEntity {
                         float smy = 0f;
 
                         if (canMoveX) { smx = pdy; }
-                        if (canMoveY) { smy = pdx*0.35f; }
+                        if (canMoveY) { smy = pdx * 0.35f; }
 
                         if (getBBCentre().x < e.getBBCentre().x && getBBCentre().y < e.getBBCentre().y || getBBCentre().x > e.getBBCentre().x && getBBCentre().y > e.getBBCentre().y) {
                             smx *= -1;
@@ -210,6 +210,7 @@ public class Entity implements IEntity {
         }
     }
 
+    @Override
     public void render(GameContainer container, Camera camera, Graphics g) {}
 
     public void renderOvalShadow(Camera camera, Graphics g, float shadowDistance, float minOpacity) {
@@ -255,6 +256,16 @@ public class Entity implements IEntity {
         updateDirection(newDirection.x, newDirection.y);
     }
 
+    public void setMovingDirectionToPoint(float dx, float dy) {
+        float dist = MathUtil.getDist(x, y, dx, dy);
+        //System.out.println((dx - x) + ", " + (dy - y) + " => " + dist);
+        if (dist > 2.5f) {
+            Vector2f newDirection = new Vector2f(dx - x, dy - y).normalise();
+            movingDirection.x = newDirection.x;
+            movingDirection.y = newDirection.y;
+        }
+    }
+
     public void loadAnimations(SpriteSheet sprite) {
         int states = 1;
         Image[] up = new Image[states];
@@ -297,7 +308,7 @@ public class Entity implements IEntity {
     }
 
     public Shape getBB() {
-        return new Rectangle(x, y, width, height);
+        return new Rectangle(x, y + height, getOrthogonalWidth(), getOrthogonalDepth());
     }
 
     public Shape[] getSkeleton() {
@@ -305,6 +316,10 @@ public class Entity implements IEntity {
     }
 
     public boolean collidesWith(Entity entity) {
+        if (entity.getHeight() == 0) {
+            return false;
+        }
+
         for (Shape shape1 : getSkeleton()) {
             for (Shape shape2 : entity.getSkeleton()) {
                 if (getZ() > entity.getHeight()) {
@@ -383,17 +398,27 @@ public class Entity implements IEntity {
         return width;
     }
 
+    public float getOrthogonalWidth() {
+        float sqrt2 = (float) Math.sqrt(2);
+        return MathUtil.getDist(x, y + depth / 2, x + depth / sqrt2 + width * sqrt2 / 2, y + depth * sqrt2 / 2);
+    }
+
     @Override
     public float getHeight() {
         return height;
     }
 
     public float getOrthogonalHeight() {
-        return height + depth;
+        return height + getOrthogonalDepth();
     }
 
     public float getDepth() {
         return depth;
+    }
+
+    public float getOrthogonalDepth() {
+        float sqrt2 = (float) Math.sqrt(2);
+        return MathUtil.getDist(x + width * sqrt2 / 2, y, x + width * sqrt2 / 2, y + 1.5f * depth / sqrt2);
     }
 
     public float getSpeed() {

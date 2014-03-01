@@ -45,7 +45,7 @@ public class NetworkListener implements Listener {
             }
         }
 
-        world.init();
+        game.startGame();
     }
 
     @Override
@@ -91,7 +91,7 @@ public class NetworkListener implements Listener {
 
     @Override
     public Entity[] getUsers() {
-        return world.getUsers().toArray(new Entity[]{});
+        return world.getFilteredEntities(Player.class).toArray(new Entity[]{});
     }
 
     private Entity updateEntityState(int id, float x, float y) {

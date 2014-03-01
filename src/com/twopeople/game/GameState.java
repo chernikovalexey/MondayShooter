@@ -19,6 +19,7 @@ import org.newdawn.slick.state.StateBasedGame;
  */
 
 public class GameState extends BasicGameState {
+    private GameContainer container;
     private Camera camera;
     private World world;
 
@@ -27,6 +28,12 @@ public class GameState extends BasicGameState {
 
     private int userId;
     private boolean connected = false;
+
+    private enum LoadingState {
+        NONE, INIT_WORLD, SKIP_TICK, RUNNING
+    }
+
+    private LoadingState loadingState = LoadingState.NONE;
 
     public boolean isServer() {
         return server != null;
@@ -37,10 +44,9 @@ public class GameState extends BasicGameState {
         Images.init();
         EntityLoader.init();
 
-        gameContainer.getGraphics().setAntiAlias(true);
-
-        camera = new Camera(gameContainer);
-        world = new World(this);
+        this.container = gameContainer;
+        this.camera = new Camera(gameContainer);
+        this.world = new World(this);
 
         String action = "s";//Console.readString("s/c: ");
 
@@ -58,26 +64,41 @@ public class GameState extends BasicGameState {
         }
     }
 
+    public void startGame() {
+        loadingState = LoadingState.INIT_WORLD;
+    }
+
     @Override
     public void update(GameContainer gameContainer, StateBasedGame stateBasedGame, int delta) throws SlickException {
         if (connected) {
-            camera.update(delta);
-            world.update(gameContainer, delta);
+            if (loadingState == LoadingState.INIT_WORLD) {
+                world.init();
+                loadingState = LoadingState.SKIP_TICK;
+            } else if (loadingState == LoadingState.RUNNING) {
+                camera.update(delta);
+                world.update(gameContainer, delta);
+            } else if (loadingState == LoadingState.SKIP_TICK) {
+                loadingState = LoadingState.RUNNING;
+            }
         }
     }
 
     @Override
-    public void render(GameContainer gameContainer, StateBasedGame stateBasedGame, Graphics g) throws SlickException {
+    public void render(GameContainer container, StateBasedGame stateBasedGame, Graphics g) throws SlickException {
         if (connected) {
-            world.render(gameContainer, g);
+            if (loadingState != LoadingState.RUNNING) {
+                g.drawString("Loading ...", container.getWidth() / 2 - 30, container.getHeight() / 2 - 10);
+            } else {
+                world.render(container, g);
 
-            g.setColor(Color.white);
-            g.drawString(isServer() ? "Server" : "Client", 10, 90);
+                g.setColor(Color.white);
+                g.drawString("Type: " + (isServer() ? "server" : "client"), 10, 90);
 
-            int i = 0;
-            for (Entity e : world.getUsers()) {
-                Player player = (Player) e;
-                g.drawString("p" + player.getConnectionId() + " " + player.kills + " / " + player.deaths, 715, 10 + 20 * i++);
+                int i = 0;
+                for (Entity e : world.getFilteredEntities(Player.class)) {
+                    Player player = (Player) e;
+                    g.drawString("player-" + player.getConnectionId() + ": " + player.kills + " / " + player.deaths, 655, 10 + 20 * i++);
+                }
             }
         }
     }
@@ -96,6 +117,10 @@ public class GameState extends BasicGameState {
 
     public int getUserId() {
         return userId;
+    }
+
+    public GameContainer getContainer() {
+        return container;
     }
 
     public Camera getCamera() {

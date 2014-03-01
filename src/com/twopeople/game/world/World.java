@@ -8,6 +8,8 @@ import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.entity.Player;
+import com.twopeople.game.entity.Railcar;
+import com.twopeople.game.entity.building.Railroad;
 import com.twopeople.game.particle.MSParticleSystem;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.world.tile.Tile;
@@ -44,8 +46,6 @@ public class World {
     private EntityVault bullets = new EntityVault(12800, 12800);
     private ParticleManager particles = new ParticleManager(this);
 
-    private boolean canLoad = false;
-
     private Comparator<IEntity> entitySorter = new Comparator<IEntity>() {
         @Override
         public int compare(IEntity entity1, IEntity entity2) {
@@ -72,17 +72,15 @@ public class World {
     }
 
     public void init() {
-        canLoad = true;
+        loadMap("dm_map01");
+        createPlayer();
+
+        Railroad road = (Railroad) getFilteredEntities(Railroad.class).get(0);
+        addEntity(new Railcar(road.getX() + 25, road.getY() - 15), true);
     }
 
     public void update(GameContainer gameContainer, int delta) {
         final long time = System.currentTimeMillis();
-
-        if (canLoad) {
-            loadMap("dm_map01");
-            createPlayer();
-            canLoad = false;
-        }
 
         updateFromIterator(gameContainer, delta, entities.getAll().iterator(), entities);
         updateFromIterator(gameContainer, delta, bullets.getAll().iterator(), bullets);
@@ -142,9 +140,9 @@ public class World {
         //renderGrid(camera, g, entities);
 
         g.setColor(Color.white);
-        g.drawString("particles=" + pa, 10, 30);
-        g.drawString("entities=" + entities.size(), 10, 50);
-        g.drawString("bullets=" + bullets.size(), 10, 70);
+        g.drawString("Particles: " + pa, 10, 30);
+        g.drawString("Entities: " + entities.size(), 10, 50);
+        g.drawString("Bullets: " + bullets.size(), 10, 70);
         //g.drawString("updated in " + updated + " ms", 10, 110);
 
         //System.out.println("Rendered in " + (System.currentTimeMillis() - time) + " ms");
@@ -190,12 +188,13 @@ public class World {
     public Entity addEntity(Entity entity, boolean fromReceiver) {
         if (!entity.hasWorld()) {
             entity.setWorld(this);
+            entity.init();
         }
 
         entities.add(entity);
 
         if (!fromReceiver) {
-            getGame().getClient().sendEntity(entity);
+            game.getClient().sendEntity(entity);
         }
 
         return entity;
@@ -231,7 +230,7 @@ public class World {
         addBullet(bullet);
 
         if (!fromReceiver) {
-            getGame().getClient().shoot(shooter);
+            game.getClient().shoot(shooter);
         }
     }
 
@@ -248,7 +247,7 @@ public class World {
             int th = map.getTileHeight();
 
             tiles.clear();
-            removeEntitiesByIdExcept(new int[]{getGame().getUserId()});
+            removeEntitiesExceptConnectionIds(game.getUserId());
 
             for (int layer = 0; layer < map.getLayerCount(); ++layer) {
                 for (int x = 0, oddOffset = 1, evenOffset = 0; x < map.getWidth(); ++x, oddOffset = 1, evenOffset = 0) {
@@ -312,13 +311,13 @@ public class World {
         }
     }
 
-    public void removeEntitiesByIdExcept(int[] ids) {
+    public void removeEntitiesExceptConnectionIds(int... ids) {
         Iterator<Entity> it = entities.getAll().iterator();
         while (it.hasNext()) {
             Entity entity = it.next();
             boolean found = false;
             for (int id : ids) {
-                if (entity.getId() == id) {
+                if (entity.getConnectionId() == id) {
                     found = true;
                 }
             }
@@ -332,14 +331,14 @@ public class World {
     // =======
     // Getters
 
-    public ArrayList<Entity> getUsers() {
-        ArrayList<Entity> players = new ArrayList<Entity>();
+    public ArrayList<Entity> getFilteredEntities(Class<? extends Entity> clazz) {
+        ArrayList<Entity> filtered = new ArrayList<Entity>();
         for (Entity entity : entities.getAll()) {
-            if (entity instanceof Player) {
-                players.add(entity);
+            if (entity.getClass().equals(clazz)) {
+                filtered.add(entity);
             }
         }
-        return players;
+        return filtered;
     }
 
     public Entity getEntityByConnectionId(int cid) {

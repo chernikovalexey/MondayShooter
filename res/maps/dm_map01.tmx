@@ -125,6 +125,14 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="49" name="railroad" tilewidth="128" tileheight="65">
+  <image source="../railroad.png" width="128" height="65"/>
+  <tile id="0">
+   <properties>
+    <property name="type" value="railroad"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer name="Floor" width="100" height="100">
   <data encoding="base64" compression="gzip">
    H4sIAAAAAAAAC+3ZwQrCMBRFwdSd6P9/r3RRiM+2aRd5CTIDgqArD9cUUgoAAAAAAAAAAAAAAAAAAPxaGp8/w4u+lnLeJPbQpJ+l3O9BP0tpN7GPHFuDV7nXgz7iNo6a2Ed/cRtnG9Eix9E+HuF79pFj7/x4lO8eWuSK21h/77qJBrlii7qHFmPU/1V1Ez3GqM8NZ8U89prEZy3yxB7xWYt8e/vQZJx4fugxXny+Wt+37qzoJ54jrfsR+qubXLmzoq+tx5X7KnLUPd5Fk9Gu3leRI27DRsayj/k4P+ZiG/PRYy5azEcPAAAAAAAAAAAAAAAA+G8f7KbFrUCcAAA=
@@ -150,9 +158,9 @@
    H4sIAAAAAAAAC+3YMQ7AIAgFUM/QxsX7H9Slk2kHhwrG9xIWJgL5C6UAAAAAAAAAAAAAAAAAAOzjfgogq+ulV5dPATnJB8yRD/gmH/HqUMSx/1zcIw+3iNGiBwAAAAAA4Ff+7wAAAAAAAAAAAAAAAACcpgOlkAhvQJwAAA==
   </data>
  </layer>
- <layer name="fences" width="100" height="100">
+ <layer name="Railroad" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3VMQrAIBAAQb9j/v/AtIJFOl3CTGVxhbBwNwYAAAAAAAAAAAAAAAAAAAAAADQ8tz/ARpMWPRrm8tbkvvk9wmGatNhZbZq06NFgb7W46z2atOgBAAAAAAAAAAAAAAAAAAAA8G8vdQElZkCcAAA=
+   H4sIAAAAAAAAC+3XoQ3AQAwEQbd0/TcXFvBSsC+vGWJDS4s8AwAAAAAAAAAAAAAAAAAAAP+X7QN4ZfRopEkXPfpo0iHHZJ8mPbToko+dHRl/SBs9AAAAAAAAAAAAAAAAAAAAAAAAgBs8ofrJYECcAAA=
   </data>
  </layer>
 </map>

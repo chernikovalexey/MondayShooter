@@ -1,6 +1,7 @@
 package com.twopeople.game.entity;
 
 import com.twopeople.game.entity.building.Fence;
+import com.twopeople.game.entity.building.Railroad;
 import com.twopeople.game.entity.building.Wall;
 import org.newdawn.slick.Image;
 
@@ -18,6 +19,8 @@ public class EntityLoader {
     public static void init() {
         registerClass(Wall.class);
         registerClass(Fence.class);
+        registerClass(Railroad.class);
+
         registerClass(Player.class);
         registerClass(Bullet.class);
     }

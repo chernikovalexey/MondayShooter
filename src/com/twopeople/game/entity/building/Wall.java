@@ -34,7 +34,7 @@ public class Wall extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            g.setColor(new Color(255, 255, 255, 255));
+            g.setColor(new Color(255, 255, 255, 155));
             //g.fill(shape);
         }
 
