@@ -48,7 +48,7 @@ public class GameState extends BasicGameState {
         this.camera = new Camera(gameContainer);
         this.world = new World(this);
 
-        String action = "s";//Console.readString("s/c: ");
+        String action = Console.readString("s/c: ");
 
         NetworkListener listener = new NetworkListener(this, world);
         client = new Client(listener);
@@ -59,7 +59,7 @@ public class GameState extends BasicGameState {
             client.connect("localhost", "server user");
             connected = true;
         } else if (action.equals("c")) {
-            client.connect("localhost", "client user");
+            client.connect(Console.readString("ip: "), "client user");
             connected = true;
         }
     }
