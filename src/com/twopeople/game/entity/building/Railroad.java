@@ -16,7 +16,7 @@ import org.newdawn.slick.geom.Shape;
 public class Railroad extends Entity {
     public static float WIDTH = 128;
     public static float HEIGHT = 0;
-    public static float DEPTH = 64;
+    public static float DEPTH = 65;
 
     private Team team;
 
@@ -29,14 +29,15 @@ public class Railroad extends Entity {
     @Override
     public void render(GameContainer container, Camera camera, Graphics g) {
         g.drawImage(image, camera.getX(this), camera.getY(this));
-        g.setColor(new Color(255, 255, 255, 120));
-        //g.fillRect(camera.getX(getBBCentre().x),camera.getY(getBBCentre().y),width,depth);
+        g.setColor(new Color(255, 255, 255, 200));
+
         Shape shape = getBB();
         shape.setX(camera.getX(shape.getX()));
         shape.setY(camera.getY(shape.getY()));
-        g.fill(shape);
-        g.setColor(Color.white);
-        g.drawString(id + ", " + team.id, camera.getX(this), camera.getY(this));
+        //g.fill(shape);
+        //g.setColor(Color.white);
+
+        //g.drawString(id + ", " + team.id, camera.getX(this), camera.getY(this));
     }
 
     public Team getTeam() {

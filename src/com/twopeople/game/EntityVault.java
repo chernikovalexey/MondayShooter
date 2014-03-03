@@ -95,7 +95,7 @@ public class EntityVault {
         }
 
         public boolean isIntersecting(Entity entity) {
-            return new Rectangle((int) entity.getX(), (int) entity.getY() - (int) entity.getZ(), (int) entity.getWidth(), (int) entity.getOrthogonalHeight()).intersects(getX(), getY(), WIDTH, HEIGHT);
+            return new Rectangle((int) entity.getX(), (int) entity.getY() - (int) entity.getZ(), (int) entity.getWidth(), (int) entity.getDepth()).intersects(getX(), getY(), WIDTH, HEIGHT);
         }
     }
 
@@ -233,7 +233,7 @@ public class EntityVault {
         int cx = getCellX(entity);
         int cy = getCellY(entity);
         int ecx = cx + (int) (entity.getWidth() / EntityVaultCell.WIDTH);
-        int ecy = cy + (int) (entity.getOrthogonalHeight() / EntityVaultCell.HEIGHT);
+        int ecy = cy + (int) (entity.getDepth() / EntityVaultCell.HEIGHT);
 
         for (int x = cx - 1; x <= ecx + 1; ++x) {
             for (int y = cy - 1; y <= ecy + 1; ++y) {

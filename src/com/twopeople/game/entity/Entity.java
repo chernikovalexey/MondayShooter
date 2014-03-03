@@ -260,7 +260,7 @@ public class Entity implements IEntity {
         float dist = MathUtil.getDist(x, y, dx, dy);
         //System.out.println((dx - x) + ", " + (dy - y) + " => " + dist);
         if (dist > 2.5f) {
-            Vector2f newDirection = new Vector2f(dx - x, dy - y).normalise();
+            Vector2f newDirection = new Vector2f(dx - getBBCentre().x, dy - getBBCentre().y).normalise();
             movingDirection.x = newDirection.x;
             movingDirection.y = newDirection.y;
         }
@@ -308,7 +308,7 @@ public class Entity implements IEntity {
     }
 
     public Shape getBB() {
-        return new Rectangle(x, y + height, getOrthogonalWidth(), getOrthogonalDepth());
+        return new Rectangle(x, y, width, depth);
     }
 
     public Shape[] getSkeleton() {
@@ -398,27 +398,13 @@ public class Entity implements IEntity {
         return width;
     }
 
-    public float getOrthogonalWidth() {
-        float sqrt2 = (float) Math.sqrt(2);
-        return MathUtil.getDist(x, y + depth / 2, x + depth / sqrt2 + width * sqrt2 / 2, y + depth * sqrt2 / 2);
-    }
-
     @Override
     public float getHeight() {
         return height;
     }
 
-    public float getOrthogonalHeight() {
-        return height + getOrthogonalDepth();
-    }
-
     public float getDepth() {
         return depth;
-    }
-
-    public float getOrthogonalDepth() {
-        float sqrt2 = (float) Math.sqrt(2);
-        return MathUtil.getDist(x + width * sqrt2 / 2, y, x + width * sqrt2 / 2, y + 1.5f * depth / sqrt2);
     }
 
     public float getSpeed() {

@@ -75,8 +75,8 @@ public class World {
         loadMap("dm_map01");
         createPlayer();
 
-        Railroad road = (Railroad) getFilteredEntities(Railroad.class).get(0);
-        addEntity(new Railcar(road.getX() + 25, road.getY() - 15), true);
+        Railroad road = (Railroad) entities.getById(134);
+        addEntity(new Railcar(road.getX() + 35, road.getY() + 10), true);
     }
 
     public void update(GameContainer gameContainer, int delta) {
