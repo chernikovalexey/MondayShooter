@@ -61,6 +61,10 @@ public class Entity implements IEntity {
     protected float groundFriction = 1.0f / 1000f;
     protected float airFriction = 1.0f;
 
+    protected float range;
+    protected Entity carrying;
+    public boolean carried = false;
+
     public Entity() {
     }
 
@@ -258,13 +262,40 @@ public class Entity implements IEntity {
 
     public void setMovingDirectionToPoint(float dx, float dy) {
         float dist = MathUtil.getDist(x, y, dx, dy);
-        //System.out.println((dx - x) + ", " + (dy - y) + " => " + dist);
         if (dist > 2.5f) {
             Vector2f newDirection = new Vector2f(dx - getBBCentre().x, dy - getBBCentre().y).normalise();
             movingDirection.x = newDirection.x;
             movingDirection.y = newDirection.y;
         }
     }
+
+    public boolean inRange(Entity entity) {
+        return entity.getBBCentre().distance(getBBCentre()) <= range;
+    }
+
+    public void take(Entity entity) {
+        this.carrying = entity;
+        entity.carried = true;
+    }
+
+    public Entity put() {
+        if (carrying != null) {
+            carrying.carried = false;
+        }
+        Entity t = carrying;
+        carrying = null;
+        return t;
+    }
+
+    public boolean isCarrying(Entity entity) {
+        return entity.equals(carrying);
+    }
+
+    public boolean isCarrying() {
+        return carrying != null;
+    }
+
+    public void onBoundMove() {}
 
     public void loadAnimations(SpriteSheet sprite) {
         int states = 1;
@@ -316,7 +347,10 @@ public class Entity implements IEntity {
     }
 
     public boolean collidesWith(Entity entity) {
-        if (entity.getHeight() == 0) {
+        if(this instanceof Bullet) {
+            System.out.println(isCarrying(entity));
+        }
+        if (entity.getHeight() == 0 || isCarrying(entity)) {
             return false;
         }
 

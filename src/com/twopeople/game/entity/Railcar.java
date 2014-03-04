@@ -28,14 +28,16 @@ public class Railcar extends Entity {
     public Railcar(float x, float y) {
         super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
         setSpeed(3.5f);
+
+        this.range = 45f;
     }
 
     @Override
     public void init() {
         this.router = new RailroadRouter(world.getFilteredEntities(Railroad.class));
-        this.path = router.construct(world.getEntities().getById(134), world.getEntities().getById(223));
+        //this.path = router.construct(world.getEntities().getById(134), world.getEntities().getById(223));
 
-        System.out.println("Path: " + path.getLength());
+        //System.out.println("Path length = " + path.getLength());
     }
 
     @Override
@@ -44,13 +46,24 @@ public class Railcar extends Entity {
             return;
         }
 
-        if (!path.isFinished()) {
-            Vector2f goalPosition = path.getCurrentTarget(this);
-            setMovingDirectionToPoint(goalPosition.x, goalPosition.y);
-        }
+        if (carrying != null && path != null) {
+            if (!path.isFinished()) {
+                Vector2f goalPosition = path.getCurrentTarget(this);
+                setMovingDirectionToPoint(goalPosition.x, goalPosition.y);
+            }
 
-        super.update(container, delta, entities);
-        movingDirection.set(0, 0);
+            float px = x;
+            float py = y;
+
+            super.update(container, delta, entities);
+            movingDirection.set(0, 0);
+
+            float dx = x - px;
+            float dy = y - py;
+            carrying.setX(carrying.getX() + dx);
+            carrying.setY(carrying.getY() + dy);
+            carrying.onBoundMove();
+        }
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.Images;
 import com.twopeople.game.particle.ParticleManager;
-import com.twopeople.game.particle.debris.BloodDebrisEmitter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -17,6 +16,7 @@ import org.newdawn.slick.particles.ParticleIO;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Alexey
@@ -62,28 +62,44 @@ public class Player extends Entity {
             boolean isMoving = false;
             updateDirectionToPoint(input.getMouseX(), input.getMouseY());
 
-            if (input.isKeyDown(Input.KEY_W)) {
-                movingDirection.y -= 1;
-                isMoving = true;
-            }
-            if (input.isKeyDown(Input.KEY_S)) {
-                movingDirection.y += 1;
-                isMoving = true;
-            }
-            if (input.isKeyDown(Input.KEY_A)) {
-                movingDirection.x -= 1;
-                isMoving = true;
-            }
-            if (input.isKeyDown(Input.KEY_D)) {
-                movingDirection.x += 1;
-                isMoving = true;
-            }
-            if (input.isKeyPressed(Input.KEY_SPACE) && velocity.z == 0) {
-                movingDirection.z = -1;
+            if (!carried) {
+                if (input.isKeyDown(Input.KEY_W)) {
+                    movingDirection.y -= 1;
+                    isMoving = true;
+                }
+                if (input.isKeyDown(Input.KEY_S)) {
+                    movingDirection.y += 1;
+                    isMoving = true;
+                }
+                if (input.isKeyDown(Input.KEY_A)) {
+                    movingDirection.x -= 1;
+                    isMoving = true;
+                }
+                if (input.isKeyDown(Input.KEY_D)) {
+                    movingDirection.x += 1;
+                    isMoving = true;
+                }
+                if (input.isKeyPressed(Input.KEY_SPACE) && velocity.z == 0) {
+                    movingDirection.z = -1;
+                }
             }
 
-            if (input.isKeyPressed(Input.KEY_P)) {
+            /*if (input.isKeyPressed(Input.KEY_P)) {
                 world.getParticleSystem(ParticleManager.BLOOD_DEBRIS).addEmitter(new BloodDebrisEmitter(world, getX(), getY() - getZ()));
+            }*/
+
+            if (input.isKeyPressed(Input.KEY_E)) {
+                ArrayList<Entity> cars = world.getFilteredEntities(Railcar.class);
+                if (cars.size() > 0) {
+                    Railcar car = (Railcar) cars.get(0);
+                    if (car.inRange(this)) {
+                        if (!car.isCarrying() && !car.isCarrying(this)) {
+                            car.take(this);
+                        } else {
+                            car.put();
+                        }
+                    }
+                }
             }
 
             if (isMoving) {
@@ -108,6 +124,11 @@ public class Player extends Entity {
         if (hasMoved) {
             entities.move(this);
         }
+    }
+
+    @Override
+    public void onBoundMove() {
+        world.getGame().getCamera().alignCenterOn(this);
     }
 
     public void shoot(Vector2f vec, boolean fromReceiver) {
@@ -136,14 +157,14 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            g.fill(shape);
+            //g.fill(shape);
         }
 
         //renderOvalShadow(camera, g, 8f, 0.1f);
 
         g.drawImage(animations[currentAnimationState].getCurrentFrame(), camera.getX(this), camera.getY(this));
         g.setColor(Color.white);
-        g.drawString("" + health, camera.getX(this) + 10, camera.getY(this));
+        //g.drawString("" + health, camera.getX(this) + 10, camera.getY(this));
 
         g.setColor(new Color(204, 204, 204, 120));
         //        g.fillRect(camera.getX(getX()), camera.getY(getY()), WIDTH, getOrthogonalHeight());
