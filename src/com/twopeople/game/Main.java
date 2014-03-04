@@ -27,27 +27,23 @@ public class Main {
     }
 
     public static void main(String[] args) {
-
         System.setProperty("org.lwjgl.librarypath", new File("native\\windows").getAbsolutePath());
+
         try {
             AppGameContainer game = new AppGameContainer(new GameController());
             game.setDisplayMode(WIDTH, HEIGHT, false);
             game.setTargetFrameRate(60);
             game.setAlwaysRender(true);
             game.start();
-        } /*catch (SlickException e) {
-            e.printStackTrace();
-        } */catch (Exception e) {
-            File f = new File("exception.txt");
+        } catch (Exception e) {
             try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(f, true));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(new File("exception.txt"), true));
                 writer.write(e.toString());
                 writer.flush();
                 writer.close();
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
-
         }
     }
 }

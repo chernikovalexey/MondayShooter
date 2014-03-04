@@ -141,9 +141,18 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="51" name="railroad_main" tilewidth="128" tileheight="65">
+  <image source="../railroad.png" width="128" height="65"/>
+  <tile id="0">
+   <properties>
+    <property name="properties" value="starting=1"/>
+    <property name="type" value="railroad"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer name="Floor" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3XQQrCMBBA0bQ7wfuf15VQwtikmGaCvgeCixFKP0NiKQAAAAAAAAAAAAAAAMCve1QfctU9NMkTtdAjz6cemszX20KnOc56PBpzjNXbIpplvFYP+zHPlRbRPGN920OTca62iH7DWK0ee8c8Y/S02BvzjHWliQb36jk/3j20mOOsQ/Sde/XshBZzRe89alLftbhHtAN1j/quxXzRfmiSp/V/hPmiu9aW+kT/rT5HtqJHtmOTrWiS7d1jK3qs4tjjWTTJVu+GHrnq3bAjuezHepwfa7Eb69FjLVqsRw8AAAAAAAAAAAAAAAD4bS+jHY8ZQJwAAA==
+   H4sIAAAAAAAAC+3a0YrCMBBA0bRvgv//vbJCoRtmTcqmmSDnQMGHCMXLEKspBQAAAAAAAAAAAAC+w559A/yyF01W8tNiy74J3o652IomKzj3YA32jvs8qotcdQ9N8kQt9MjzVw9N5uttodMcn3o8GusYq7dFtJbxWj3MxzxXWkTrGeu/PTQZ52qL6D2M1epR/zZlPu7T02JvrGesK000uFfP/nH00GKOTx2i19yrZya0mCv63KMm/gecI5qBuoczPfmi+dAkT+t5hPmi71rO9uSp9xHn3vKdm2xFk2xHj63osYpzj2fRJFs9G3rkqmfDjOQyH+uxf6zFbKxHj7VosR49AAAAAAAAAAAAAAAA4Lu9ADo3gNVAnAAA
   </data>
  </layer>
  <layer name="Walls" width="100" height="100">
@@ -168,7 +177,7 @@
  </layer>
  <layer name="Railroad" width="100" height="100">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3YQQrAIAxFwVwp979c14puzYfOQKnLkocQWgUAAAAAAAAAAAAAAAAAAKue/gAWXZqk6O3NrL6ceW+fvx6zTvPXZMZt7nrM0STLvlvZteb14anSZIo7kk+TLHrk0SSLf4x5NMmjRx5NsugBAAAAAAAAAAAAAAAAAAAAAPzRB9t6XppAnAAA
+   H4sIAAAAAAAAC+3YMQrDMBBE0W19HJH7382ki4WTMjPg98C4XfRZEJoBAAAAAAAAAAAAAAD+4UgPwIUeAAC/rfQAXKzRpMXa/mR9dnjFpuBt3wk7knV3/ppkfDt3PXI06bLfrdy18tbNN6NJih3pp0kXPfpo0sUbYx9N+ujRR5MuegAAAAAAAAAAAAAAAAAAAAAAT3QCQR6G0ECcAAA=
   </data>
  </layer>
  <layer name="Pumphouse" width="100" height="100">

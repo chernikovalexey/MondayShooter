@@ -7,9 +7,8 @@ import com.twopeople.game.IEntity;
 import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
+import com.twopeople.game.entity.EntityProperties;
 import com.twopeople.game.entity.Player;
-import com.twopeople.game.entity.Railcar;
-import com.twopeople.game.entity.building.Railroad;
 import com.twopeople.game.particle.MSParticleSystem;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.world.tile.Tile;
@@ -72,11 +71,8 @@ public class World {
     }
 
     public void init() {
-        loadMap("dm_map01");
+        loadMap("untitled");
         createPlayer();
-
-        Railroad road = (Railroad) entities.getById(134);
-        addEntity(new Railcar(road.getX() + 35, road.getY() + 10), true);
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -111,6 +107,9 @@ public class World {
     public void render(GameContainer gameContainer, Graphics g) {
         final long time = System.currentTimeMillis();
         final Camera camera = game.getCamera();
+
+        g.setColor(Color.white);
+        g.fillRect(0, 0, gameContainer.getWidth(), gameContainer.getHeight());
 
         for (Tile tile : tiles) {
             if (tile.isVisible(camera)) {
@@ -259,8 +258,6 @@ public class World {
                             float xt, yt;
                             Image image = map.getTileImage(x, y, layer);
                             String type = map.getTileProperty(id, "type", "");
-                            String[] rawSkin = map.getTileProperty(id, "skin", "0,0").split(",");
-                            int skin[] = new int[]{Integer.parseInt(rawSkin[0]), Integer.parseInt(rawSkin[1])};
 
                             if (odd) {
                                 xt = x * tw + tw / 2;
@@ -273,7 +270,8 @@ public class World {
                             if (type.equals("spawner")) {
                                 spawners.add(new Vector2f(xt, yt));
                             } else if (EntityLoader.has(type)) {
-                                Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt}, image, skin);
+                                EntityProperties properties = new EntityProperties(map.getTileProperty(id, "properties", ""));
+                                Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt}, image, properties);
                                 entity.setY(entity.getY() - entity.getHeight());
                                 addEntity(entity, true);
                             } else {
@@ -339,6 +337,14 @@ public class World {
             }
         }
         return filtered;
+    }
+
+    public Entity getSingleEntityByClass(Class<? extends Entity> clazz) {
+        ArrayList<Entity> found = getFilteredEntities(clazz);
+        if (found.size() > 0) {
+            return found.get(0);
+        }
+        return null;
     }
 
     public Entity getEntityByConnectionId(int cid) {

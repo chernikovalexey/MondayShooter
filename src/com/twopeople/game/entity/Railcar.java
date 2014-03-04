@@ -35,9 +35,7 @@ public class Railcar extends Entity {
     @Override
     public void init() {
         this.router = new RailroadRouter(world.getFilteredEntities(Railroad.class));
-        //this.path = router.construct(world.getEntities().getById(134), world.getEntities().getById(223));
-
-        //System.out.println("Path length = " + path.getLength());
+        this.path = router.construct(world.getEntities().getById(151), world.getEntities().getById(175));
     }
 
     @Override

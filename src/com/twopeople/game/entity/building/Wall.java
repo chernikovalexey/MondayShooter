@@ -17,7 +17,7 @@ import org.newdawn.slick.geom.Vector2f;
 
 public class Wall extends Entity {
     public static final float WIDTH = 128;
-    public static final float HEIGHT = 62;
+    public static final float HEIGHT = 60;
     public static final float DEPTH = 64;
 
     public Wall() {

@@ -3,6 +3,7 @@ package com.twopeople.game.entity;
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.Images;
+import com.twopeople.game.entity.building.Pumphouse;
 import com.twopeople.game.particle.ParticleManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -16,7 +17,6 @@ import org.newdawn.slick.particles.ParticleIO;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Created by Alexey
@@ -24,8 +24,8 @@ import java.util.ArrayList;
  */
 
 public class Player extends Entity {
-    public static final float WIDTH = 70;
-    public static final float HEIGHT = 50;
+    public static final float WIDTH = 64;
+    public static final float HEIGHT = 45;
     public static final float DEPTH = 20;
 
     private long lastShootTime = System.currentTimeMillis();
@@ -89,16 +89,20 @@ public class Player extends Entity {
             }*/
 
             if (input.isKeyPressed(Input.KEY_E)) {
-                ArrayList<Entity> cars = world.getFilteredEntities(Railcar.class);
-                if (cars.size() > 0) {
-                    Railcar car = (Railcar) cars.get(0);
-                    if (car.inRange(this)) {
-                        if (!car.isCarrying() && !car.isCarrying(this)) {
-                            car.take(this);
-                        } else {
-                            car.put();
-                        }
+                Railcar car = (Railcar) world.getSingleEntityByClass(Railcar.class);
+
+                if (car != null && car.inRange(this)) {
+                    if (!car.isCarrying() && !car.isCarrying(this)) {
+                        car.take(this);
+                    } else {
+                        car.put();
                     }
+                }
+
+                Pumphouse house = (Pumphouse) world.getSingleEntityByClass(Pumphouse.class);
+
+                if (house != null && house.inRange(this)) {
+                    house.activate();
                 }
             }
 
@@ -157,7 +161,7 @@ public class Player extends Entity {
         for (Shape shape : getSkeleton()) {
             shape.setX(camera.getX(shape.getX()));
             shape.setY(camera.getY(shape.getY()));
-            //g.fill(shape);
+            g.fill(shape);
         }
 
         //renderOvalShadow(camera, g, 8f, 0.1f);

@@ -40,12 +40,12 @@ public class Fence extends Entity {
     @Override
     public Vector2f getHitSideVector(Entity entity) {
         Vector2f centre = getBBCentre();
-        if (skin[0] == 0) {
+        if (properties.getValues("skin")[0] == 0) {
             centre.x *= -1;
             centre.y *= -1;
-        } else if (skin[0] == 2) {
+        } else if (properties.getValues("skin")[0] == 2) {
             centre.y *= -1;
-        } else if (skin[0] == 3) {
+        } else if (properties.getValues("skin")[0] == 3) {
             centre.x *= -1;
         }
         return centre;
@@ -53,13 +53,13 @@ public class Fence extends Entity {
 
     @Override
     public Shape getBB() {
-        if (skin[0] == 0) {
+        if (properties.getValues("skin")[0] == 0) {
             return new Line(x + width / 2, y + height, x + width, y + height + depth / 2);
-        } else if (skin[0] == 1) {
+        } else if (properties.getValues("skin")[0] == 1) {
             return new Line(x, y + height + depth / 2, x + width / 2, y + height + depth);
-        } else if (skin[0] == 2) {
+        } else if (properties.getValues("skin")[0] == 2) {
             return new Line(x + width / 2, y + height + depth, x + width, y + height + depth / 2);
-        } else if (skin[0] == 3) {
+        } else if (properties.getValues("skin")[0] == 3) {
             return new Line(x, y + height + depth / 2, x + width / 2, y + height);
         }
         return null;

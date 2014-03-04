@@ -8,4 +8,8 @@ public class Console {
         System.out.println(placeholder);
         return scanner.hasNextLine() ? scanner.nextLine() : "";
     }
+
+    public static String formatNumber(int num) {
+        return num < 10 ? "0" + num : "" + num;
+    }
 }

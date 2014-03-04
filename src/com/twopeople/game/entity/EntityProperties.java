@@ -11,20 +11,22 @@ public class EntityProperties {
     private HashMap<String, Integer[]> properties = new HashMap<String, Integer[]>();
 
     public EntityProperties(String list) {
-        String[] parts = list.split("|");
+        if (!list.isEmpty()) {
+            String[] parts = list.split(";");
 
-        for (String part : parts) {
-            String[] parameter = part.split("=");
-            String[] valuesRaw = parameter[1].split(",");
+            for (String part : parts) {
+                String[] parameter = part.split("=");
+                String[] valuesRaw = parameter[1].split(",");
 
-            int len = valuesRaw.length;
-            Integer[] values = new Integer[len];
+                int len = valuesRaw.length;
+                Integer[] values = new Integer[len];
 
-            for (int i = 0; i < len; ++i) {
-                values[i] = Integer.parseInt(valuesRaw[i]);
+                for (int i = 0; i < len; ++i) {
+                    values[i] = Integer.parseInt(valuesRaw[i]);
+                }
+
+                properties.put(parameter[0], values);
             }
-
-            properties.put(parameter[0], values);
         }
     }
 
@@ -33,6 +35,7 @@ public class EntityProperties {
     }
 
     public Integer getFirstValue(String key) {
-        return getValues(key)[0];
+        Integer[] values = getValues(key);
+        return values == null ? 0 : values[0];
     }
 }

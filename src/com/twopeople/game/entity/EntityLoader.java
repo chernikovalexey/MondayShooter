@@ -3,6 +3,7 @@ package com.twopeople.game.entity;
 import com.twopeople.game.entity.building.Fence;
 import com.twopeople.game.entity.building.Pumphouse;
 import com.twopeople.game.entity.building.Railroad;
+import com.twopeople.game.entity.building.Shop;
 import com.twopeople.game.entity.building.Wall;
 import org.newdawn.slick.Image;
 
@@ -22,6 +23,7 @@ public class EntityLoader {
         registerClass(Fence.class);
         registerClass(Railroad.class);
         registerClass(Pumphouse.class);
+        registerClass(Shop.class);
 
         registerClass(Player.class);
         registerClass(Bullet.class);
@@ -38,7 +40,7 @@ public class EntityLoader {
         return entities.containsKey(name);
     }
 
-    public static Entity getEntityInstanceByName(String name, Object[] args, Image image, int[] skin) {
+    public static Entity getEntityInstanceByName(String name, Object[] args, Image image, EntityProperties properties) {
         Class<? extends Entity> clazz = entities.get(name.toLowerCase());
 
         if (clazz != null) {
@@ -46,9 +48,7 @@ public class EntityLoader {
                 Constructor<? extends Entity> constructor = clazz.getConstructor(float.class, float.class);
                 Entity entity = constructor.newInstance(args);
                 entity.setImage(image);
-                skin[0]--;
-                skin[1]--;
-                entity.setSkin(skin);
+                entity.setProperties(properties);
                 return entity;
             } catch (Exception e) {
                 e.printStackTrace();

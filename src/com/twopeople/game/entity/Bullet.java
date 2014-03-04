@@ -28,13 +28,13 @@ public class Bullet extends Entity {
     }
 
     public Bullet(World world, float x, float y, float z, Vector2f movingDirection) {
-        super(x, y, z, SIZE, SIZE, 0, false);
+        super(x, y, z, SIZE, SIZE, SIZE, false);
         this.movingDirection.set(movingDirection.x, movingDirection.y);
         setSpeed(20.0f);
         setWorld(world);
 
         this.airFriction = 0f;
-        this.simpleMovement=true;
+        this.simpleMovement = true;
 
         // Rotate the image once, and store it then cached
         image = Images.bullets.getSprite(0, 0);
@@ -46,6 +46,7 @@ public class Bullet extends Entity {
     public void update(GameContainer container, int delta, EntityVault entities) {
         world.getBullets().move(this);
         super.update(container, delta, entities);
+        world.getBullets().move(this);
 
         if (world.ranOut(this)) {
             remove = true;

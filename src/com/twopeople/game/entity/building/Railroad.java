@@ -43,4 +43,8 @@ public class Railroad extends Entity {
     public Team getTeam() {
         return team;
     }
+
+    public boolean isStartingSection() {
+        return properties.getFirstValue("starting") == 1;
+    }
 }

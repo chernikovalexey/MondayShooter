@@ -52,11 +52,11 @@ public class Entity implements IEntity {
 
     protected int currentAnimationState;
     protected transient Animation[] animations = new Animation[8];
-    protected int[] skin;
 
     // Used for static on-the-fly-created entities (parsed)
     // Remains unused in other cases
     protected transient Image image;
+    protected transient EntityProperties properties;
 
     protected float groundFriction = 1.0f / 1000f;
     protected float airFriction = 1.0f;
@@ -120,8 +120,6 @@ public class Entity implements IEntity {
             float d2x = 0f;
             float d2y = 0f;
 
-            //System.out.println(dx + ", " + steps + ", " + dx / steps);
-
             o:
             while (d2x / dx < 1f || d2y / dy < 1f) {
                 d2x += dx / steps;
@@ -135,6 +133,7 @@ public class Entity implements IEntity {
                 for (Entity e : nearby) {
                     x += pdx;
                     y += pdy;
+
 
                     if (this.collidesWith(e)) {
                         d2x -= dx / steps;
@@ -347,9 +346,6 @@ public class Entity implements IEntity {
     }
 
     public boolean collidesWith(Entity entity) {
-        if(this instanceof Bullet) {
-            System.out.println(isCarrying(entity));
-        }
         if (entity.getHeight() == 0 || isCarrying(entity)) {
             return false;
         }
@@ -495,8 +491,8 @@ public class Entity implements IEntity {
         this.image = image;
     }
 
-    public void setSkin(int[] skin) {
-        this.skin = skin;
+    public void setProperties(EntityProperties properties) {
+        this.properties = properties;
     }
 
     public int getCellX() {

@@ -3,6 +3,7 @@ package com.twopeople.game;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.entity.Player;
+import com.twopeople.game.entity.building.Pumphouse;
 import com.twopeople.game.network.Client;
 import com.twopeople.game.network.Server;
 import com.twopeople.game.world.World;
@@ -13,13 +14,14 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
+import java.util.ArrayList;
+
 /**
  * Created by Alexey
  * At 7:37 PM on 1/13/14
  */
 
 public class GameState extends BasicGameState {
-    private GameContainer container;
     private Camera camera;
     private World world;
 
@@ -44,9 +46,8 @@ public class GameState extends BasicGameState {
         Images.init();
         EntityLoader.init();
 
-        this.container = gameContainer;
-        this.camera = new Camera(gameContainer);
         this.world = new World(this);
+        this.camera = new Camera(gameContainer);
 
         String action = "s"; //Console.readString("s/c: ");
 
@@ -94,6 +95,16 @@ public class GameState extends BasicGameState {
                 g.setColor(Color.white);
                 g.drawString("Type: " + (isServer() ? "server" : "client"), 10, 90);
 
+                ArrayList<Entity> houses = world.getFilteredEntities(Pumphouse.class);
+                if (houses.size() > 0) {
+                    Pumphouse house = (Pumphouse) houses.get(0);
+
+                    int seconds = (house.getTimer() / 1000) % 60;
+                    long minutes = ((house.getTimer() - seconds) / 1000) / 60;
+
+                    g.drawString("Timer: " + minutes + ":" + Console.formatNumber(seconds), 10, 110);
+                }
+
                 int i = 0;
                 for (Entity e : world.getFilteredEntities(Player.class)) {
                     Player player = (Player) e;
@@ -117,10 +128,6 @@ public class GameState extends BasicGameState {
 
     public int getUserId() {
         return userId;
-    }
-
-    public GameContainer getContainer() {
-        return container;
     }
 
     public Camera getCamera() {
