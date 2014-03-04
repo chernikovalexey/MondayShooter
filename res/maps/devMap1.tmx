@@ -23,7 +23,12 @@
  </tileset>
  <layer name="tiles" width="30" height="60">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3YvQqAMBAD4LZwg0MHff+HFQfhKP5MTY7mhlB18GtaKGItpdRMZsG0AHNAd1XsrBYjmUwXaRvBHU2UzXKzM9dFmE82w0Wa3lZyvb2JuNl53rsZnb/Oi1U7s/Y5opudNdzsHMM9SHYHrMHoduDae7u756jO+8++z7Tva5RtL+Plzv4/NX6voDv7+wbqHClKXTOaOQE5sROgIBwAAA==
+   H4sIAAAAAAAAC+3YwQrAIAwD0Cr4/78s3oqItyZicgjbLnsLQ8G2iGiO82H6A9+A7qrYWS2DZDJdpD0I7m6ibJbrzlwXYZ5shos0s63kurOGW23f3l3d+bZf/NqZ9Z9fdN1Zw3VnDdeduS76zJ7vkeeq03Wlej6190R3zs+s+SNznanOHx2dTEl5238gHAAA
+  </data>
+ </layer>
+ <layer name="r" width="30" height="60">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3VsQqAMAyE4awdOlR9/2d1UQhZ3C7q/d9WKFwOAokAAAAA8FXDMJvOHtnunbem7Bna/uPKzDOorDJHB/c9VzsaMufzl9/k7g2ZN8d9fktn5b3K2cp7lW9knUORPctbYZW3464DDk4OD4yPIBwAAA==
   </data>
  </layer>
  <layer name="w" width="30" height="60">
