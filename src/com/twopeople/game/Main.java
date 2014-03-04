@@ -5,6 +5,11 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Main {
     public static final int WIDTH = 800;
     public static final int HEIGHT = WIDTH * 3 / 4;
@@ -22,14 +27,27 @@ public class Main {
     }
 
     public static void main(String[] args) {
+
+        System.setProperty("org.lwjgl.librarypath", new File("native\\windows").getAbsolutePath());
         try {
             AppGameContainer game = new AppGameContainer(new GameController());
             game.setDisplayMode(WIDTH, HEIGHT, false);
             game.setTargetFrameRate(60);
             game.setAlwaysRender(true);
             game.start();
-        } catch (SlickException e) {
+        } /*catch (SlickException e) {
             e.printStackTrace();
+        } */catch (Exception e) {
+            File f = new File("exception.txt");
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(f, true));
+                writer.write(e.toString());
+                writer.flush();
+                writer.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+
         }
     }
 }
