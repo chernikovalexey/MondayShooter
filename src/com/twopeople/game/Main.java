@@ -36,6 +36,8 @@ public class Main {
             game.setAlwaysRender(true);
             game.start();
         } catch (Exception e) {
+            e.printStackTrace();
+
             try {
                 BufferedWriter writer = new BufferedWriter(new FileWriter(new File("exception.txt"), true));
                 writer.write(e.toString());

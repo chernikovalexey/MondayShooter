@@ -12,8 +12,10 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 
 import java.util.Collection;
@@ -338,11 +340,23 @@ public class Entity implements IEntity {
     }
 
     public Shape getBB() {
-        return new Rectangle(x, y, width, depth);
+        Rectangle r = new Rectangle(x, y, width, depth);
+        Shape s = r.transform(Transform.createRotateTransform((float) Math.toRadians(45), x, y));
+        s.setX(s.getX()+width);
+        s.setY(s.getY()+height/2);
+        return s;
     }
 
-    public Shape[] getSkeleton() {
+    /*public Shape[] getSkeleton() {
         return new Shape[]{getBB()};
+    }*/
+
+    public Shape[] getSkeleton() {
+        float yo = height;
+        return new Shape[]{
+                new Polygon(new float[]{x, yo + y + depth / 2, x + width / 2, yo + y, x + width, yo + y + depth / 2}),
+                new Polygon(new float[]{x, yo + y + depth / 2, x + width, yo + y + depth / 2, x + width / 2, yo + y + depth}),
+        };
     }
 
     public boolean collidesWith(Entity entity) {

@@ -8,7 +8,9 @@ import com.twopeople.game.entity.Railcar;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
+import org.newdawn.slick.geom.Transform;
 
 /**
  * Created by Alexey
@@ -58,14 +60,21 @@ public class Pumphouse extends Entity {
         g.drawImage(Images.pumphouse.getSprite(0, 0), camera.getX(this), camera.getY(this));
         g.setColor(Color.white);
 
-        g.setColor(new Color(213, 43, 22, 105));
-        Shape bb = getBB();
-        bb.setX(camera.getX(bb.getX()));
-        bb.setY(camera.getY(bb.getY()));
-        //g.fill(bb);
+        for (Shape shape : getSkeleton()) {
+            shape.setX(camera.getX(shape.getX()));
+            shape.setY(camera.getY(shape.getY()));
+            g.setColor(new Color(255, 255, 255, 155));
+            g.fill(shape);
+        }
 
         g.drawString("" + y, camera.getX(this), camera.getY(this));
     }
+
+    /*@Override
+    public Shape getBB() {
+        Rectangle rect = (Rectangle) super.getBB();
+        return rect.transform(Transform.createRotateTransform((float) Math.toRadians(45), super.getBB().getX(), super.getBB().getY()));
+    }*/
 
     public void activate() {
         if (!activated) {

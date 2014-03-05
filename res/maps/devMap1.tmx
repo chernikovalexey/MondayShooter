@@ -21,24 +21,37 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="49" name="pumphouse" tilewidth="240" tileheight="240">
+  <image source="../pumphouse.png" width="240" height="240"/>
+  <tile id="0">
+   <properties>
+    <property name="type" value="pumphouse"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer name="tiles" width="30" height="60">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3YwQrAIAwD0Cr4/78s3oqItyZicgjbLnsLQ8G2iGiO82H6A9+A7qrYWS2DZDJdpD0I7m6ibJbrzlwXYZ5shos0s63kurOGW23f3l3d+bZf/NqZ9Z9fdN1Zw3VnDdeduS76zJ7vkeeq03Wlej6190R3zs+s+SNznanOHx2dTEl5238gHAAA
-  </data>
- </layer>
- <layer name="r" width="30" height="60">
-  <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3VuwrAMAxD0awZMqSP///VLi0YQ9tNLtU9WyAgGQxuDQCAZ3t1AQDArW6Yzcwe2e4zL0XZo2nn72dm7KAyU48K7nuuthVkjvcvv8ldCzIvjvv8lZmV9ypmK+9VvJG5hyJ7pLfCTG/HXQccHJelWcIgHAAA
+   H4sIAAAAAAAAC+3YsREAMAgDMZP9h2aLJAcq1NvtV5KCgc4HG25/3fgZAAAAAF7Y1Kf0R5inAdJEyvMgHAAA
   </data>
  </layer>
  <layer name="w" width="30" height="60">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+2YQQrAMAgEk6f0kP9/sfQQCGJNCl23NS4UbzsxWiGWkkrFVGUfwFFVxB3Ucz0I7IPIHaMnk8n1YmsMRp01diNwG4hreSJzZnEtT9lfHjlrPe1dZyR7xQ/1P3Xfu7mB5noyZ/6eM+trYuSOmtcr3DGy+Luwd7znVCqViiLG+7ZzWG96eY7IXLmLi5yvtn+MnO8lVH2f+vydq3lZ3iiutdNF9NS4y519b3NXmSdPVKiiIBwAAA==
+   H4sIAAAAAAAAC+2Y3QqAIAyF9VG86P1fMSKCGOYPdDy1nQ8kvNnXnE4wJSF8ktk/sJBsvhGIlKsQG8mJ9paOnwHLy3RHy9nbOjPP0ZOb2TvQ9Nyr6nyfo/t1r86MvY30st1fcV5rwPIKIXygM33SusfR3mLmDLx77fuU53xr74+e8z1A1Xc2zt+9tVit2Civ7Ysop41ZBsbb3lHnDjcx+yMgHAAA
   </data>
  </layer>
  <layer name="s" width="30" height="60">
   <data encoding="base64" compression="gzip">
-   H4sIAAAAAAAAC+3PMQoAQAgDQfH/j7a/VlA4Z5ptkwgAAAAAAOjL7QGD8ukFl77C7wrazHzQIBwAAA==
+   H4sIAAAAAAAAC+3NMREAAAgAIc/+oZ3M8AsUYAYAgMpGZ/H+DQAAAEDrABYuHakgHAAA
+  </data>
+ </layer>
+ <layer name="pumphouse" width="30" height="60">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3OAQ0AAAgDoFeyfzlj3DlIQAIAAL9MOwAAAABw2AKTXz1mIBwAAA==
+  </data>
+ </layer>
+ <layer name="railroad" width="30" height="60">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAC+3WuxKAIAxEUVqLFD7+/1spnDQM6hYsccLeOsMZLDClKKWUUkqt07ag/fc7HwGuATMM24CZ0a4BMwzbgJnRbmuy3Pbcnsuy/cwnk+X6uW8uy96BmYvgIn19jyxmlKu75nR115zuGWB6vX/PjP03yo20dee7WXsHsuuy3dnvCbLrstyoNxvZdZViVQEp+HlZIBwAAA==
   </data>
  </layer>
 </map>

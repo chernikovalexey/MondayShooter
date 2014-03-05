@@ -39,7 +39,7 @@ public class Bullet extends Entity {
         // Rotate the image once, and store it then cached
         image = Images.bullets.getSprite(0, 0);
         image.setCenterOfRotation(SIZE / 2, SIZE / 2);
-        image.setRotation((float) new Vector2f(movingDirection.x, movingDirection.y).getTheta() + 90);
+        image.setRotation((float) new Vector2f(movingDirection.x, movingDirection.y).getTheta() + 90f);
     }
 
     @Override

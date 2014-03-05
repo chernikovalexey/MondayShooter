@@ -71,7 +71,7 @@ public class World {
     }
 
     public void init() {
-        loadMap("untitled");
+        loadMap("devMap1");
         createPlayer();
     }
 
@@ -274,7 +274,7 @@ public class World {
                                 Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt}, image, properties);
                                 entity.setY(entity.getY() - entity.getHeight());
                                 addEntity(entity, true);
-                            } else {
+                            } else if(!type.equals("bb")) {
                                 TileList.addTile(id, image);
                                 tiles.add(new Tile(xt, yt, id));
                             }

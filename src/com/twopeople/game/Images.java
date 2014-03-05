@@ -21,7 +21,7 @@ public class Images {
     // Load separately to handle exceptions
     public static void init() {
         try {
-            walls = new SpriteSheet("res/walls.png", 128, 126);
+            walls = new SpriteSheet("res/wallsAtlas.png", 128, 126);
             player = new SpriteSheet("res/player_atlas.png", 64, 64);
             particles = new SpriteSheet("res/particles.png", 8, 8);
             gunshots = new SpriteSheet("res/gunshots.png", 1, 1);
