@@ -12,10 +12,8 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
-import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
-import org.newdawn.slick.geom.Transform;
 import org.newdawn.slick.geom.Vector2f;
 
 import java.util.Collection;
@@ -85,11 +83,9 @@ public class Entity implements IEntity {
 
     public void init() {}
 
-    public void update(GameContainer container, int delta, EntityVault entities) {
-        if (movingDirection.z == -1) {
-            velocity.z = 25f;
-        }
+    public void initOnWorldReady() {}
 
+    public void update(GameContainer container, int delta, EntityVault entities) {
         long time = System.currentTimeMillis();
 
         float speed = getSpeed();
@@ -106,6 +102,7 @@ public class Entity implements IEntity {
         if (z <= 0) {
             velocity.z = 0;
             z = 0;
+            onLanding();
         }
 
         float dx = velocity.x * delta * 0.0001f * 20;
@@ -216,7 +213,11 @@ public class Entity implements IEntity {
     }
 
     @Override
-    public void render(GameContainer container, Camera camera, Graphics g) {}
+    public void render(GameContainer container, Camera camera, Graphics g) {
+        if (image != null) {
+            g.drawImage(image, camera.getX(this), camera.getY(this));
+        }
+    }
 
     public void renderOvalShadow(Camera camera, Graphics g, float shadowDistance, float minOpacity) {
         float shadowOpacity = 0.15f;
@@ -270,6 +271,8 @@ public class Entity implements IEntity {
         }
     }
 
+    public void onLanding() {}
+
     public boolean inRange(Entity entity) {
         return entity.getBBCentre().distance(getBBCentre()) <= range;
     }
@@ -277,6 +280,7 @@ public class Entity implements IEntity {
     public void take(Entity entity) {
         this.carrying = entity;
         entity.carried = true;
+        startCarrying();
     }
 
     public Entity put() {
@@ -297,6 +301,8 @@ public class Entity implements IEntity {
     }
 
     public void onBoundMove() {}
+
+    public void startCarrying() {}
 
     public void loadAnimations(SpriteSheet sprite) {
         int states = 1;
@@ -336,41 +342,26 @@ public class Entity implements IEntity {
 
     @Override
     public Vector2f getBBCentre() {
-        return new Vector2f(getBB().getCenterX(), getBB().getCenterY());
+        Shape bb = getBB();
+        return bb != null ? new Vector2f(getBB().getCenterX(), getBB().getCenterY()) : new Vector2f(Float.MAX_VALUE, Float.MAX_VALUE);
     }
 
     public Shape getBB() {
-        Rectangle r = new Rectangle(x, y, width, depth);
-        Shape s = r.transform(Transform.createRotateTransform((float) Math.toRadians(45), x, y));
-        s.setX(s.getX()+width);
-        s.setY(s.getY()+height/2);
-        return s;
+        return new Rectangle(x, y, width, depth);
     }
 
-    /*public Shape[] getSkeleton() {
-        return new Shape[]{getBB()};
-    }*/
-
     public Shape[] getSkeleton() {
-        float yo = height;
-        return new Shape[]{
-                new Polygon(new float[]{x, yo + y + depth / 2, x + width / 2, yo + y, x + width, yo + y + depth / 2}),
-                new Polygon(new float[]{x, yo + y + depth / 2, x + width, yo + y + depth / 2, x + width / 2, yo + y + depth}),
-        };
+        return new Shape[]{getBB()};
     }
 
     public boolean collidesWith(Entity entity) {
-        if (entity.getHeight() == 0 || isCarrying(entity)) {
+        if (entity.getHeight() == 0 || isCarrying(entity) || getZ() > entity.getHeight()) {
             return false;
         }
 
         for (Shape shape1 : getSkeleton()) {
             for (Shape shape2 : entity.getSkeleton()) {
-                if (getZ() > entity.getHeight()) {
-                    continue;
-                }
-
-                if (shape1.intersects(shape2)) {
+                if (shape1 != null && shape2 != null && shape1.intersects(shape2)) {
                     return true;
                 }
             }
@@ -503,6 +494,10 @@ public class Entity implements IEntity {
 
     public void setImage(Image image) {
         this.image = image;
+    }
+
+    public EntityProperties getProperties() {
+        return properties;
     }
 
     public void setProperties(EntityProperties properties) {

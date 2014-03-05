@@ -8,7 +8,9 @@ import com.twopeople.game.entity.Bullet;
 import com.twopeople.game.entity.Entity;
 import com.twopeople.game.entity.EntityLoader;
 import com.twopeople.game.entity.EntityProperties;
+import com.twopeople.game.entity.Grenade;
 import com.twopeople.game.entity.Player;
+import com.twopeople.game.entity.ScrapBlock;
 import com.twopeople.game.particle.MSParticleSystem;
 import com.twopeople.game.particle.ParticleManager;
 import com.twopeople.game.world.tile.Tile;
@@ -73,6 +75,11 @@ public class World {
     public void init() {
         loadMap("devMap1");
         createPlayer();
+
+        for (Vector2f spawner : spawners) {
+            // Fine, isn't it?
+            addEntity(new ScrapBlock(spawner.getX() - 45, spawner.getY() - 24), true);
+        }
     }
 
     public void update(GameContainer gameContainer, int delta) {
@@ -108,8 +115,8 @@ public class World {
         final long time = System.currentTimeMillis();
         final Camera camera = game.getCamera();
 
-        g.setColor(Color.white);
-        g.fillRect(0, 0, gameContainer.getWidth(), gameContainer.getHeight());
+        //        g.setColor(Color.white);
+        //        g.fillRect(0, 0, gameContainer.getWidth(), gameContainer.getHeight());
 
         for (Tile tile : tiles) {
             if (tile.isVisible(camera)) {
@@ -223,7 +230,8 @@ public class World {
     }
 
     public void addBullet(float x, float y, float z, Entity shooter, Vector2f direction, boolean fromReceiver) {
-        Bullet bullet = new Bullet(this, x, y, z, direction);
+        //Bullet bullet = new Bullet(this, x, y, z, direction);
+        Bullet bullet = new Grenade(this,x,y,z,direction);
         bullet.setOwner(shooter.getConnectionId());
 
         addBullet(bullet);
@@ -274,7 +282,7 @@ public class World {
                                 Entity entity = EntityLoader.getEntityInstanceByName(type, new Object[]{xt, yt}, image, properties);
                                 entity.setY(entity.getY() - entity.getHeight());
                                 addEntity(entity, true);
-                            } else if(!type.equals("bb")) {
+                            } else if (!type.equals("bb")) {
                                 TileList.addTile(id, image);
                                 tiles.add(new Tile(xt, yt, id));
                             }
@@ -288,6 +296,10 @@ public class World {
                     }
                 }
             }
+
+            entities.init();
+
+            System.out.println("spawners.size=" + spawners.size());
 
             System.out.println("Level parsed in " + (System.currentTimeMillis() - time) + " ms");
         } catch (SlickException e) {

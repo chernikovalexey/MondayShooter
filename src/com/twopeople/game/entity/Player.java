@@ -3,7 +3,8 @@ package com.twopeople.game.entity;
 import com.twopeople.game.Camera;
 import com.twopeople.game.EntityVault;
 import com.twopeople.game.Images;
-import com.twopeople.game.entity.building.Pumphouse;
+import com.twopeople.game.Team;
+import com.twopeople.game.entity.building.Launcher;
 import com.twopeople.game.particle.ParticleManager;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -38,6 +39,7 @@ public class Player extends Entity {
     };
 
     public int kills, deaths;
+    private int team = Team.MERCENARIES;
 
     public Player() {
         loadAnimations(Images.player);
@@ -46,7 +48,7 @@ public class Player extends Entity {
     public Player(float x, float y) {
         super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
 
-        setSpeed(4.5f);
+        setSpeed(5.5f);
         loadAnimations(Images.player);
         setHealth(100, 100);
     }
@@ -80,7 +82,7 @@ public class Player extends Entity {
                     isMoving = true;
                 }
                 if (input.isKeyPressed(Input.KEY_SPACE) && velocity.z == 0) {
-                    movingDirection.z = -1;
+                    velocity.z = 25f;
                 }
             }
 
@@ -99,10 +101,10 @@ public class Player extends Entity {
                     }
                 }
 
-                Pumphouse house = (Pumphouse) world.getSingleEntityByClass(Pumphouse.class);
+                Launcher launcher = (Launcher) world.getSingleEntityByClass(Launcher.class);
 
-                if (house != null && house.inRange(this)) {
-                    house.activate();
+                if (launcher != null && launcher.inRange(this)) {
+                    launcher.activate();
                 }
             }
 
@@ -210,5 +212,9 @@ public class Player extends Entity {
 
         ++killedBy.kills;
         ++this.deaths;
+    }
+
+    public int getTeam() {
+        return team;
     }
 }

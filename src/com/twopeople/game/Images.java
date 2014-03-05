@@ -16,7 +16,7 @@ public class Images {
     public static SpriteSheet bullets;
     public static SpriteSheet concrete_chipping;
     public static SpriteSheet railcar;
-    public static SpriteSheet pumphouse;
+    public static SpriteSheet scrap;
 
     // Load separately to handle exceptions
     public static void init() {
@@ -27,8 +27,8 @@ public class Images {
             gunshots = new SpriteSheet("res/gunshots.png", 1, 1);
             bullets = new SpriteSheet("res/bullets.png", 5, 5);
             concrete_chipping = new SpriteSheet("res/concrete_chipping.png", 2, 2);
-            railcar = new SpriteSheet("res/railcar.png", 70, 70);
-            pumphouse = new SpriteSheet("res/pumphouse.png", 240, 240);
+            railcar = new SpriteSheet("res/atlasMainCar.png", 128, 95);
+            scrap = new SpriteSheet("res/metalblock.png", 62, 64);
         } catch (SlickException e) {
             e.printStackTrace();
         }

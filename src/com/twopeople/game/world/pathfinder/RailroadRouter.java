@@ -95,6 +95,7 @@ public class RailroadRouter {
 
         PriorityQueue<Node> queue = new PriorityQueue<Node>();
         queue.add(start);
+//        queue.add(goal);
 
         Path bestPath = null;
 

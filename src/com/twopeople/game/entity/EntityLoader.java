@@ -1,10 +1,6 @@
 package com.twopeople.game.entity;
 
-import com.twopeople.game.entity.building.Fence;
-import com.twopeople.game.entity.building.Pumphouse;
-import com.twopeople.game.entity.building.Railroad;
-import com.twopeople.game.entity.building.Shop;
-import com.twopeople.game.entity.building.Wall;
+import com.twopeople.game.entity.building.*;
 import org.newdawn.slick.Image;
 
 import java.lang.reflect.Constructor;
@@ -22,8 +18,12 @@ public class EntityLoader {
         registerClass(Wall.class);
         registerClass(Fence.class);
         registerClass(Railroad.class);
-        registerClass(Pumphouse.class);
+        registerClass(Launcher.class);
         registerClass(Shop.class);
+        registerClass(Decal.class);
+        registerClass(Pit.class);
+        registerClass(Dropper.class);
+        registerClass(Console.class);
 
         registerClass(Player.class);
         registerClass(Bullet.class);

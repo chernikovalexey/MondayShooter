@@ -19,12 +19,14 @@ public class ParticleManager {
     public static final int GUNSHOT_DEBRIS = 2;
     public static final int CHIPPING_DEBRIS = 3;
     public static final int BULLET_HOLE_DEBRIS = 4;
+    public static final int GRENADE_EXPLOSIONS = 5;
 
     public ParticleManager(World world) {
         list.put(BLOOD_DEBRIS, new MSParticleSystem(world, Images.particles, 200, Debris.class));
         list.put(GUNSHOT_DEBRIS, new ParticleSystem("res/gunshots.png", 200));
         list.put(CHIPPING_DEBRIS, new MSParticleSystem(world, Images.concrete_chipping, 200, Debris.class));
         list.put(BULLET_HOLE_DEBRIS, new MSParticleSystem(world, Images.concrete_chipping, 200, Debris.class));
+        list.put(GRENADE_EXPLOSIONS, new ParticleSystem("res/gunshots.png", 200));
     }
 
     public ParticleSystem get(int id) {

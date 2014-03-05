@@ -8,7 +8,7 @@ package com.twopeople.game;
 public class Team {
     public final static int NEUTRAL = 0;
     public final static int REBELS = 1;
-    public final static int MERCHANARIES = 2;
+    public final static int MERCENARIES = 2;
 
     public int id;
 

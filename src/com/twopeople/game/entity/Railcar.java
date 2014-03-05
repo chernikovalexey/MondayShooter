@@ -9,6 +9,7 @@ import com.twopeople.game.world.pathfinder.RailroadRouter;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Polygon;
 import org.newdawn.slick.geom.Shape;
 import org.newdawn.slick.geom.Vector2f;
 
@@ -18,9 +19,9 @@ import org.newdawn.slick.geom.Vector2f;
  */
 
 public class Railcar extends Entity {
-    public static float WIDTH = 35;
-    public static float HEIGHT = 20;
-    public static float DEPTH = 28;
+    public static float WIDTH = 128;
+    public static float HEIGHT = 38;
+    public static float DEPTH = 95;
 
     private RailroadRouter router;
     private Path path;
@@ -29,13 +30,12 @@ public class Railcar extends Entity {
         super(x, y, 0, WIDTH, HEIGHT, DEPTH, true);
         setSpeed(3.5f);
 
-        this.range = 45f;
+        this.range = 145f;
     }
 
     @Override
     public void init() {
         this.router = new RailroadRouter(world.getFilteredEntities(Railroad.class));
-        this.path = router.construct(world.getEntities().getById(151), world.getEntities().getById(175));
     }
 
     @Override
@@ -68,13 +68,50 @@ public class Railcar extends Entity {
     public void render(GameContainer container, Camera camera, Graphics g) {
         g.drawImage(Images.railcar.getSprite(0, 0), camera.getX(this), camera.getY(this));
 
-        g.setColor(new Color(213, 43, 22, 105));
-        Shape bb = getBB();
-        bb.setX(camera.getX(bb.getX()));
-        bb.setY(camera.getY(bb.getY()));
-        g.fill(bb);
+        for (Shape shape : getSkeleton()) {
+            shape.setX(camera.getX(shape.getX()));
+            shape.setY(camera.getY(shape.getY()));
+            g.setColor(new Color(255, 255, 255, 155));
+            g.fill(shape);
+        }
 
-        //router.render(camera, g);
-        //path.render(camera,g);
+        if (router != null && path != null) {
+            //router.render(camera, g);
+            //path.render(camera,g);
+        }
+    }
+
+    @Override
+    public Shape[] getSkeleton() {
+        float yo = height;
+        float shrink = 19;
+        float xo = 6;
+        return new Shape[]{
+                new Polygon(new float[]{x + xo, yo + y + DEPTH / 2 - shrink, x + WIDTH / 2, yo + y, x + WIDTH - xo, yo + y + DEPTH / 2 - shrink}),
+                new Polygon(new float[]{x + xo, yo + y + DEPTH / 2 - shrink, x + WIDTH - xo, yo + y + DEPTH / 2 - shrink, x + WIDTH / 2, y + DEPTH}),
+        };
+    }
+
+    @Override
+    public void startCarrying() {
+        constructPath();
+    }
+
+    public void constructPath() {
+        Entity from = null;
+        float minDist = Float.MAX_VALUE;
+
+        for (Entity e : world.getEntities().getNearbyEntities(this)) {
+            float dist = getBBCentre().distance(new Vector2f(e.getX(), e.getY()));
+            if (e instanceof Railroad && dist < minDist) {
+                from = e;
+                minDist = dist;
+            }
+        }
+
+        if (isCarrying()) {
+            Entity e = Railroad.getRailroadPart(world.getFilteredEntities(Railroad.class), "end", ((Player) carrying).getTeam());
+            path = router.construct(from, e);
+        }
     }
 }

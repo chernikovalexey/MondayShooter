@@ -39,7 +39,7 @@ public class Main {
             e.printStackTrace();
 
             try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(new File("exception.txt"), true));
+                BufferedWriter writer = new BufferedWriter(new FileWriter(new File("errorlog.txt"), true));
                 writer.write(e.toString());
                 writer.flush();
                 writer.close();

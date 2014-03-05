@@ -137,6 +137,12 @@ public class EntityVault {
         }
     }
 
+    public void init() {
+        for (Entity e : getAll()) {
+            e.initOnWorldReady();
+        }
+    }
+
     public void add(Entity entity) {
         int cx = getCellX(entity);
         int cy = getCellY(entity);
